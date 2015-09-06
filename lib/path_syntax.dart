@@ -10,29 +10,28 @@ List parse(string, [extendedRules]) {
 // Constructs the paths from paths / pathValues that have strings.
 // If it does not have a string, just moves the value into the return
 // results.
-List parsePathsOrPathValues(paths, [ext]) {
-  if (!paths) {
+List parsePathsOrPathValues(List paths, [ext]) {
+  if (paths == null) {
     return [];
   }
 
   var out = [];
-  for (var i = 0, len = paths.length; i < len; i++) {
-
+  for (var path in paths) {
     // Is the path a string
-    if (paths[i] is String) {
-      out[i] = parse(paths[i], ext);
+    if (path is String) {
+      out.add(parse(path, ext));
     }
 
     // is the path a path value with a string value.
-    else if (paths[i].path is String) {
-      out[i] = {
-        'path': parse(paths[i].path, ext), 'value': paths[i].value
-      };
+    else if (path is Map && path['path'] is String) {
+      out.add({
+        'path': parse(path['path'], ext), 'value': path['value']
+      });
     }
 
     // just copy it over.
     else {
-      out[i] = paths[i];
+      out.add(path);
     }
   }
 
@@ -42,7 +41,7 @@ List parsePathsOrPathValues(paths, [ext]) {
 // If the argument is a string, this with convert, else just return
 // the path provided.
 List parsePath(path, [ext]) {
-  if (!path) {
+  if (path == null) {
     return [];
   }
 

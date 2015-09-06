@@ -2,25 +2,32 @@ library falcor_dart.head;
 
 import 'package:falcor_dart/src/path_syntax/token_types.dart';
 import 'package:falcor_dart/src/path_syntax/parse_tree/indexer.dart';
+import 'package:falcor_dart/src/utils.dart';
+import 'package:falcor_dart/src/path_syntax/tokenizer.dart';
 
 /**
  * The top level of the parse tree.  This returns the generated path
  * from the tokenizer.
  */
-List head(tokenizer) {
+List head(Tokenizer tokenizer) {
   var token = tokenizer.next();
   var state = {};
   var out = [];
 
-  while (!token.done) {
+  while (token['done'] != true) {
 
-    switch (token.type) {
+    switch (token['type']) {
       case TokenTypes.token:
-        var first = +token.token[0];
-        if (!isNaN(first)) {
-          E.throwError(E.invalidIdentifier, tokenizer);
+//        var first = +token.token[0];
+//        if (!isNaN(first)) {
+//          E.throwError(E.invalidIdentifier, tokenizer);
+//        }
+
+        if (isNumeric(token['token'][0])) {
+          throw 'Invalid Identifier. -- ${tokenizer.parseString}';
+//          E.throwError(E.invalidIdentifier, tokenizer);
         }
-        out[out.length] = token.token;
+        out.add(token['token']);
         break;
 
       // dotSeparators at the top level have no meaning

@@ -34,35 +34,30 @@ class Tokenizer {
    * grabs the next token either from the peek operation or generates the
    * next token.
    */
-  next() {
-    var nextToken = _nextToken != null
+  Map next() {
+    var nextToken = _nextToken == true
         ? _nextToken
         : getNext(this._string, this._idx, this._extended);
 
-    _idx = nextToken.idx;
+    _idx = nextToken['idx'];
     _nextToken = false;
-    parseString += nextToken.token.token;
+    if (nextToken['token'].containsKey('token')) {
+      parseString += nextToken['token']['token'];
+    }
 
-    return nextToken.token;
+    return nextToken['token'];
   }
 
   /**
    * will peak but not increment the tokenizer
    */
-  peek() {
-    var nextToken = _nextToken != null
+  Map peek() {
+    var nextToken = _nextToken == true
         ? _nextToken
         : getNext(this._string, this._idx, this._extended);
     _nextToken = nextToken;
 
-    return nextToken.token;
-  }
-
-  static int toNumber(x) {
-    if (!isNaN(x)) {
-      return x;
-    }
-    return NaN;
+    return nextToken['token'];
   }
 }
 
@@ -71,9 +66,9 @@ toOutput(token, type, done) {
 }
 
 getNext(string, idx, ext) {
-  var output = false;
+  var output;
   var token = '';
-  var specialChars = ext ? EXT_SPECIAL_CHARACTERS : SPECIAL_CHARACTERS;
+  var specialChars = (ext != null) ? EXT_SPECIAL_CHARACTERS : SPECIAL_CHARACTERS;
   var done;
   do {
     done = idx + 1 >= string.length;
@@ -91,7 +86,7 @@ getNext(string, idx, ext) {
     }
 
     // The token to delimiting character transition.
-    else if (token.length) {
+    else if (token.length > 0) {
       break;
     }
 
@@ -137,12 +132,12 @@ getNext(string, idx, ext) {
     break;
   } while (!done);
 
-  if (!output && token.length) {
+  if (output == null && token.length > 0) {
     output = toOutput(token, TokenTypes.token, false);
   }
 
-  if (!output) {
-    output = {done: true};
+  if (output == null) {
+    output = {'done': true};
   }
 
   return {'token': output, 'idx': idx};

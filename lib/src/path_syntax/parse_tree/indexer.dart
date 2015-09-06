@@ -4,34 +4,36 @@ import 'package:falcor_dart/src/path_syntax/token_types.dart';
 import 'package:falcor_dart/src/path_syntax/parse_tree/range.dart';
 import 'package:falcor_dart/src/path_syntax/parse_tree/routed.dart';
 import 'package:falcor_dart/src/path_syntax/parse_tree/quote.dart';
+import 'package:falcor_dart/src/path_syntax/tokenizer.dart';
+import 'package:falcor_dart/src/utils.dart';
 
 /**
  * The indexer is all the logic that happens in between
  * the '[', opening bracket, and ']' closing bracket.
  */
-void indexer(tokenizer, openingToken, state, out) {
+void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
   var token = tokenizer.next();
   var done = false;
   var allowedMaxLength = 1;
   var routedIndexer = false;
 
   // State variables
-  state.indexer = [];
+  state['indexer'] = [];
 
-  while (!token.done) {
+  while (!token['done']) {
 
-    switch (token.type) {
+    switch (token['type']) {
       case TokenTypes.token:
       case TokenTypes.quote:
 
         // ensures that token adders are properly delimited.
-        if (state.indexer.length == allowedMaxLength) {
+        if (state['indexer'].length == allowedMaxLength) {
           E.throwError(idxE.requiresComma, tokenizer);
         }
         break;
     }
 
-    switch (token.type) {
+    switch (token['type']) {
       // Extended syntax case
       case TokenTypes.openingBrace:
         routedIndexer = true;
@@ -40,16 +42,16 @@ void indexer(tokenizer, openingToken, state, out) {
 
 
       case TokenTypes.token:
-        var t = +token.token;
-        if (isNaN(t)) {
+        var t = parseNum(token['token']);
+        if (t.isNaN) {
           E.throwError(idxE.needQuotes, tokenizer);
         }
-        state.indexer[state.indexer.length] = t;
+        state['indexer'].add(t);
         break;
 
       // dotSeparators at the top level have no meaning
       case TokenTypes.dotSeparator:
-        if (!state.indexer.length) {
+        if (state['indexer'].length == 0) {
           E.throwError(idxE.leadingDot, tokenizer);
         }
         range(tokenizer, token, state);
@@ -93,21 +95,21 @@ void indexer(tokenizer, openingToken, state, out) {
     token = tokenizer.next();
   }
 
-  if (state.indexer.isEmpty) {
+  if (state['indexer'].isEmpty) {
     E.throwError(idxE.empty, tokenizer);
   }
 
-  if (state.indexer.length > 1 && routedIndexer) {
+  if (state['indexer'].length > 1 && routedIndexer) {
     E.throwError(idxE.routedTokens, tokenizer);
   }
 
   // Remember, if an array of 1, keySets will be generated.
-  if (state.indexer.length == 1) {
-    state.indexer = state.indexer[0];
+  if (state['indexer'].length == 1) {
+    state['indexer'] = state['indexer'][0];
   }
 
-  out[out.length] = state.indexer;
+  out.add(state['indexer']);
 
   // Clean state.
-  state.indexer = null;
+  state['indexer'] = null;
 }

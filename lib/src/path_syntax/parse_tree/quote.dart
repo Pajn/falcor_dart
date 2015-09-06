@@ -1,6 +1,7 @@
 library falcor_dart.quote;
 
 import 'package:falcor_dart/src/path_syntax/token_types.dart';
+import 'package:falcor_dart/src/path_syntax/tokenizer.dart';
 
 /**
  * quote is all the parse tree in between quotes.  This includes the only
@@ -9,16 +10,16 @@ import 'package:falcor_dart/src/path_syntax/token_types.dart';
  * parse-tree:
  * <opening-quote>(.|(<escape><opening-quote>))*<opening-quote>
  */
-void quote(tokenizer, openingToken, state) {
+void quote(Tokenizer tokenizer, openingToken, Map state) {
   var token = tokenizer.next();
   var innerToken = '';
-  var openingQuote = openingToken.token;
+  var openingQuote = openingToken['token'];
   var escaping = false;
   var done = false;
 
-  while (!token.done) {
+  while (!token['done']) {
 
-    switch (token.type) {
+    switch (token['type']) {
       case TokenTypes.token:
       case TokenTypes.space:
 
@@ -33,20 +34,20 @@ void quote(tokenizer, openingToken, state) {
           E.throwError(quoteE.illegalEscape, tokenizer);
         }
 
-        innerToken += token.token;
+        innerToken += token['token'];
         break;
 
 
       case TokenTypes.quote:
       // the simple case.  We are escaping
         if (escaping) {
-          innerToken += token.token;
+          innerToken += token['token'];
           escaping = false;
         }
 
         // its not a quote that is the opening quote
-        else if (token.token != openingQuote) {
-          innerToken += token.token;
+        else if (token['token'] != openingQuote) {
+          innerToken += token['token'];
         }
 
         // last thing left.  Its a quote that is the opening quote
@@ -77,5 +78,5 @@ void quote(tokenizer, openingToken, state) {
     E.throwError(quoteE.empty, tokenizer);
   }
 
-  state.indexer[state.indexer.length] = innerToken;
+  state['indexer'].add(innerToken);
 }
