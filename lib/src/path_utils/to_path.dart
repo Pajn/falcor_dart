@@ -1,29 +1,33 @@
 library falcor_dart.to_path;
 
 import 'package:falcor_dart/src/types/range.dart';
+import 'package:falcor_dart/src/utils.dart';
 
-toPaths(Map lengths) {
-  var pathmap;
+/// [lengths] [List] or [Map]<int, dynamic>
+List toPaths(lengths) {
   var allPaths = [];
-  var allPathsLength = 0;
-  for (var length in lengths) {
-    if (isNumber(length) && isObject(pathmap = lengths[length])) {
-      var paths = collapsePathMap(pathmap, 0, int.parse(length)).sets;
-      var pathsIndex = -1;
-      var pathsCount = paths.length;
-      while (++pathsIndex < pathsCount) {
-        allPaths[allPathsLength++] = collapsePathSetIndexes(paths[pathsIndex]);
+
+  if (lengths is List) {
+    lengths = lengths.asMap();
+  }
+
+  lengths.forEach((length, pathmap) {
+    if (pathmap is Map) {
+      var paths = collapsePathMap(pathmap, 0, length)['sets'];
+      for (var path in paths) {
+        allPaths.add(collapsePathSetIndexes(path));
       }
     }
-  }
+  });
+
   return allPaths;
 }
 
 isObject(value) {
-  return value != null && value is Map;
+  return value is Map;
 }
 
-collapsePathMap(Map pathmap, int depth, int length) {
+Map collapsePathMap(Map pathmap, int depth, int length) {
 
   var key;
   var code = getHashCode(depth);
@@ -34,80 +38,90 @@ collapsePathMap(Map pathmap, int depth, int length) {
   var codesCount = 0;
 
   var pathsets = [];
-  var pathsetsCount = 0;
+  var pathsetCount = 0;
 
   var subPath, subCode,
   subKeys, subKeysIndex, subKeysCount,
-  subSets, subSetsIndex, subSetsCount,
-  pathset, pathsetIndex, pathsetCount,
+  subSets, pathsetIndex,
   firstSubKey, pathsetClone;
 
-  subKeys = [];
   subKeysIndex = -1;
 
   if (depth < length - 1) {
 
-    subKeysCount = getSortedKeys(pathmap, subKeys);
+    subKeys = getSortedKeys(pathmap);
 
-    while (++subKeysIndex < subKeysCount) {
+    while (++subKeysIndex < subKeys.length) {
       key = subKeys[subKeysIndex];
       subPath = collapsePathMap(pathmap[key], depth + 1, length);
-      subCode = subPath.code;
-      if(subs[subCode]) {
+      subCode = subPath['code'];
+      if(subs[subCode] != null) {
         subPath = subs[subCode];
       } else {
-        codes[codesCount++] = subCode;
+        if (codesCount++ < codes.length) {
+          print('DANGER3!!!!!!!!!!!!!!!');
+        }
+        codes.add(subCode);
         subPath = subs[subCode] = {
           'keys': [],
-          'sets': subPath.sets
+          'sets': subPath['sets']
         };
       }
-      code = getHashCode(code + key + subCode);
+      code = getHashCode(code + key.toString() + subCode);
 
-      isNumber(key) &&
-      subPath['keys'].add(int.parse(key)) ||
-      subPath['keys'].add(key);
+//      isNumber(key) &&
+//      subPath['keys'].add(int.parse(key)) ||
+      if (isNumeric(key)) {
+        subPath['keys'].add(parseNum(key));
+      } else {
+        subPath['keys'].add(key);
+      }
     }
 
     while(++codesIndex < codesCount) {
 
       key = codes[codesIndex];
       subPath = subs[key];
-      subKeys = subPath.keys;
+      subKeys = subPath['keys'];
       subKeysCount = subKeys.length;
 
       if (subKeysCount > 0) {
 
-        subSets = subPath.sets;
-        subSetsIndex = -1;
-        subSetsCount = subSets.length;
-        firstSubKey = subKeys[0];
+        subSets = subPath['sets'];
+        firstSubKey = subKeys.first;
 
-        while (++subSetsIndex < subSetsCount) {
-
-          pathset = subSets[subSetsIndex];
+        for (var pathset in subSets) {
           pathsetIndex = -1;
           pathsetCount = pathset.length;
           pathsetClone = new List(pathsetCount + 1);
-          pathsetClone[0] = subKeysCount > 1 && subKeys || firstSubKey;
+          pathsetClone[0] = (subKeysCount > 1 ? subKeys : null) ?? firstSubKey;
 
           while (++pathsetIndex < pathsetCount) {
             pathsetClone[pathsetIndex + 1] = pathset[pathsetIndex];
           }
 
-          pathsets[pathsetsCount++] = pathsetClone;
+          if (pathsetCount++ < pathsets.length) {
+            print('DANGER4!!!!!!!!!!!!!!!');
+          }
+          pathsets.add(pathsetClone);
         }
       }
     }
   } else {
-    subKeysCount = getSortedKeys(pathmap, subKeys);
-    if (subKeysCount > 1) {
-      pathsets[pathsetsCount++] = [subKeys];
+    subKeys = getSortedKeys(pathmap);
+    if (subKeys.length > 1) {
+      if (pathsetCount++ < pathsets.length) {
+        print('DANGER!!!!!!!!!!!!!!!');
+      }
+      pathsets.add([subKeys]);
     } else {
-      pathsets[pathsetsCount++] = subKeys;
+      if (pathsetCount++ < pathsets.length) {
+        print('DANGER2!!!!!!!!!!!!!!!');
+      }
+      pathsets.add(subKeys);
     }
-    while (++subKeysIndex < subKeysCount) {
-      code = getHashCode(code + subKeys[subKeysIndex]);
+    while (++subKeysIndex < subKeys.length) {
+      code = getHashCode(code + subKeys[subKeysIndex].toString());
     }
   }
 
@@ -124,7 +138,7 @@ List collapsePathSetIndexes(List pathset) {
     }
 
     return keyset;
-  });
+  }).toList();
 }
 
 /**
@@ -135,7 +149,7 @@ List collapsePathSetIndexes(List pathset) {
  *
  * @private
  */
-Range collapseIndex(List keyset) {
+collapseIndex(List keyset) {
 
   // Do we need to dedupe an indexer keyset if they're duplicate consecutive integers?
   // var hash = {};
@@ -153,7 +167,7 @@ Range collapseIndex(List keyset) {
     }
     // hash[key] = true;
     // Cast number indexes to integers.
-    keyset[keyIndex] = int.parse(key);
+    keyset[keyIndex] = key is int ? key : int.parse(key);
   }
 
   if (isSparseRange) {
@@ -176,22 +190,17 @@ sortListAscending(a, b) {
   return a - b;
 }
 
-int getSortedKeys(Map map, List keys, [sort(a, b)]) {
-  var len = 0;
-  for (var key in map) {
-    keys[len++] = key;
+List getSortedKeys(Map map, [sort(a, b)]) {
+  var keys = new List.from(map.keys);
+  if (sort == null) {
+    keys.sort((a, b) => a.toString().compareTo(b.toString()));
+  } else {
+    keys.sort(sort);
   }
-  if (len > 1) {
-    if (sort == null) {
-      keys.sort();
-    } else {
-      keys.sort(sort);
-    }
-  }
-  return len;
+  return keys;
 }
 
-getHashCode(Object key) {
+String getHashCode(Object key) {
   var keyAsString = key.toString();
   var code = 5381;
   var index = -1;
@@ -206,10 +215,10 @@ getHashCode(Object key) {
  * Return true if argument is a number or can be cast to a number
  * @private
  */
-isNumber(val) {
+bool isNumber(val) {
   // parseFloat NaNs numeric-cast false positives (null|true|false|"")
   // ...but misinterprets leading-number strings, particularly hex literals ("0x...")
   // subtraction forces infinities to NaN
   // adding 1 corrects loss of precision from parseFloat (#15100)
-  return !isArray(val) && (val - parseFloat(val) + 1) >= 0;
+  return parseNum(val) >= 0;
 }

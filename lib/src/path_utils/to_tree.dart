@@ -21,7 +21,7 @@ innerToTree(seed, List path, int depth) {
   do {
 
     var next = seed[key];
-    if (!next) {
+    if (next == null) {
       if (nextDepth == path.length) {
         seed[key] = null;
       } else {

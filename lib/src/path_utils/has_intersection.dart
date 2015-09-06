@@ -1,6 +1,7 @@
 library falcor_dart.has_intersection;
 
 import 'package:falcor_dart/src/path_utils/iterate_key_set.dart';
+import 'package:falcor_dart/src/types/range.dart';
 
 /**
  * Tests to see if the intersection should be stripped from the
@@ -8,7 +9,7 @@ import 'package:falcor_dart/src/path_utils/iterate_key_set.dart';
  * of the path is contained in the tree.
  * @private
  */
-hasIntersection(tree, List path, int depth) {
+hasIntersection(Map tree, List path, int depth) {
   var current = tree;
   var intersects = true;
 
@@ -18,7 +19,7 @@ hasIntersection(tree, List path, int depth) {
     var key = path[depth];
 
     // We have to iterate key set
-    if (key is Map) {
+    if (key is Map || key is Range || key is List) {
       var note = {};
       var innerKey = iterateKeySet(key, note);
       var nextDepth = depth + 1;
@@ -26,8 +27,8 @@ hasIntersection(tree, List path, int depth) {
       // Loop through the innerKeys setting the intersects flag
       // to each result.  Break out on false.
       do {
+        intersects = current.containsKey(innerKey);
         var next = current[innerKey];
-        intersects = next != null;
 
         if (intersects) {
           intersects = hasIntersection(next, path, nextDepth);
@@ -40,8 +41,8 @@ hasIntersection(tree, List path, int depth) {
     }
 
     // Its a simple key, just move forward with the testing.
+    intersects = current.containsKey(key);
     current = current[key];
-    intersects = current != null;
   }
 
   return intersects;

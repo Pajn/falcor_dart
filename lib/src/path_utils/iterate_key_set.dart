@@ -1,5 +1,7 @@
 library falcor_dart.iterate_key_set;
 
+import 'package:falcor_dart/src/types/range.dart';
+
 
 /**
  * Takes in a keySet and a note attempts to iterate over it.
@@ -28,7 +30,7 @@ iterateKeySet(keySet, Map note) {
 
     // Cycle through the array and pluck out the next value.
     do {
-      if (note['loaded'] && note['rangeOffset'] > note['to']) {
+      if (note['loaded'] != null && note['rangeOffset'] > note['to']) {
         ++note['arrayOffset'];
         note['loaded'] = false;
       }
@@ -66,8 +68,8 @@ iterateKeySet(keySet, Map note) {
   }
 
   // Range iteration
-  else if (note['isObject']) {
-    if (!note['loaded']) {
+  else if (note['isRange']) {
+    if (note['loaded'] == null) {
       initializeRange(keySet, note);
     }
     if (note['rangeOffset'] > note['to']) {
@@ -85,21 +87,20 @@ iterateKeySet(keySet, Map note) {
   }
 }
 
-initializeRange(key, memo) {
-  var from = memo.from = key.from || 0;
-  var to = memo.to = key.to ||
-                     (typeof key.length === 'number' &&
-                     memo.from + key.length - 1 || 0);
-  memo.rangeOffset = memo.from;
-  memo.loaded = true;
+initializeRange(Range key, Map memo) {
+  var from = memo['from'] = key.from ?? 0;
+  var to = memo['to'] = key.to ??
+                     ((key.length != null) ? memo['from'] + key.length - 1 : 0);
+  memo['rangeOffset'] = memo['from'];
+  memo['loaded'] = true;
   if (from > to) {
-    memo.empty = true;
+    memo['empty'] = true;
   }
 }
 
-initializeNote(key, note) {
-  note.done = false;
-  var isObject = note.isObject = !!(key && typeof key === 'object');
-  note.isArray = isObject && isArray(key);
-  note.arrayOffset = 0;
+initializeNote(key, Map note) {
+  note['done'] = false;
+  note['isRange'] = key is Range;
+  note['isArray'] = key is List;
+  note['arrayOffset'] = 0;
 }
