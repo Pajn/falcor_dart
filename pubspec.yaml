@@ -1,0 +1,15 @@
+name: falcor_dart
+description: A port of Falcor server to Dart with optional shelf middleware.
+version: 0.0.1
+author: Rasmus Eneman <rasmus@eneman.eu>
+#homepage: https://www.example.com
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
+#dependencies:
+#  lib_name: any
+
+dev_dependencies:
+  guinness2: any
+  test: any
