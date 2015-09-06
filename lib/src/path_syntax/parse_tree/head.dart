@@ -18,14 +18,9 @@ List head(Tokenizer tokenizer) {
 
     switch (token['type']) {
       case TokenTypes.token:
-//        var first = +token.token[0];
-//        if (!isNaN(first)) {
-//          E.throwError(E.invalidIdentifier, tokenizer);
-//        }
 
         if (isNumeric(token['token'][0])) {
           throw 'Invalid Identifier. -- ${tokenizer.parseString}';
-//          E.throwError(E.invalidIdentifier, tokenizer);
         }
         out.add(token['token']);
         break;
@@ -33,7 +28,7 @@ List head(Tokenizer tokenizer) {
       // dotSeparators at the top level have no meaning
       case TokenTypes.dotSeparator:
         if (out.isEmpty) {
-          E.throwError(E.unexpectedToken, tokenizer);
+          throw 'Unexpected token. -- ${tokenizer.parseString}';
         }
         break;
 
@@ -50,7 +45,7 @@ List head(Tokenizer tokenizer) {
         break;
 
       default:
-        E.throwError(E.unexpectedToken, tokenizer);
+        throw 'Unexpected token. -- ${tokenizer.parseString}';
         break;
     }
 
@@ -59,7 +54,7 @@ List head(Tokenizer tokenizer) {
   }
 
   if (out.isEmpty) {
-    E.throwError(E.invalidPath, tokenizer);
+    throw 'Please provide a valid path. -- ${tokenizer.parseString}';
   }
 
   return out;

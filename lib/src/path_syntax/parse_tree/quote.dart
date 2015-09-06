@@ -31,7 +31,7 @@ void quote(Tokenizer tokenizer, openingToken, Map state) {
       case TokenTypes.openingBrace:
       case TokenTypes.closingBrace:
         if (escaping) {
-          E.throwError(quoteE.illegalEscape, tokenizer);
+          throw 'Invalid escape character.  Only quotes are escapable. -- ${tokenizer.parseString}';
         }
 
         innerToken += token['token'];
@@ -62,7 +62,7 @@ void quote(Tokenizer tokenizer, openingToken, Map state) {
         break;
 
       default:
-        E.throwError(E.unexpectedToken, tokenizer);
+        throw 'Unexpected token. -- ${tokenizer.parseString}';
     }
 
     // If done, leave loop
@@ -75,7 +75,7 @@ void quote(Tokenizer tokenizer, openingToken, Map state) {
   }
 
   if (innerToken.isEmpty) {
-    E.throwError(quoteE.empty, tokenizer);
+    throw 'cannot have empty quoted keys. -- ${tokenizer.parseString}';
   }
 
   state['indexer'].add(innerToken);

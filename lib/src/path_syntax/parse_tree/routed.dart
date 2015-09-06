@@ -23,7 +23,7 @@ void routed(Tokenizer tokenizer, openingToken, Map state) {
     //valid
       break;
     default:
-      E.throwError(routedE.invalid, tokenizer);
+      throw 'Invalid routed token.  only integers|ranges|keys are supported -- ${tokenizer.parseString}';
       break;
   }
 
@@ -37,7 +37,7 @@ void routed(Tokenizer tokenizer, openingToken, Map state) {
     // Get the token name.
     next = tokenizer.next();
     if (next['type'] != TokenTypes.token) {
-      E.throwError(routedE.invalid, tokenizer);
+      throw 'Invalid routed token.  only integers|ranges|keys are supported -- ${tokenizer.parseString}';
     }
     name = next['token'];
 
@@ -58,7 +58,7 @@ void routed(Tokenizer tokenizer, openingToken, Map state) {
 
   // closing brace expected
   else {
-    E.throwError(routedE.invalid, tokenizer);
+    throw 'Invalid routed token.  only integers|ranges|keys are supported -- ${tokenizer.parseString}';
   }
 
 }

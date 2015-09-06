@@ -20,7 +20,7 @@ void range(Tokenizer tokenizer, openingToken, Map state) {
   var to;
 
   if (from.isNaN) {
-    E.throwError(E.range.precedingNaN, tokenizer);
+    throw 'ranges must be preceded by numbers. -- ${tokenizer.parseString}';
   }
 
   // Why is number checking so difficult in javascript.
@@ -32,7 +32,7 @@ void range(Tokenizer tokenizer, openingToken, Map state) {
     // dotSeparators at the top level have no meaning
       case TokenTypes.dotSeparator:
         if (dotCount == 3) {
-          E.throwError(E.unexpectedToken, tokenizer);
+          throw 'Unexpected token. -- ${tokenizer.parseString}';
         }
         ++dotCount;
 
@@ -47,7 +47,7 @@ void range(Tokenizer tokenizer, openingToken, Map state) {
 
         // throw potential error.
         if (to.isNaN) {
-          E.throwError(E.range.suceedingNaN, tokenizer);
+          throw 'ranges must be suceeded by numbers. -- ${tokenizer.parseString}';
         }
 
         done = true;

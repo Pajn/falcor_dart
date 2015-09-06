@@ -28,7 +28,7 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
 
         // ensures that token adders are properly delimited.
         if (state['indexer'].length == allowedMaxLength) {
-          E.throwError(idxE.requiresComma, tokenizer);
+          throw 'Indexers require commas between indexer args. -- ${tokenizer.parseString}';
         }
         break;
     }
@@ -44,7 +44,7 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
       case TokenTypes.token:
         var t = parseNum(token['token']);
         if (t.isNaN) {
-          E.throwError(idxE.needQuotes, tokenizer);
+          throw 'unquoted indexers must be numeric. -- ${tokenizer.parseString}';
         }
         state['indexer'].add(t);
         break;
@@ -52,7 +52,7 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
       // dotSeparators at the top level have no meaning
       case TokenTypes.dotSeparator:
         if (state['indexer'].length == 0) {
-          E.throwError(idxE.leadingDot, tokenizer);
+          throw 'Indexers cannot have leading dots. -- ${tokenizer.parseString}';
         }
         range(tokenizer, token, state);
         break;
@@ -74,7 +74,7 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
 
       // Its time to decend the parse tree.
       case TokenTypes.openingBracket:
-        E.throwError(idxE.nested, tokenizer);
+        throw 'Indexers cannot be nested. -- ${tokenizer.parseString}';
         break;
 
       case TokenTypes.commaSeparator:
@@ -82,7 +82,7 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
         break;
 
       default:
-        E.throwError(E.unexpectedToken, tokenizer);
+        throw 'Unexpected token. -- ${tokenizer.parseString}';
         break;
     }
 
@@ -96,11 +96,11 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
   }
 
   if (state['indexer'].isEmpty) {
-    E.throwError(idxE.empty, tokenizer);
+    throw 'cannot have empty indexers. -- ${tokenizer.parseString}';
   }
 
   if (state['indexer'].length > 1 && routedIndexer) {
-    E.throwError(idxE.routedTokens, tokenizer);
+    throw 'Only one token can be used per indexer when specifying routed tokens. -- ${tokenizer.parseString}';
   }
 
   // Remember, if an array of 1, keySets will be generated.
