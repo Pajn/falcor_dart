@@ -5,6 +5,7 @@ import 'package:falcor_dart/src/keys.dart';
 import 'package:falcor_dart/src/route.dart';
 import 'package:falcor_dart/src/parse_tree/action_wrapper.dart';
 import 'package:falcor_dart/src/utils.dart';
+import 'package:falcor_dart/path_syntax.dart' as pathSyntax;
 
 var ROUTE_ID = -3;
 
@@ -15,7 +16,7 @@ Map<Keys, Route> parseTree(List<Route> routes) {
     // converts the virtual string path to a real path with
     // extended syntax on.
     if (route.route is String) {
-      route.route = pathSyntax(route.route, true);
+      route.route = pathSyntax.parse(route.route, true);
       convertTypes(route);
     }
     if (route.get != null) {
@@ -34,7 +35,7 @@ Map<Keys, Route> parseTree(List<Route> routes) {
   return pTree;
 }
 
-buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
+void buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
 
   var route = routeObject.route;
   var get = routeObject.get;

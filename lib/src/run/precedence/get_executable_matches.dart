@@ -2,6 +2,7 @@ library falcor_dart.run.precendence.get_executable_matches;
 
 import 'package:falcor_dart/src/path_utils/collapse.dart';
 import 'package:falcor_dart/src/path_utils/has_intersection.dart';
+import 'package:falcor_dart/src/operations/strip/strip_path.dart';
 
 /// takes in the set of ordered matches and pathSet that got those matches.
 /// From there it will give back a list of matches to execute.
@@ -29,7 +30,7 @@ List getExecutableMatches(List matches, List pathSet) {
           path: stripResults[0],
           match: match
         };
-        remainingPaths = remainingPaths.concat(stripResults[1]);
+        remainingPaths.addAll(stripResults[1]);
       }
     }
   }

@@ -4,6 +4,8 @@ import 'package:falcor_dart/src/cache/get_value.dart';
 import 'package:falcor_dart/src/run/run_get_action.dart';
 import 'package:falcor_dart/src/router.dart';
 import 'package:falcor_dart/src/cache/optimize_path_set.dart';
+import 'package:falcor_dart/src/path_utils/has_intersection.dart';
+import 'package:falcor_dart/src/cache/path_value_merge.dart';
 
 outerRunSetAction(Router routerInstance, modelContext, Map jsongCache) {
   return (matchAndPath) =>

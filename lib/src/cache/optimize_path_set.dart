@@ -1,6 +1,8 @@
 library falcor_dart.cache.optimize_path_set;
 
 import 'package:falcor_dart/src/cache/follow_reference.dart';
+import 'package:falcor_dart/src/path_utils/iterate_key_set.dart';
+import 'package:falcor_dart/src/utils.dart';
 
 /// The fastest possible optimize of paths.
 ///

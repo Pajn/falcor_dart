@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:falcor_dart/src/types/sentinels.dart';
 import 'package:falcor_dart/src/router.dart';
+import 'package:falcor_dart/src/utils.dart';
 
 runGetAction(Router routerInstance, Map jsongCache) {
   return (matchAndPath) {

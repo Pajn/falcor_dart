@@ -1,31 +1,33 @@
 library falcor_dart.router;
 
+import 'dart:async';
 import 'package:falcor_dart/src/cache/optimize_path_set.dart';
 import 'package:falcor_dart/src/run/recurse_match_and_execute.dart';
 import 'package:falcor_dart/src/run/run_get_action.dart';
 import 'package:falcor_dart/src/run/run_set_action.dart';
 import 'package:falcor_dart/src/path_utils/collapse.dart';
+import 'package:falcor_dart/src/cache/path_value_merge.dart';
 
 class Router {
   final maxRefFollow = 50;
 
-  get(paths) {
+  Future get(paths) {
     var jsongCache = {};
     var action = runGetAction(this, jsongCache);
     var normPS = normalizePathSets(paths);
 
     return run(this._matcher, action, normPS, get, this, jsongCache)
-      .map((jsongEnv) => materializeMissing(this, paths, jsongEnv));
+      .then((jsongEnv) => materializeMissing(this, paths, jsongEnv));
   }
 
-  set(jsong) {
+  Future set(jsong) {
     // TODO: Remove the modelContext and replace with just jsongEnv
     // when http://github.com/Netflix/falcor-router/issues/24 is addressed
     var jsongCache = {};
     var action = runSetAction(this, jsong, jsongCache);
 
     return run(this._matcher, action, jsong.paths, set, this, jsongCache)
-      .map((jsongEnv) => materializeMissing(this, jsong.paths, jsongEnv));
+      .then((jsongEnv) => materializeMissing(this, jsong.paths, jsongEnv));
   }
 
   call(callPath, args, suffixes, paths) {

@@ -3,6 +3,8 @@ library falcor_dart.matcher.dart;
 import 'package:falcor_dart/src/precedence.dart';
 import 'package:falcor_dart/src/keys.dart';
 import 'package:falcor_dart/src/route.dart';
+import 'package:falcor_dart/src/utils.dart';
+import 'package:falcor_dart/src/path_utils/collapse.dart';
 
 var intTypes = [{
   'type': Keys.ranges,

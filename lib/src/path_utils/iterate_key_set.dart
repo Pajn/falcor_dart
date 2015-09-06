@@ -44,7 +44,7 @@ iterateKeySet(keySet, Map note) {
       var el = keySet[note['arrayOffset']];
 
       // Inner range iteration.
-      if (el is Map) {
+      if (el is Range) {
         if (!note['loaded']) {
           initializeRange(el, note);
         }
