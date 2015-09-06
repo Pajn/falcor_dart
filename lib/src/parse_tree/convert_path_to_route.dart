@@ -26,8 +26,8 @@ convertPathToRoute(path, route) {
           convertPathKeyToKeys(path[i]);
           break;
         default:
-          var err = new Error('Unknown route type.');
-          err.throwToNext = true;
+          var err = new Exception('Unknown route type.');
+//          err.throwToNext = true;
           break;
       }
       if (virt.named) {
@@ -40,11 +40,11 @@ convertPathToRoute(path, route) {
     // path[i] element.
     else {
       if (route[i] is List && path[i] is! List) {
-        matched[matched.length] = [path[i]];
+        matched.add([path[i]]);
       }
 
       else {
-        matched[matched.length] = path[i];
+        matched.add(path[i]);
       }
     }
   }

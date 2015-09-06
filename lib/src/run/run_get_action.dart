@@ -2,14 +2,15 @@ library falcor_dart.run_get_action;
 import 'dart:async';
 
 import 'package:falcor_dart/src/types/sentinels.dart';
+import 'package:falcor_dart/src/router.dart';
 
-runGetAction(routerInstance, jsongCache) {
+runGetAction(Router routerInstance, Map jsongCache) {
   return (matchAndPath) {
     return getAction(routerInstance, matchAndPath, jsongCache);
   };
 }
 
-Stream getAction(routerInstance, matchAndPath, jsongCache) {
+Stream getAction(Router routerInstance, matchAndPath, Map jsongCache) {
   var match = matchAndPath.match;
   var matchAction = match.action(matchAndPath.path);
   var out = outputToStream(matchAction);

@@ -1,3 +1,7 @@
+library falcor_dart.cache.optimize_path_set;
+
+import 'package:falcor_dart/src/cache/follow_reference.dart';
+
 /// The fastest possible optimize of paths.
 ///
 /// What it does:
@@ -5,19 +9,18 @@
 /// - All paths will be exploded which means that collapse will need to be
 ///   ran afterwords.
 /// - Any missing path will be optimized as much as possible.
-List optimizePathSets(Map cache, List<List>paths, maxRefFollow) {
+List optimizePathSets(Map cache, List<List> paths, int maxRefFollow) {
   var optimized = [];
-  paths.forEach((p) {
-    optimizePathSet(cache, cache, p, 0, optimized, [], maxRefFollow);
+  paths.forEach((path) {
+    optimizePathSet(cache, cache, path, 0, optimized, [], maxRefFollow);
   });
 
   return optimized;
 }
 
-
 /// optimizes one pathSet at a time.
-optimizePathSet(Map cache, Map cacheRoot, List pathSet, depth, List out, optimizedPath, maxRefFollow) {
-
+void optimizePathSet(Map cache, Map cacheRoot, List pathSet, depth, List out,
+    List optimizedPath, int maxRefFollow) {
   // at missing, report optimized path.
   if (cache == null) {
     out.add(catAndSlice(optimizedPath, pathSet, depth));
@@ -26,7 +29,7 @@ optimizePathSet(Map cache, Map cacheRoot, List pathSet, depth, List out, optimiz
 
   // If the reference is the last item in the path then do not
   // continue to search it.
-  if (cache.$type == r'$ref' && depth == pathSet.length) {
+  if (cache[r'$type'] == r'$ref' && depth == pathSet.length) {
     return;
   }
 
@@ -46,11 +49,13 @@ optimizePathSet(Map cache, Map cacheRoot, List pathSet, depth, List out, optimiz
     next = cache[key];
     var optimizedPathLength = optimizedPath.length;
     if (key != null) {
-      optimizedPath[optimizedPathLength] = key;
+      optimizedPath.add(key);
     }
 
-    if (next is Map && next[r'$type'] == r'$ref' && nextDepth < pathSet.length) {
-      var refResults = followReference(cacheRoot, next.value, maxRefFollow);
+    if (next is Map &&
+        next[r'$type'] == r'$ref' &&
+        nextDepth < pathSet.length) {
+      var refResults = followReference(cacheRoot, next['value'], maxRefFollow);
       next = refResults[0];
 
       // must clone to avoid the mutation from above destroying the cache.
@@ -59,12 +64,12 @@ optimizePathSet(Map cache, Map cacheRoot, List pathSet, depth, List out, optimiz
       nextOptimized = optimizedPath;
     }
 
-    optimizePathSet(next, cacheRoot, pathSet, nextDepth,
-    out, nextOptimized, maxRefFollow);
+    optimizePathSet(
+        next, cacheRoot, pathSet, nextDepth, out, nextOptimized, maxRefFollow);
     optimizedPath.length = optimizedPathLength;
 
-    if (!iteratorNote.done) {
+    if (!iteratorNote['done']) {
       key = iterateKeySet(keySet, iteratorNote);
     }
-  } while (!iteratorNote.done);
+  } while (!iteratorNote['done']);
 }

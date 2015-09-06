@@ -48,71 +48,71 @@ Future _recurseMatchAndExecute(
     }
 
     var matchedResult = matchedResults.matched;
-    return runByPrecedence(nextPaths, matchedResult, actionRunner).
+    return runByPrecedence(nextPaths, matchedResult, actionRunner)
 
-    // Generate from the combined results the next requestable paths
-    // and insert errors / values into the cache.
-    expand((results) {
-      var value = results.value;
-      var suffix = results.match.suffix;
+      // Generate from the combined results the next requestable paths
+      // and insert errors / values into the cache.
+      .expand((results) {
+        var value = results.value;
+        var suffix = results.match.suffix;
 
-      if (value is! List) {
-        value = [value];
-      }
-      var invsRefsAndValues = mCGRI(jsongCache, value);
-      var invalidations = invsRefsAndValues.invalidations;
-      var messages = invsRefsAndValues.messages;
-      var pathsToExpand = [];
+        if (value is! List) {
+          value = [value];
+        }
+        var invsRefsAndValues = mCGRI(jsongCache, value);
+        var invalidations = invsRefsAndValues.invalidations;
+        var messages = invsRefsAndValues.messages;
+        var pathsToExpand = [];
 
-      if (suffix.length > 0) {
-        pathsToExpand = invsRefsAndValues.references;
-      }
-
-      invalidations.forEach((invalidation) {
-        invalidated[invalidated.length] = invalidation;
-      });
-
-      // Merges the remaining suffix with remaining nextPaths
-      pathsToExpand = pathsToExpand.map((next) {
-        return next.value.concat(suffix);
-      });
-
-      // Alters the behavior of the expand
-      messages.forEach((message) {
-        // mutates the method type for the matcher
-        if (message.method) {
-          currentMethod = message.method;
+        if (suffix.length > 0) {
+          pathsToExpand = invsRefsAndValues.references;
         }
 
-        // Mutates the nextPaths and adds any additionalPaths
-        else if (message.additionalPath) {
-          var path = message.additionalPath;
-          pathsToExpand[pathsToExpand.length] = path;
-          reportedPaths[reportedPaths.length] = path;
+        invalidations.forEach((invalidation) {
+          invalidated[invalidated.length] = invalidation;
+        });
+
+        // Merges the remaining suffix with remaining nextPaths
+        pathsToExpand = pathsToExpand.map((next) {
+          return next.value.concat(suffix);
+        });
+
+        // Alters the behavior of the expand
+        messages.forEach((message) {
+          // mutates the method type for the matcher
+          if (message.method) {
+            currentMethod = message.method;
+          }
+
+          // Mutates the nextPaths and adds any additionalPaths
+          else if (message.additionalPath) {
+            var path = message.additionalPath;
+            pathsToExpand[pathsToExpand.length] = path;
+            reportedPaths[reportedPaths.length] = path;
+          }
+
+          // Any invalidations that come down from a call
+          else if (message.invalidations) {
+            message.
+            invalidations.
+            forEach((invalidation) {
+              invalidated.push(invalidation);
+            });
+          }
+        });
+
+        // Explodes and collapse the tree to remove
+        // redundants and get optimized next set of
+        // paths to evaluate.
+        pathsToExpand = optimizePathSets(jsongCache, pathsToExpand, routerInstance.maxRefFollow);
+
+        if (pathsToExpand.isNotEmpty) {
+          pathsToExpand = collapse(pathsToExpand);
         }
 
-        // Any invalidations that come down from a call
-        else if (message.invalidations) {
-          message.
-          invalidations.
-          forEach((invalidation) {
-            invalidated.push(invalidation);
-          });
-        }
+        missing.addAll(matchedResults.missingPaths);
+        return pathsToExpand;
       });
-
-      // Explodes and collapse the tree to remove
-      // redundants and get optimized next set of
-      // paths to evaluate.
-      pathsToExpand = optimizePathSets(jsongCache, pathsToExpand, routerInstance.maxRefFollow);
-
-      if (pathsToExpand.isNotEmpty) {
-        pathsToExpand = collapse(pathsToExpand);
-      }
-
-      missing.addAll(matchedResults.missingPaths);
-      return pathsToExpand;
-    });
 
   }).last.then((_) => {
     'missing': missing,

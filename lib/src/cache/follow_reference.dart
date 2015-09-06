@@ -3,7 +3,7 @@ library falcor_dart.cache.follow_reference;
 /// performs the simplified cache reference follow. This
 /// differs from get as there is just following and reporting,
 /// not much else.
-followReference(cacheRoot, List ref, maxRefFollow) {
+followReference(Map cacheRoot, List ref, int maxRefFollow) {
   var current = cacheRoot;
   var refPath = ref;
   var depth = -1;
@@ -23,8 +23,8 @@ followReference(cacheRoot, List ref, maxRefFollow) {
 
     // Show stopper exception.  This route is malformed.
     if (type == r'$ref' && depth + 1 < length) {
-      var err = new Error(errors.innerReferences);
-      err.throwToNext = true;
+      var err = new Exception(errors.innerReferences);
+//      err.throwToNext = true;
       throw err;
     }
 
@@ -39,7 +39,7 @@ followReference(cacheRoot, List ref, maxRefFollow) {
       }
 
       if (referenceCount > maxRefFollow) {
-        throw new Error(errors.circularReference);
+        throw new Exception(errors.circularReference);
       }
     }
     current = next;

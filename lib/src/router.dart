@@ -2,6 +2,9 @@ library falcor_dart.router;
 
 import 'package:falcor_dart/src/cache/optimize_path_set.dart';
 import 'package:falcor_dart/src/run/recurse_match_and_execute.dart';
+import 'package:falcor_dart/src/run/run_get_action.dart';
+import 'package:falcor_dart/src/run/run_set_action.dart';
+import 'package:falcor_dart/src/path_utils/collapse.dart';
 
 class Router {
   final maxRefFollow = 50;
@@ -42,17 +45,17 @@ class Router {
 
 
       if (reportedPaths.length) {
-        jsongEnv.paths = reportedPaths;
+        jsongEnv['paths'] = reportedPaths;
       } else {
-        jsongEnv.paths = [];
+        jsongEnv['paths'] = [];
       }
 
-      jsongEnv.paths.push(callPath);
+      jsongEnv['paths'].push(callPath);
       var invalidated = jsongResult.invalidated;
       if (invalidated && invalidated.length) {
-        jsongEnv.invalidations = invalidated;
+        jsongEnv['invalidations'] = invalidated;
       }
-      jsongEnv.paths = collapse(jsongEnv.paths);
+      jsongEnv['paths'] = collapse(jsongEnv['paths']);
       return jsongEnv;
     });
   }

@@ -1,5 +1,7 @@
 library falcor_dart.run.precendence.get_executable_matches;
 
+import 'package:falcor_dart/src/path_utils/collapse.dart';
+import 'package:falcor_dart/src/path_utils/has_intersection.dart';
 
 /// takes in the set of ordered matches and pathSet that got those matches.
 /// From there it will give back a list of matches to execute.

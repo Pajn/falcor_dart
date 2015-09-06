@@ -17,23 +17,19 @@ const SPECIAL_CHARACTERS = '\\\'"[]., ';
 const EXT_SPECIAL_CHARACTERS = '\\{}\'"[]., :';
 
 class Tokenizer {
-  var _string;
+  String _string;
   int _idx;
   var _extended;
   var _nextToken;
   String parseString;
 
-  Tokenizer(string, ext) {
-    _string = string;
+  Tokenizer(this._string, this._extended) {
     _idx = -1;
-    _extended = ext;
     parseString = '';
   }
 
-  /**
-   * grabs the next token either from the peek operation or generates the
-   * next token.
-   */
+  /// grabs the next token either from the peek operation or generates the
+  /// next token.
   Map next() {
     var nextToken = _nextToken == true
         ? _nextToken
@@ -48,9 +44,7 @@ class Tokenizer {
     return nextToken['token'];
   }
 
-  /**
-   * will peak but not increment the tokenizer
-   */
+  /// will peak but not increment the tokenizer
   Map peek() {
     var nextToken = _nextToken == true
         ? _nextToken
@@ -61,11 +55,11 @@ class Tokenizer {
   }
 }
 
-toOutput(token, type, done) {
+Map toOutput(token, type, bool done) {
   return {'token': token, 'done': done, 'type': type};
 }
 
-getNext(string, idx, ext) {
+getNext(String string, int idx, ext) {
   var output;
   var token = '';
   var specialChars = (ext != null) ? EXT_SPECIAL_CHARACTERS : SPECIAL_CHARACTERS;

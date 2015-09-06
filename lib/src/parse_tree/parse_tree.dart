@@ -4,6 +4,7 @@ import 'package:falcor_dart/src/parse_tree/convert_types.dart';
 import 'package:falcor_dart/src/keys.dart';
 import 'package:falcor_dart/src/route.dart';
 import 'package:falcor_dart/src/parse_tree/action_wrapper.dart';
+import 'package:falcor_dart/src/utils.dart';
 
 var ROUTE_ID = -3;
 
@@ -42,8 +43,10 @@ buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
   var authorize = routeObject.authorize;
   var el = route[depth];
 
-  el = !isNaN(+el) && +el || el;
-  var isArray = Array.isArray(el);
+  if (isNumeric(el)) {
+    el = parseNum(el);
+  }
+  var isArray = el is List;
   var i = 0;
 
   do {
@@ -55,8 +58,8 @@ buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
 
     // There is a ranged token in this location with / without name.
     // only happens from parsed path-syntax paths.
-    if (typeof value === 'object') {
-      var routeType = value.type;
+    if (value is Map) {
+      var routeType = value['type'];
       next = decendTreeByRoutedToken(node, routeType, value);
     }
 
@@ -167,13 +170,13 @@ Map<Keys, Route> decendTreeByRoutedToken(Map<Keys, Route> node, Keys value, [rou
 /// will collide but everything else is unique.
 List<List<Map<int, String>>> getHashesFromRoute(route, [int depth = 0, List hashes, List hash]) {
   var routeValue = route[depth];
-  var isArray = Array.isArray(routeValue);
+  var isArray = routeValue is List;
   var length = isArray ? routeValue.length : 0;
   var idx = 0;
   Keys value;
 
-  if (typeof routeValue === 'object' && !isArray) {
-    value = routeValue.type;
+  if (routeValue is Map) {
+    value = routeValue['type'];
   }
 
   else if (!isArray) {

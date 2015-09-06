@@ -7,9 +7,9 @@ List parse(string, [extendedRules]) {
   return head(new Tokenizer(string, extendedRules));
 }
 
-// Constructs the paths from paths / pathValues that have strings.
-// If it does not have a string, just moves the value into the return
-// results.
+/// Constructs the paths from paths / pathValues that have strings.
+/// If it does not have a string, just moves the value into the return
+/// results.
 List parsePathsOrPathValues(List paths, [ext]) {
   if (paths == null) {
     return [];
@@ -38,8 +38,8 @@ List parsePathsOrPathValues(List paths, [ext]) {
   return out;
 }
 
-// If the argument is a string, this with convert, else just return
-// the path provided.
+/// If the argument is a string, this with convert, else just return
+/// the path provided.
 List parsePath(path, [ext]) {
   if (path == null) {
     return [];

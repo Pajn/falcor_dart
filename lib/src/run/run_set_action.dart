@@ -1,14 +1,16 @@
 library falcor_dart.run_set_action;
 
-outerRunSetAction(routerInstance, modelContext,
-                  jsongCache) {
-  return function innerRunSetAction(matchAndPath) {
-    return runSetAction(routerInstance, modelContext,
-    matchAndPath, jsongCache);
-  };
-};
+import 'package:falcor_dart/src/cache/get_value.dart';
+import 'package:falcor_dart/src/run/run_get_action.dart';
+import 'package:falcor_dart/src/router.dart';
+import 'package:falcor_dart/src/cache/optimize_path_set.dart';
 
-function runSetAction(routerInstance, jsongMessage, matchAndPath, jsongCache) {
+outerRunSetAction(Router routerInstance, modelContext, Map jsongCache) {
+  return (matchAndPath) =>
+      runSetAction(routerInstance, modelContext, matchAndPath, jsongCache);
+}
+
+runSetAction(Router routerInstance, jsongMessage, matchAndPath, [Map jsongCache]) {
   var match = matchAndPath.match;
   var out;
   var arg = matchAndPath.path;
@@ -20,36 +22,28 @@ function runSetAction(routerInstance, jsongMessage, matchAndPath, jsongCache) {
 
     // We have to ensure that the paths maps in order
     // to the optimized paths array.
-    var optimizedPaths =
-    paths.
-    // Optimizes each path.
-    map(function(path) {
-    return optimizePathSets(
-    jsongCache, [path], routerInstance.maxRefFollow)[0];
-    }).
-    // only includes the paths from the set that intersect
-    // the virtual path
-    filter(function(path) {
-    return hasIntersection(path, match.virtual);
-    });
+    var optimizedPaths = paths
+        // Optimizes each path.
+        .map((path) => optimizePathSets(
+            jsongCache, [path], routerInstance.maxRefFollow)[0])
+        // only includes the paths from the set that intersect
+        // the virtual path
+        .filter((path) => hasIntersection(path, match.virtual));
 
     // Constructs the json that is the set request virtual path.
-    arg = paths.
-    reduce(function(json, path, i) {
-    pathValueMerge(json, {
-    path: optimizedPaths[i],
-    value: getValue(jsongMessage.jsonGraph, path)
-    });
-    return json;
+    arg = paths.reduce((json, path, i) {
+      pathValueMerge(json, {
+        'path': optimizedPaths[i],
+        'value': getValue(jsongMessage.jsonGraph, path)
+      });
+      return json;
     }, {});
   }
   out = match.action.call(routerInstance, arg);
-  out = outputToObservable(out);
+  out = outputToStream(out);
 
-  return authorize(routerInstance, match, out).
-  materialize().
-  filter(function(note) {
-  return note.kind !== 'C';
-  }).
-  map(noteToJsongOrPV(matchAndPath));
+  return authorize(routerInstance, match, out)
+      .materialize()
+      .filter((note) => note.kind != 'C')
+      .map(noteToJsongOrPV(matchAndPath));
 }

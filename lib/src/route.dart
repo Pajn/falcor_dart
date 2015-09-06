@@ -17,5 +17,5 @@ class Route {
   Route(String this.route, {this.get, this.set, this.call});
 }
 
-route(String route, {Handler get, Handler set, Handler call}) =>
+Route route(String route, {Handler get, Handler set, Handler call}) =>
   new Route(route, get: get, set: set, call: call);

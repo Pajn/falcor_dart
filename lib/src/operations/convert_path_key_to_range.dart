@@ -1,26 +1,27 @@
 library falcor_dart.convert_path_key_to_integers;
 
 import 'package:falcor_dart/src/types/range.dart';
+import 'package:falcor_dart/src/utils.dart';
 
-onRange(List out, Range range) {
+void onRange(List out, Range range) {
   out.add(range);
 }
 
 /**
  * @param {Number|String} key must be a number
  */
-keyReduce(out, key, Range range) {
-  if (!isNumber(key)) {
+Range keyReduce(List out, key, Range range) {
+  if (!isNumeric(key)) {
     return range;
   }
 
-  key = +key;
-  if (range) {
-    if (key - 1 === range.to) {
+  key = parseNum(key);
+  if (range != null) {
+    if (key - 1 == range.to) {
       range.to = key;
     }
 
-    else if (key + 1 === range.from) {
+    else if (key + 1 == range.from) {
       range.from = key;
     }
 
@@ -29,11 +30,10 @@ keyReduce(out, key, Range range) {
     }
   }
 
-  if (!range) {
-    range = {to: key, from: key};
-    out[out.length] = range;
+  if (range == null) {
+    range = new Range(key, key);
+    out.add(range);
   }
-  /* eslint-enable no-param-reassign */
 
   return range;
 }

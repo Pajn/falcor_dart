@@ -6,5 +6,7 @@ class Range {
 
   int get length => to - from;
 
+  Range(this.from, this.to);
+
   List toList() => new List.generate(length, (index) => index + from);
 }
