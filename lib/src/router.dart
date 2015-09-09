@@ -28,7 +28,7 @@ class Router {
 //    var normPS = normalizePathSets(paths);
     var normPS = paths;
 
-    return run(this._matcher, action, normPS, get, this, jsongCache)
+    return run(this._matcher, action, normPS, 'get', this, jsongCache)
       .then((jsongEnv) => materializeMissing(this, paths, jsongEnv));
   }
 
@@ -38,7 +38,7 @@ class Router {
     var jsongCache = {};
     var action = runSetAction(this, jsong, jsongCache);
 
-    return run(this._matcher, action, jsong.paths, set, this, jsongCache)
+    return run(this._matcher, action, jsong.paths, 'set', this, jsongCache)
       .then((jsongEnv) => materializeMissing(this, jsong.paths, jsongEnv));
   }
 
@@ -82,7 +82,7 @@ run(matcherFn, actionRunner, paths, method,
 }
 
 materializeMissing(Router router, paths, jsongEnv, [missingAtom = const {r'$type': r'$atom'}]) {
-  var jsonGraph = jsongEnv.jsonGraph;
+  var jsonGraph = jsongEnv['jsonGraph'];
 
   // Optimizes the pathSets from the jsong then
   // inserts atoms of undefined.

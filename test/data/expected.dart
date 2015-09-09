@@ -27,19 +27,19 @@ videoExpectedRoutes() {
 generateSummary(id) {
   var videos = {};
   videos[id] = {
-    'summary': $atom({'title': 'Some Movie ' + id})
+    'summary': $atom({'title': 'Some Movie $id'})
   };
 
   return {
-    'jsonGraph': {videos: videos}
+    'jsonGraph': {'videos': videos}
   };
 }
 
 generateState(id) {
   var videos = {'state': {}};
-  videos['state'][id] = $atom({'title': 'Some State ' + id});
+  videos['state'][id] = $atom({'title': 'Some State $id'});
 
   return {
-    'jsonGraph': {videos: videos}
+    'jsonGraph': {'videos': videos}
   };
 }

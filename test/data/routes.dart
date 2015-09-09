@@ -62,7 +62,7 @@ videoRoutes() {
       'Summary': (fn) {
         return [
           {
-            'route': ['videos', R.ranges, 'summary'],
+            'route': ['videos', Keys.ranges, 'summary'],
             'get': (path) {
               if (fn != null) {
                 fn(path);

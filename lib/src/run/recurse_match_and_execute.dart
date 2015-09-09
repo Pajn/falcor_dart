@@ -39,12 +39,16 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
       // refs, be the highest likelihood of collapsibility.
       .fromIterable(paths).asyncExpand((List nextPaths) {
     if (nextPaths.isEmpty) {
+      print('empty');
       return new Stream.fromIterable(nextPaths);
     }
 
+    print(currentMethod);
+    print(nextPaths);
     var matchedResults = match(currentMethod, nextPaths);
 
     if (matchedResults.matched.isEmpty) {
+      print('empty2');
       return new Stream.fromIterable(matchedResults.matched);
     }
 
@@ -79,6 +83,8 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
 
       // Alters the behavior of the expand
       messages.forEach((message) {
+        print('message');
+        print(message);
         // mutates the method type for the matcher
         if (message.method) {
           currentMethod = message.method;
@@ -110,7 +116,7 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
       missing.addAll(matchedResults.missingPaths);
       return pathsToExpand;
     });
-  }).last.then((_) => {
+  }).toList().then((_) => {
             'missing': missing,
             'invalidated': invalidated,
             'jsonGraph': jsongCache,

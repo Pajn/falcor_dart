@@ -9,6 +9,7 @@ import 'package:falcor_dart/src/operations/strip/strip_path.dart';
 List getExecutableMatches(List matches, List pathSet) {
   var remainingPaths = pathSet;
   var matchAndPaths = [];
+  matches ??= [];
   for (var i = 0; i < matches.length && remainingPaths.length > 0; ++i) {
     var availablePaths = remainingPaths;
     var match = matches[i];
@@ -23,13 +24,13 @@ List getExecutableMatches(List matches, List pathSet) {
     // is an intersection then strip and replace.
     // any relative complements, add to remainingPaths
     for (var j = 0; j < availablePaths.length; ++j) {
-      var path = availablePaths[j];
-      if (hasIntersection(path, match.virtual)) {
-        var stripResults = stripPath(path, match.virtual);
-        matchAndPaths[matchAndPaths.length] = {
-          path: stripResults[0],
-          match: match
-        };
+      List path = availablePaths[j];
+      if (hasIntersection(path.asMap(), match['virtual'])) {
+        var stripResults = stripPath(path, match['virtual']);
+        matchAndPaths.add({
+          'path': stripResults[0],
+          'match': match
+        });
         remainingPaths.addAll(stripResults[1]);
       }
     }

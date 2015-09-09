@@ -58,8 +58,8 @@ stripPath(matchedPath, virtualPath) {
     }
 
   // The exact match needs to be produced for calling function.
-    exactMatch[i] = innerMatch;
-    current[i] = innerMatch;
+    exactMatch.add(innerMatch);
+    current.add(innerMatch);
   }
 
   return [exactMatch, relativeComplement];

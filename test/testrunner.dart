@@ -6,12 +6,9 @@ class TestRunner {
   static run(value, compares) async {
     var count = 0;
     value = await value;
-    if (value is! List) {
-      value = [value];
-    }
     // Validates against all comparables
     compares.forEach((c) {
-      jsongPartialCompare(c.jsonGraph, value.jsonGraph);
+      jsongPartialCompare(c['jsonGraph'], value['jsonGraph']);
     });
 
     value.forEach((v) {
@@ -76,10 +73,11 @@ traverseAndConvert(obj) {
 }
 
 contains(Map expectedPartial, actual, position) {
-  var obj = expectedPartial.keys;
-  obj.forEach((k) {
-    var message = "Object" + position;
-    expect(obj, message + " to have key " + k).toContain(k);
+  print(expectedPartial);
+  print(actual);
+  expectedPartial.keys.forEach((k) {
+    var message = 'Object' + position;
+    expect(actual.keys).toContain(k);
 
     if (expectedPartial[k] is! Map || actual[k] is! Map) {
       expect(actual[k], message + '.' + k).toEqual(expectedPartial[k]);

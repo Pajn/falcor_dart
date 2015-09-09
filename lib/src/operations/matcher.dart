@@ -18,7 +18,7 @@ var keyTypes = [{
   'type': Keys.keys,
   'precedence': Precedence.keys
 }];
-var allTypes = intTypes.concat(keyTypes);
+var allTypes = new List.from(intTypes)..addAll(keyTypes);
 
 /// @return {matched: Array.<Match>, missingPaths: Array.<Array>}
 class PathMatch {
@@ -51,7 +51,7 @@ Matcher matcher(Map<Keys, Map> rst) {
     }
 
     Map reducedMatched = matched.fold({}, (Map<int, List> acc, Map matchedRoute) {
-      if (acc.containsKey(matchedRoute['id'])) {
+      if (!acc.containsKey(matchedRoute['id'])) {
         acc[matchedRoute['id']] = [];
       }
       acc[matchedRoute['id']].add(matchedRoute);
@@ -95,7 +95,7 @@ Matcher matcher(Map<Keys, Map> rst) {
 
 void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions, List<List> missingPaths,
   [int depth = 0, List requested, List virtual, List precedence]) {
-  if (curr = null) return;
+  if (curr == null) return;
 
   if (matchedFunctions == null) matchedFunctions = [];
   if (requested == null) requested = [];
@@ -131,7 +131,7 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
   }
 
   // Check to see if we have
-  if (currentMatch != null && currentMatch[methodToUse]) {
+  if (currentMatch != null && currentMatch[methodToUse] != null) {
     matchedFunctions.add({
 
       // Used for collapsing paths that use routes with multiple
@@ -149,7 +149,7 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
     });
   }
 
-  var keySet = path[depth];
+  var keySet = depth < path.length ? path[depth] : null;
   var i, key, next;
 
   // -------------------------------------------
@@ -158,9 +158,9 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
   var specificKeys = specificMatcher(keySet, curr);
   for (i = 0; i < specificKeys.length; ++i) {
     key = specificKeys[i];
-    virtual[depth] = key;
-    requested[depth] = key;
-    precedence[depth] = Precedence.specific;
+    virtual.add(key);
+    requested.add(key);
+    precedence.add(Precedence.specific);
 
     // Its time to recurse
     match(
@@ -182,34 +182,34 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
   // ints, ranges, and keys matcher.
   // -------------------------------------------
   allTypes
-    .filter((typeAndPrecedence) {
-      var type = typeAndPrecedence.type;
+    .where((typeAndPrecedence) {
+      var type = typeAndPrecedence['type'];
       // one extra move required for int types
       if (type == Keys.integers || type == Keys.ranges) {
-        return curr[type] != null && ints.length;
+        return curr[type] != null && ints.isNotEmpty;
       }
-      return curr[type];
+      return curr[type] != null;
     })
     .forEach((typeAndPrecedence) {
-      var type = typeAndPrecedence.type;
-      var prec = typeAndPrecedence.precedence;
+      var type = typeAndPrecedence['type'];
+      var prec = typeAndPrecedence['precedence'];
       next = curr[type];
 
-      virtual[depth] = {
+      virtual.add({
         'type': type,
         'named': next[Keys.named],
         'name': next[Keys.name]
-      };
+      });
 
       // The requested set of info needs to be set either
       // as ints, if int matchers or keys
       if (type == Keys.integers || type == Keys.ranges) {
-        requested[depth] = ints;
+        requested.add(ints);
       } else {
-        requested[depth] = keys;
+        requested.add(keys);
       }
 
-      precedence[depth] = prec;
+      precedence.add(prec);
 
       // Continue the matching algo.
       match(

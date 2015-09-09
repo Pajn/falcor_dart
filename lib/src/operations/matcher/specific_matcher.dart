@@ -12,8 +12,8 @@ List specificMatcher(keySet, currentNode) {
   var key = iterateKeySet(keySet, iteratorNote);
   do {
 
-    if (currentNode[key]) {
-      nexts[nexts.length] = key;
+    if (currentNode[key] != null) {
+      nexts.add(key);
     }
 
     if (!iteratorNote['done']) {

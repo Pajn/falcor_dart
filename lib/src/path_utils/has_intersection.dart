@@ -9,9 +9,10 @@ import 'package:falcor_dart/src/types/range.dart';
  * of the path is contained in the tree.
  * @private
  */
-hasIntersection(Map tree, List path, int depth) {
+hasIntersection(Map tree, List path, [int depth]) {
   var current = tree;
   var intersects = true;
+  depth ??= path.length;
 
   // Continue iteratively going down a path until a complex key is
   // encountered, then recurse.

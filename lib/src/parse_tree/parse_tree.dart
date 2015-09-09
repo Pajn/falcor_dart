@@ -37,7 +37,7 @@ Map<Keys, Map> parseTree(List<Map> routes) {
 
 void buildParseTree(Map<Keys, Map> node, Map routeObject, [int depth = 0]) {
 
-  var route = routeObject['route'];
+  var route = routeObject['route'].toList();
   var get = routeObject['get'];
   var set = routeObject['set'];
   var call = routeObject['call'];
@@ -120,9 +120,9 @@ setHashOrThrowError(Map parseMap, Map routeObject) {
   var call = routeObject['call'];
 
   getHashesFromRoute(route).map((hash) => hash.join(',')).forEach((hash) {
-    if (get != null && parseMap[hash + 'get'] ||
-        set != null && parseMap[hash + 'set'] ||
-        call != null && parseMap[hash + 'call']) {
+    if (get != null && parseMap[hash + 'get'] != null ||
+        set != null && parseMap[hash + 'set'] != null ||
+        call != null && parseMap[hash + 'call'] != null) {
       throw new Exception(errors.routeWithSamePrecedence + ' ' +
                       prettifyRoute(route));
     }
@@ -141,24 +141,26 @@ setHashOrThrowError(Map parseMap, Map routeObject) {
 /// decends the rst and fills in any naming information at the node.
 /// if what is passed in is not a routed token identifier, then the return
 /// value will be null
-Map<Keys, Map> decendTreeByRoutedToken(Map<Keys, Map> node, Keys value, [routeToken]) {
+Map<Keys, Map> decendTreeByRoutedToken(Map<Keys, Map> node, value, [routeToken]) {
   var next = null;
-  switch (value) {
-    case Keys.keys:
-    case Keys.integers:
-    case Keys.ranges:
-      next = node[value];
-      if (!next) {
-        next = node[value] = {};
-      }
-      break;
-    default:
-      break;
+  if (value is Keys) {
+    switch (value) {
+      case Keys.keys:
+      case Keys.integers:
+      case Keys.ranges:
+        next = node[value];
+        if (next == null) {
+          next = node[value] = {};
+        }
+        break;
+      default:
+        break;
+    }
   }
-  if (next && routeToken != null) {
+  if (next != null && routeToken != null) {
     // matches the naming information on the node.
-    next[Keys.named] = routeToken.named;
-    next[Keys.name] = routeToken.name;
+    next[Keys.named] = routeToken['named'];
+    next[Keys.name] = routeToken['name'];
   }
 
   return next;
@@ -167,11 +169,14 @@ Map<Keys, Map> decendTreeByRoutedToken(Map<Keys, Map> node, Keys value, [routeTo
 /// creates a hash of the virtual path where integers and ranges
 /// will collide but everything else is unique.
 List<List<Map<int, String>>> getHashesFromRoute(route, [int depth = 0, List hashes, List hash]) {
+  route = route.toList();
+  hashes = hashes ?? [];
+  hash = hash ?? [];
   var routeValue = route[depth];
   var isArray = routeValue is List;
   var length = isArray ? routeValue.length : 0;
   var idx = 0;
-  Keys value;
+  var value;
 
   if (routeValue is Map) {
     value = routeValue['type'];
@@ -187,15 +192,27 @@ List<List<Map<int, String>>> getHashesFromRoute(route, [int depth = 0, List hash
     }
 
     if (value == Keys.integers || value == Keys.ranges) {
-      hash[depth] = '__I__';
+      if (hash.length <= depth) {
+        hash.add('__I__');
+      } else {
+        hash[depth] = '__I__';
+      }
     }
 
     else if (value == Keys.keys) {
-      hash[depth] ='__K__';
+      if (hash.length <= depth) {
+        hash.add('__K__');
+      } else {
+        hash[depth] ='__K__';
+      }
     }
 
     else {
-      hash[depth] = value;
+      if (hash.length <= depth) {
+        hash.add(value);
+      } else {
+        hash[depth] = value;
+      }
     }
 
     // recurse down the routed token

@@ -113,6 +113,7 @@ innerPathValueMerge(Map cache, pathValue) {
 }
 
 clone(a) {
+  print('from clone');
   print(a.runtimeType);
 
   if (a is Map) {

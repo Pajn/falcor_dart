@@ -7,7 +7,7 @@ import 'package:falcor_dart/src/run/precedence/get_executable_matches.dart';
 Stream<Map> runByPrecedence(pathSet, matches, actionRunner) {
 
   // Precendence matching
-  var sortedMatches = matches.sort((a, b) {
+  var sortedMatches = new List.from(matches)..sort((a, b) {
     if (a.precedence > b.precedence) {
       return 1;
     } else if (a.precedence < b.precedence) {
