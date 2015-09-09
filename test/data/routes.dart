@@ -1,6 +1,7 @@
-import '../testrunner.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
 import 'package:falcor_dart/falcor_dart.dart';
+
+import '../testrunner.dart';
 
 routes() {
   return {'Videos': videoRoutes(), 'GenreLists': genreListsRoutes()};

@@ -2,6 +2,7 @@ import 'package:guinness2/guinness2.dart';
 
 import 'package:falcor_dart/falcor_dart.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
+
 import '../../../data/routes.dart';
 import '../../../data/expected.dart';
 
@@ -372,18 +373,18 @@ main() {
         () async {
       var routeResponse = {
         'jsonGraph': {
-          "ProffersById": {
-            "1": {
-              "ProductsList": {
-                "0": {
-                  r"$size": 52,
-                  r"$type": "ref",
-                  "value": ["ProductsById", "CSC1471105X"]
+          'ProffersById': {
+            '1': {
+              'ProductsList': {
+                '0': {
+                  r'$size': 52,
+                  r'$type': 'ref',
+                  'value': ['ProductsById', 'CSC1471105X']
                 },
-                "1": {
-                  r"$size": 52,
-                  r"$type": "ref",
-                  "value": ["ProductsById", "HON4033T"]
+                '1': {
+                  r'$size': 52,
+                  r'$type': 'ref',
+                  'value': ['ProductsById', 'HON4033T']
                 }
               }
             }
@@ -392,13 +393,13 @@ main() {
       };
       var router = new Router([
         {
-          'route': "ProductsById[{keys}][{keys}]",
+          'route': 'ProductsById[{keys}][{keys}]',
           'get': (pathSet) {
-            throw new Exception("reference was followed in error");
+            throw new Exception('reference was followed in error');
           }
         },
         {
-          'route': "ProffersById[{integers}].ProductsList[{ranges}]",
+          'route': 'ProffersById[{integers}].ProductsList[{ranges}]',
           'get': (pathSet) {
             return routeResponse;
           }
@@ -406,10 +407,10 @@ main() {
       ]);
       var obs = await router.get([
         [
-          "ProffersById",
+          'ProffersById',
           1,
-          "ProductsList",
-          {"from": 0, "to": 1}
+          'ProductsList',
+          {'from': 0, 'to': 1}
         ]
       ]);
       var called = false;
@@ -426,7 +427,7 @@ main() {
         }
       ]);
       var obs = await router.get([
-        ["videos", 1, "title"]
+        ['videos', 1, 'title']
       ]);
       var called = false;
       expect(obs).toEqual({
