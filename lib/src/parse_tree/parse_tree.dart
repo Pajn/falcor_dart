@@ -9,24 +9,24 @@ import 'package:falcor_dart/path_syntax.dart' as pathSyntax;
 
 var ROUTE_ID = -3;
 
-Map<Keys, Route> parseTree(List<Route> routes) {
+Map<Keys, Map> parseTree(List<Map> routes) {
   var pTree = {};
   var parseMap = {};
   routes.forEach((route) {
     // converts the virtual string path to a real path with
     // extended syntax on.
-    if (route.route is String) {
-      route.route = pathSyntax.parse(route.route, true);
+    if (route['route'] is String) {
+      route['route'] = pathSyntax.parse(route['route'], true);
       convertTypes(route);
     }
-    if (route.get != null) {
-      route.getId = ++ROUTE_ID;
+    if (route['get'] != null) {
+      route['getId'] = ++ROUTE_ID;
     }
-    if (route.set != null) {
-      route.setId = ++ROUTE_ID;
+    if (route['set'] != null) {
+      route['setId'] = ++ROUTE_ID;
     }
-    if (route.call != null) {
-      route.callId = ++ROUTE_ID;
+    if (route['call'] != null) {
+      route['callId'] = ++ROUTE_ID;
     }
 
     setHashOrThrowError(parseMap, route);
@@ -35,13 +35,13 @@ Map<Keys, Route> parseTree(List<Route> routes) {
   return pTree;
 }
 
-void buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
+void buildParseTree(Map<Keys, Map> node, Map routeObject, [int depth = 0]) {
 
-  var route = routeObject.route;
-  var get = routeObject.get;
-  var set = routeObject.set;
-  var call = routeObject.call;
-  var authorize = routeObject.authorize;
+  var route = routeObject['route'];
+  var get = routeObject['get'];
+  var set = routeObject['set'];
+  var call = routeObject['call'];
+  var authorize = routeObject['authorize'];
   var el = route[depth];
 
   if (isNumeric(el)) {
@@ -52,7 +52,7 @@ void buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
 
   do {
     var value = el;
-    Map<Keys, Route> next;
+    Map<Keys, Map> next;
     if (isArray) {
       value = value[i];
     }
@@ -75,10 +75,7 @@ void buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
         route[depth] = {'type': value, 'named': false};
       }
       else {
-        node.putIfAbsent(value, () => new Route());
-//        if (!node[value]) {
-//          node[value] = {};
-//        }
+        node.putIfAbsent(value, () => {});
         next = node[value];
       }
     }
@@ -89,23 +86,23 @@ void buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
       // Insert match into routeSyntaxTree
       var matchObject = next[Keys.match];
       if (matchObject == null) {
-        // todo: matchObject = {authorize: authorize}
+        matchObject = {'authorize': authorize};
       }
       if (next[Keys.match] == null) {
         next[Keys.match] = matchObject;
       }
 
       if (get != null) {
-        matchObject.get = createNamedVariables(route, get);
-        matchObject.getId = routeObject.getId;
+        matchObject['get'] = createNamedVariables(route, get);
+        matchObject['getId'] = routeObject['getId'];
       }
       if (set != null) {
-        matchObject.set = createNamedVariables(route, set);
-        matchObject.setId = routeObject.setId;
+        matchObject['set'] = createNamedVariables(route, set);
+        matchObject['setId'] = routeObject['setId'];
       }
       if (call != null) {
-        matchObject.call = createNamedVariables(route, call);
-        matchObject.callId = routeObject.callId;
+        matchObject['call'] = createNamedVariables(route, call);
+        matchObject['callId'] = routeObject['callId'];
       }
     } else {
       buildParseTree(next, routeObject, depth + 1);
@@ -116,11 +113,11 @@ void buildParseTree(Map<Keys, Route> node, Route routeObject, [int depth = 0]) {
 
 /// ensure that two routes of the same precedence do not get
 /// set in.
-setHashOrThrowError(Map parseMap, Route routeObject) {
-  var route = routeObject.route;
-  var get = routeObject.get;
-  var set = routeObject.set;
-  var call = routeObject.call;
+setHashOrThrowError(Map parseMap, Map routeObject) {
+  var route = routeObject['route'];
+  var get = routeObject['get'];
+  var set = routeObject['set'];
+  var call = routeObject['call'];
 
   getHashesFromRoute(route).map((hash) => hash.join(',')).forEach((hash) {
     if (get != null && parseMap[hash + 'get'] ||
@@ -144,7 +141,7 @@ setHashOrThrowError(Map parseMap, Route routeObject) {
 /// decends the rst and fills in any naming information at the node.
 /// if what is passed in is not a routed token identifier, then the return
 /// value will be null
-Map<Keys, Route> decendTreeByRoutedToken(Map<Keys, Route> node, Keys value, [routeToken]) {
+Map<Keys, Map> decendTreeByRoutedToken(Map<Keys, Map> node, Keys value, [routeToken]) {
   var next = null;
   switch (value) {
     case Keys.keys:

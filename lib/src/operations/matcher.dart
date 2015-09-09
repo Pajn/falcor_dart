@@ -2,9 +2,10 @@ library falcor_dart.matcher.dart;
 
 import 'package:falcor_dart/src/precedence.dart';
 import 'package:falcor_dart/src/keys.dart';
-import 'package:falcor_dart/src/route.dart';
 import 'package:falcor_dart/src/utils.dart';
 import 'package:falcor_dart/src/path_utils/collapse.dart';
+import 'package:falcor_dart/src/operations/matcher/specific_matcher.dart';
+import 'package:falcor_dart/src/operations/matcher/pluck_integers.dart';
 
 var intTypes = [{
   'type': Keys.ranges,
@@ -30,7 +31,7 @@ typedef PathMatch Matcher(String method, List paths);
 /// Creates a custom matching function for the match tree.
 /// [rst] The routed syntax tree
 /// String [method] the method to call at the end of the path.
-Matcher matcher(Map<Keys, Route> rst) {
+Matcher matcher(Map<Keys, Map> rst) {
 
   /// This is where the matching is done.  Will recursively
   /// match the paths until it has found all the matchable
@@ -49,11 +50,11 @@ Matcher matcher(Map<Keys, Route> rst) {
       throw err;
     }
 
-    Map reducedMatched = matched.fold({}, (Map<int, List> acc, List matchedRoute) {
-      if (acc.containsKey(matchedRoute.id)) {
-        acc[matchedRoute.id] = [];
+    Map reducedMatched = matched.fold({}, (Map<int, List> acc, Map matchedRoute) {
+      if (acc.containsKey(matchedRoute['id'])) {
+        acc[matchedRoute['id']] = [];
       }
-      acc[matchedRoute.id].add(matchedRoute);
+      acc[matchedRoute['id']].add(matchedRoute);
 
       return acc;
     });
@@ -92,7 +93,7 @@ Matcher matcher(Map<Keys, Route> rst) {
   };
 }
 
-void match(Map<Keys, Route> curr, List path, String method, List matchedFunctions, List<List> missingPaths,
+void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions, List<List> missingPaths,
   [int depth = 0, List requested, List virtual, List precedence]) {
   if (curr = null) return;
 
@@ -136,13 +137,13 @@ void match(Map<Keys, Route> curr, List path, String method, List matchedFunction
       // Used for collapsing paths that use routes with multiple
       // string indexers.
       'id': currentMatch[methodToUse + 'Id'],
-      'requested': cloneArray(requested),
+      'requested': new List.from(requested),
 
       'action': currentMatch[methodToUse],
-      'authorize': currentMatch.authorize,
-      'virtual': cloneArray(virtual),
-      'precedence': +(precedence.join('')),
-      'suffix': path.slice(depth),
+      'authorize': currentMatch['authorize'],
+      'virtual': new List.from(virtual),
+      'precedence': int.parse(precedence.join('')),
+      'suffix': path.sublist(depth),
       'isSet': atEndOfPath && isSet,
       'isCall': atEndOfPath && isCall
     });

@@ -7,14 +7,26 @@ import 'package:falcor_dart/src/run/run_get_action.dart';
 import 'package:falcor_dart/src/run/run_set_action.dart';
 import 'package:falcor_dart/src/path_utils/collapse.dart';
 import 'package:falcor_dart/src/cache/path_value_merge.dart';
+import 'package:falcor_dart/src/operations/matcher.dart';
+import 'package:falcor_dart/src/parse_tree/parse_tree.dart';
+import 'package:falcor_dart/src/run/run_call_action.dart';
 
 class Router {
+  List<Map> _routes;
+  var _rst;
+  Matcher _matcher;
   final maxRefFollow = 50;
+
+  Router(this._routes) {
+    _rst = parseTree(_routes);
+    _matcher = matcher(this._rst);
+  }
 
   Future get(paths) {
     var jsongCache = {};
     var action = runGetAction(this, jsongCache);
-    var normPS = normalizePathSets(paths);
+//    var normPS = normalizePathSets(paths);
+    var normPS = paths;
 
     return run(this._matcher, action, normPS, get, this, jsongCache)
       .then((jsongEnv) => materializeMissing(this, paths, jsongEnv));
