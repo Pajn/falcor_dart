@@ -71,19 +71,22 @@ Matcher matcher(Map<Keys, Map> rst) {
 
       // Since there are more than 1 routes, we need to see if
       // they can collapse and alter the amount of arrays.
-      var collapsedResults = collapse(reducedMatch.map((x) => x.requested));
+      var collapsedResults = collapse(reducedMatch.map((x) => x['requested']).toList());
 
-      collapsedResults.forEach((path, i) {
+      var i, index = 0;
+      collapsedResults.forEach((path) {
         var reducedVirtualPath = reducedMatch[i].virtual;
-        path.forEach((atom, index) {
+        path.forEach((atom) {
 
           // If its not a routed atom then wholesale replace
           if (!isRoutedToken(reducedVirtualPath[index])) {
             reducedVirtualPath[index] = atom;
           }
+          index += 1;
         });
 
         collapsedMatched.add(reducedMatch[i]);
+        i += 1;
       });
     });
 

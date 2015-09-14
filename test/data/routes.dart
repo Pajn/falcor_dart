@@ -50,7 +50,9 @@ videoRoutes() {
           {
             'route': ['videos', Keys.integers, 'summary'],
             'get': (path) {
-              fn && fn(path);
+              if (fn != null) {
+                fn(path);
+              }
               return path[1].map((id) {
                 return generateVideoJSONG(id);
               });

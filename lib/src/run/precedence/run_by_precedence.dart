@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:falcor_dart/src/run/precedence/get_executable_matches.dart';
 
 /// Sorts and strips the set of available matches given the pathSet.
-Stream<Map> runByPrecedence(pathSet, matches, actionRunner) {
+Future<List<Map>> runByPrecedence(pathSet, matches, actionRunner) {
 
   // Precendence matching
   var sortedMatches = new List.from(matches)..sort((a, b) {
@@ -18,8 +18,8 @@ Stream<Map> runByPrecedence(pathSet, matches, actionRunner) {
   });
 
   var matchesWithPaths = getExecutableMatches(sortedMatches, [pathSet]);
-  return new Stream.fromIterable(matchesWithPaths)
-    .asyncExpand(actionRunner)
+  return Future.wait(matchesWithPaths
+    .map(actionRunner)
 
     // Note: We do not wait for each observable to finish,
     // but repeat the cycle per onNext.
@@ -29,5 +29,5 @@ Stream<Map> runByPrecedence(pathSet, matches, actionRunner) {
         'match': actionTuple[0],
         'value': actionTuple[1]
       };
-    });
+    }));
 }

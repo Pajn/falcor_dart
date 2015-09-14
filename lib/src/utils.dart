@@ -34,8 +34,8 @@ bool isJSONG(Map output) {
   return output.containsKey('jsonGraph');
 }
 
-bool isPathValue(Map output) {
-  return output.containsKey('path') && output.containsKey('value');
+bool isPathValue(output) {
+  return output is Map && output.containsKey('path') && output.containsKey('value');
 }
 
 bool isRoutedToken(Map output) {

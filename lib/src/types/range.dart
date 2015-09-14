@@ -4,7 +4,7 @@ class Range {
   int from;
   int to;
 
-  int get length => to - from;
+  int get length => (to ?? from) - from ?? 0;
 
   Range(this.from, this.to);
 

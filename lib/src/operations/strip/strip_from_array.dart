@@ -31,7 +31,7 @@ List stripFromArray(toStrip, List array) {
   var isNumber = toStrip is num;
   var isString = toStrip is String;
   var isRoutedToken = !isNumber && !isString;
-  var routeType = isRoutedToken && toStrip.type || false;
+  var routeType = isRoutedToken && toStrip['type'] != null || false;
   var isKeys = routeType == Keys.keys;
 
   // The early break case.  If its a key, then there is never a
@@ -76,7 +76,7 @@ List stripFromArray(toStrip, List array) {
   else if (!isRangedArray && isRoutedToken) {
     complement = array.where((el) {
       if (el is num) {
-        matches[matches.length] = el;
+        matches.add(el);
         return false;
       }
       return true;

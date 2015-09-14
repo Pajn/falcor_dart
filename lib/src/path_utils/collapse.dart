@@ -6,7 +6,7 @@ import 'package:falcor_dart/src/path_utils/to_path.dart';
 collapse(List paths) {
   Map collapseMap = paths.fold({}, (acc, path) {
     var len = path.length;
-    if (acc.containsKey(len)) {
+    if (!acc.containsKey(len)) {
       acc[len] = [];
     }
     acc[len].add(path);

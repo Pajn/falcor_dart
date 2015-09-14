@@ -12,8 +12,8 @@ runGetAction(Router routerInstance, Map jsongCache) {
 }
 
 Stream getAction(Router routerInstance, matchAndPath, Map jsongCache) {
-  var match = matchAndPath.match;
-  var matchAction = match.action(matchAndPath.path);
+  var match = matchAndPath['match'];
+  var matchAction = match['action'](matchAndPath['path']);
   var out = outputToStream(matchAction);
 
   return out

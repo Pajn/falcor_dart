@@ -10,9 +10,12 @@ convertPathToRoute(path, route) {
   // it contains suffixes.
   for (var i = 0, len = route.length; i < len; ++i) {
 
-    if (route[i].type) {
+    print('route');
+    print(route);
+    print(route[i]);
+    if (route[i] is Map && route[i]['type'] is Keys) {
       var virt = route[i];
-      switch (virt.type) {
+      switch (virt['type']) {
         case Keys.ranges:
           matched[i] =
           convertPathKeyToRange(path[i]);

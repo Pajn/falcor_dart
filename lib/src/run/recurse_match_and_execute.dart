@@ -26,38 +26,32 @@ Future recurseMatchAndExecute(
  * performs the actual recursing
  */
 Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
-    String method, Router routerInstance, jsongCache) {
+    String method, Router routerInstance, jsongCache) async {
   var missing = [];
   var invalidated = [];
   var reportedPaths = [];
   var currentMethod = method;
 
-  return new Stream
-
-      // Each pathSet (some form of collapsed path) need to be sent
-      // independently.  for each collapsed pathSet will, if producing
-      // refs, be the highest likelihood of collapsibility.
-      .fromIterable(paths).asyncExpand((List nextPaths) {
+  await Future.wait(paths.map((List nextPaths) async {
     if (nextPaths.isEmpty) {
       print('empty');
-      return new Stream.fromIterable(nextPaths);
+      return nextPaths;
     }
 
     print(currentMethod);
     print(nextPaths);
     var matchedResults = match(currentMethod, nextPaths);
 
-    if (matchedResults.matched.isEmpty) {
-      print('empty2');
-      return new Stream.fromIterable(matchedResults.matched);
+    if (matchedResults.matched.isEmpty) {;
+      return matchedResults.matched;
     }
 
     var matchedResult = matchedResults.matched;
-    return runByPrecedence(nextPaths, matchedResult, actionRunner)
+    var results = await runByPrecedence(nextPaths, matchedResult, actionRunner);
 
-        // Generate from the combined results the next requestable paths
-        // and insert errors / values into the cache.
-        .expand((results) {
+    // Generate from the combined results the next requestable paths
+    // and insert errors / values into the cache.
+    return results.expand((results) {
       var value = results['value'];
       var suffix = results['match'].suffix;
 
@@ -65,7 +59,7 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
         value = [value];
       }
       var invsRefsAndValues =
-          mergeCacheAndGatherRefsAndInvalidations(jsongCache, value);
+      mergeCacheAndGatherRefsAndInvalidations(jsongCache, value);
       var invalidations = invsRefsAndValues.invalidations;
       var messages = invsRefsAndValues.messages;
       var pathsToExpand = [];
@@ -116,12 +110,18 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
       missing.addAll(matchedResults.missingPaths);
       return pathsToExpand;
     });
-  }).toList().then((_) => {
-            'missing': missing,
-            'invalidated': invalidated,
-            'jsonGraph': jsongCache,
-            'reportedPaths': reportedPaths
-          });
+  }));
+
+  // Each pathSet (some form of collapsed path) need to be sent
+  // independently.  for each collapsed pathSet will, if producing
+  // refs, be the highest likelihood of collapsibility.
+
+  return {
+    'missing': missing,
+    'invalidated': invalidated,
+    'jsonGraph': jsongCache,
+    'reportedPaths': reportedPaths
+  };
 }
 
 /**

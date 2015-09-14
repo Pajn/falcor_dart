@@ -34,13 +34,7 @@ class TestRunner {
     for (int i = 0; i < expected.length; ++i) {
       var el = expected[i];
       var aEl = actual[i];
-      if (el is Map) {
-        el.forEach((innerEl, innerI) {
-          expect(aEl[innerI]).toEqual(innerEl);
-        });
-      } else {
-        expect(aEl).toEqual(el);
-      }
+      expect(aEl).toEqual(el);
     }
   }
 }

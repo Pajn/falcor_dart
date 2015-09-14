@@ -2,6 +2,7 @@ library falcor_dart.strip;
 
 import 'package:falcor_dart/src/operations/strip/strip_from_array.dart';
 import 'package:falcor_dart/src/operations/strip/strip_from_range.dart';
+import 'package:falcor_dart/src/types/range.dart';
 
 /**
  *  Takes a virtual atom and the matched atom and returns an
@@ -48,6 +49,9 @@ List strip(matchedAtom, virtualAtom) {
       matchedResults = results[0];
       relativeComplement = results[1];
     } else {
+      if (matchedAtom is! Range) {
+        matchedAtom = new Range(matchedAtom['from'], matchedAtom['to']);
+      }
       results = stripFromRange(virtualAtom, matchedAtom);
       matchedResults = results[0];
       relativeComplement = results[1];
