@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'package:guinness2/guinness2.dart';
 import 'package:falcor_dart/falcor_dart.dart';
-import 'dart:async';
+import 'package:falcor_dart/src/exceptions.dart';
 
 main() {
   describe('Error', () {
@@ -13,19 +14,36 @@ main() {
           }
         }
       ]);
-      var onNext = new SpyFunction('onNext');
 
       var value = await router.get([
         ["videos", 1, "title"]
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
-          'videos': {
-            '1': {r'$type': 'error', 'value': {}}
-          }
+          'videos': {1: $error({})}
         }
       });
+    });
+
+    it('should throw an error when maxExpansion has been exceeded.', () async {
+      var router = new Router([
+        {
+          'route': 'videos[{integers:ids}]',
+          'get': (alias) {
+            return {
+              'path': ['videos', 1],
+              'value': $ref('videos[1]')
+            };
+          }
+        }
+      ]);
+
+      try {
+        await router.get([
+          ["videos", 1, "title"]
+        ]);
+        throw 'Should have thrown a CircularReferenceError';
+      } on CircularReferenceError catch(_) {}
     });
 
     it('thrown non-Error should insert in the value property of error object for all requested paths.',
@@ -38,7 +56,6 @@ main() {
           }
         }
       ]);
-      var onNext = new SpyFunction('onNext');
       var value = await router.get([
         [
           'videos',
@@ -46,16 +63,11 @@ main() {
           'rating'
         ]
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {
-            '1234': {
-              'rating': {r'$type': 'error', 'value': {}}
-            },
-            '333': {
-              'rating': {r'$type': 'error', 'value': {}}
-            }
+            1234: {'rating': $error({})},
+            333: {'rating': $error({})}
           }
         }
       });
@@ -72,7 +84,6 @@ main() {
           }
         }
       ]);
-      var onNext = new SpyFunction('onNext');
       var routerSetValue = await router.set({
         'jsonGraph': {
           'videos': {
@@ -89,15 +100,14 @@ main() {
         ]
       });
 
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+      expect(routerSetValue).toEqual({
         'jsonGraph': {
           'videos': {
-            '1234': {
-              'rating': {r'$type': "error", 'value': {}}
+            1234: {
+              'rating': $error({})
             },
-            '333': {
-              'rating': {r'$type': "error", 'value': {}}
+            333: {
+              'rating': $error({})
             }
           }
         }
@@ -114,8 +124,7 @@ main() {
           }
         }
       ]);
-      var onNext = new SpyFunction('onNext');
-      var routerSetValue = router.set({
+      var routerSetValue = await router.set({
         'jsonGraph': {
           'videos': {
             '1234': {'rating': 5},
@@ -130,15 +139,14 @@ main() {
           ]
         ]
       });
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+      expect(routerSetValue).toEqual({
         'jsonGraph': {
           'videos': {
-            '1234': {
-              'rating': {r'$type': "error", 'value': {}}
+            1234: {
+              'rating': $error({})
             },
-            '333': {
-              'rating': {r'$type': "error", 'value': {}}
+            333: {
+              'rating': $error({})
             }
           }
         }

@@ -1,6 +1,7 @@
 library falcor_dart.cache.follow_reference;
 
 import 'package:falcor_dart/src/types/sentinels.dart';
+import 'package:falcor_dart/src/exceptions.dart';
 
 /// performs the simplified cache reference follow. This
 /// differs from get as there is just following and reporting,
@@ -24,9 +25,7 @@ List followReference(Map cacheRoot, List ref, int maxRefFollow) {
 
     // Show stopper exception.  This route is malformed.
     if (next is Sentinel && next.isRef && depth + 1 < length) {
-      var err = new Exception(errors.innerReferences);
-//      err.throwToNext = true;
-      throw err;
+      throw new InnerReferenceError();
     }
 
     // potentially follow reference
@@ -40,7 +39,7 @@ List followReference(Map cacheRoot, List ref, int maxRefFollow) {
       }
 
       if (referenceCount > maxRefFollow) {
-        throw new Exception(errors.circularReference);
+        throw new CircularReferenceError();
       }
     }
     current = next;

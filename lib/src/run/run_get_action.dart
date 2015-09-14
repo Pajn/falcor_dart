@@ -15,17 +15,21 @@ ActionRunner runGetAction(Router routerInstance, Map jsongCache) {
 
 Future<List> getAction(Router routerInstance, Map matchAndPath, Map jsongCache) async {
   var match = matchAndPath['match'];
-  var matchAction = await match['action'](matchAndPath['path']);
-  if (matchAction is Iterable) {
-    matchAction = matchAction.toList();
-  }
-  else {
-    matchAction = [matchAction];
-  }
-//  var out = outputToStream(matchAction);
+  try {
+    var matchAction = await match['action'](matchAndPath['path']);
+    if (matchAction is Iterable) {
+      matchAction = matchAction.toList();
+    }
+    else {
+      matchAction = [matchAction];
+    }
+    //  var out = outputToStream(matchAction);
 
-  return matchAction
-    .map(noteToJsongOrPV(matchAndPath));
+    return matchAction
+        .map(noteToJsongOrPV(matchAndPath));
+  } catch(error) {
+    return [convertNoteToJsongOrPV(matchAndPath, error, error: true)];
+  }
 }
 
 /// For the router there are several return types from user
@@ -53,25 +57,16 @@ noteToJsongOrPV(match) {
   return (note) => convertNoteToJsongOrPV(match, note);
 }
 
-convertNoteToJsongOrPV(matchAndPath, note) {
+convertNoteToJsongOrPV(matchAndPath, note, {bool error: false}) {
   var incomingJSONGOrPathValues;
 
-  if (true) {
-    incomingJSONGOrPathValues = note;
-  }
-
-  else {
+  if (error) {
     var typeValue = $error({});
-    var exception = {};
+    var exception = note;
 
-    // Rx3, what will this be called?
-    if (note['exception'] != null) {
-      exception = note.exception;
-    }
-
-    if (exception['throwToNext'] == true) {
-      throw exception;
-    }
+//    if (exception['throwToNext'] == true) {
+//      throw exception;
+//    }
 
     // If it is a special JSONGraph error then pull all the data
     if (exception is JSONGraphError) {
@@ -79,13 +74,17 @@ convertNoteToJsongOrPV(matchAndPath, note) {
     }
 
     else if (exception is Exception) {
-      typeValue.value.message = exception.message;
+      typeValue.value['message'] = exception.message;
     }
 
     incomingJSONGOrPathValues = {
       'path': matchAndPath['path'],
       'value': typeValue
     };
+  }
+
+  else {
+    incomingJSONGOrPathValues = note;
   }
 
   // If its jsong we may need to optionally attach the
@@ -103,4 +102,5 @@ convertNoteToJsongOrPV(matchAndPath, note) {
 }
 
 class JSONGraphError {
+  var typeValue;
 }

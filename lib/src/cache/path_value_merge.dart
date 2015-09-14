@@ -55,7 +55,7 @@ innerPathValueMerge(Map cache, pathValue) {
     outerKey = path[i];
 
     // Setup the memo and the key.
-    if (outerKey is Map) {
+    if (outerKey is Map || outerKey is List) {
       iteratorNote = {};
       key = iterateKeySet(outerKey, iteratorNote);
     } else {

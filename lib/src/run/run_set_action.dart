@@ -45,8 +45,13 @@ innerRunSetAction(Router routerInstance, jsongMessage, matchAndPath, [Map jsongC
       return json;
     });
   }
-  out = await match['action'](arg);
 
-  return out
-      .map(noteToJsongOrPV(matchAndPath));
+  try {
+    out = await match['action'](arg);
+
+    return out
+        .map(noteToJsongOrPV(matchAndPath));
+  } catch(error) {
+    return [convertNoteToJsongOrPV(matchAndPath, error, error: true)];
+  }
 }
