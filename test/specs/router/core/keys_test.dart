@@ -9,7 +9,7 @@ import '../../../data/expected.dart';
 main() {
   describe('Keys', () {
     it('should match integers for videos with int keys passed in.', () async {
-      var router = new Router(routes().Videos.Keys.Summary((pathSet) {
+      var router = new Router(routes()['Videos']['Keys']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
           [1],
@@ -20,14 +20,14 @@ main() {
       var value = await router.get([
         ['videos', 1, 'summary']
       ]);
-      expect(value).toEqual(expectedRoutes().Videos[1].summary);
+      expect(value).toEqual(expectedRoutes()['Videos'][1]['summary']);
       called = true;
 
       expect(called, 'expect onNext called 1 time.').toEqual(true);
     });
 
     it('should match specific key with keys.', () async {
-      var router = new Router(routes().Videos.Keys.Summary((pathSet) {
+      var router = new Router(routes()['Videos']['Keys']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
           ['someKey'],
@@ -39,14 +39,14 @@ main() {
         ['videos', 'someKey', 'summary']
       ]);
 
-      expect(value).toEqual(expectedRoutes().Videos.someKey.summary);
+      expect(value).toEqual(expectedRoutes()['Videos']['someKey']['summary']);
       called = true;
 
       expect(called, 'expect onNext called 1 time.').toEqual(true);
     });
 
     it('should match array of keys.', () {
-      var router = new Router(routes().Videos.Keys.Summary((pathSet) {
+      var router = new Router(routes()['Videos']['Keys']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
           [1, 'someKey'],
@@ -62,13 +62,13 @@ main() {
       ]);
 
       TestRunner.run(obs, [
-        expectedRoutes().Videos[1].summary,
-        expectedRoutes().Videos.someKey.summary
+        expectedRoutes()['Videos'][1]['summary'],
+        expectedRoutes()['Videos']['someKey']['summary']
       ]);
     });
 
     it('should match range.', () {
-      var router = new Router(routes().Videos.Keys.Summary((pathSet) {
+      var router = new Router(routes()['Videos']['Keys']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
           [0, 1, 2],
@@ -84,14 +84,14 @@ main() {
       ]);
 
       TestRunner.run(obs, [
-        expectedRoutes().Videos[0].summary,
-        expectedRoutes().Videos[1].summary,
-        expectedRoutes().Videos[2].summary
+        expectedRoutes()['Videos'][0]['summary'],
+        expectedRoutes()['Videos'][1]['summary'],
+        expectedRoutes()['Videos'][2]['summary']
       ]);
     });
 
     it('should match keys as last key.', () {
-      var router = new Router(routes().Videos.State.Keys((pathSet) {
+      var router = new Router(routes()['Videos']['State']['Keys']((pathSet) {
         TestRunner.comparePath([
           'videos',
           'state',
@@ -102,7 +102,7 @@ main() {
         ['videos', 'state', 'specificKey']
       ]);
 
-      TestRunner.run(obs, [expectedRoutes().Videos.state.specificKey]);
+      TestRunner.run(obs, [expectedRoutes()['Videos']['state']['specificKey']]);
     });
   });
 }

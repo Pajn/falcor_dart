@@ -53,14 +53,18 @@ List stripPath(List matchedPath, List virtualPath) {
       print('DANGER!!!!!!!!!!!!!!!!');
       print('hasComplement may be wierd');
       var flattendIC =
-          innerComplement.length == 1 ? innerComplement[0] : innerComplement;
-      current[i] = flattendIC;
+          innerComplement.length == 1 ? innerComplement.first : innerComplement;
+      current.add(flattendIC);
       relativeComplement.add(catAndSlice(current, matchedPath, i + 1));
     }
 
   // The exact match needs to be produced for calling function.
     exactMatch.add(innerMatch);
-    current.add(innerMatch);
+    if (i < current.length) {
+      current[i] = innerMatch;
+    } else {
+      current.add(innerMatch);
+    }
   }
 
   return [exactMatch, relativeComplement];

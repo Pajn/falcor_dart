@@ -82,7 +82,7 @@ videoRoutes() {
       'Keys': (fn) {
         return [
           {
-            'route': ['videos', 'state', R.keys],
+            'route': ['videos', 'state', Keys.keys],
             'get': (path) {
               if (fn != null) {
                 fn(path);
