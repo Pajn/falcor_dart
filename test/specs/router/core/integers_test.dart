@@ -85,7 +85,6 @@ main() {
 
     it('should match ranges with integers pattern and coerce match into an array of integers.',
         () async {
-      var onNext = new SpyFunction('onNext');
       var router = new Router([
         {
           'route': 'titlesById[{integers}]["name", "rating"]',
@@ -111,9 +110,7 @@ main() {
           ["name", "rating"]
         ]
       ]);
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'titlesById': {
             1: {'name': 'Orange is the new Black', 'rating': 5}

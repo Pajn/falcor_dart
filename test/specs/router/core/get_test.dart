@@ -35,15 +35,11 @@ main() {
         }
       ]);
 
-      var onNext = new SpyFunction('onNext');
-
       var value = await router.get([
         ['videos', 'falsey']
       ]);
 
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {'falsey': null}
         }
@@ -68,14 +64,10 @@ main() {
         }
       ]);
 
-      var onNext = new SpyFunction('onNext');
-
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {'falsey': $atom(null)}
         }
@@ -99,15 +91,11 @@ main() {
         }
       ]);
 
-      var onNext = new SpyFunction('onNext');
-
       var value = await router.get([
         ['videos', 'falsey']
       ]);
 
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {'falsey': 0}
         }
@@ -132,14 +120,10 @@ main() {
         }
       ]);
 
-      var onNext = new SpyFunction('onNext');
-
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {'falsey': $atom(0)}
         }
@@ -159,14 +143,10 @@ main() {
         }
       ]);
 
-      var onNext = new SpyFunction('onNext');
-
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {'falsey': 0}
         }
@@ -186,14 +166,10 @@ main() {
         }
       ]);
 
-      var onNext = new SpyFunction('onNext');
-
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {'falsey': null}
         }
@@ -213,15 +189,11 @@ main() {
         }
       ]);
 
-      var onNext = new SpyFunction('onNext');
-
       var value = await router.get([
         ['videos', 'falsey']
       ]);
 
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {'falsey': false}
         }
@@ -241,15 +213,11 @@ main() {
         }
       ]);
 
-      var onNext = new SpyFunction('onNext');
-
       var value = await router.get([
         ['videos', 'falsey']
       ]);
 
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'videos': {'falsey': ''}
         }
@@ -260,7 +228,6 @@ main() {
         () async {
       //    this.timeout(10000);
       var serviceCalls = 0;
-      var onNext = new SpyFunction('onNext');
       var routes = [
         {
           'route': 'lists[{keys:ids}]',
@@ -305,9 +272,7 @@ main() {
         ]
       ]);
 
-      onNext(value);
-      expect(onNext).toHaveBeenCalledOnce();
-      expect(onNext.calls[0].positionalArguments[0]).toEqual({
+      expect(value).toEqual({
         'jsonGraph': {
           'lists': {0: $ref('two.be[956]'), 1: $ref('lists[0]')},
           'two': {
