@@ -40,7 +40,8 @@ main() {
         ['videos', 'falsey']
       ]);
 
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
       expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'videos': {'falsey': null}
@@ -71,7 +72,8 @@ main() {
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
       expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'videos': {'falsey': $atom(null)}
@@ -98,12 +100,13 @@ main() {
 
       var onNext = new SpyFunction('onNext');
 
-      var value = router.get([
+      var value = await router.get([
         ['videos', 'falsey']
       ]);
 
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
+      expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'videos': {'falsey': 0}
         }
@@ -133,8 +136,9 @@ main() {
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
+      expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'videos': {'falsey': $atom(0)}
         }
@@ -159,8 +163,9 @@ main() {
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
+      expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'videos': {'falsey': 0}
         }
@@ -185,8 +190,9 @@ main() {
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
+      expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'videos': {'falsey': null}
         }
@@ -211,8 +217,10 @@ main() {
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
+      expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'videos': {'falsey': false}
         }
@@ -237,8 +245,10 @@ main() {
       var value = await router.get([
         ['videos', 'falsey']
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
+      expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'videos': {'falsey': ''}
         }
@@ -293,8 +303,10 @@ main() {
           'summary'
         ]
       ]);
-      expect(onNext.calledOnce).toHaveBeenCalledOnce();
-      expect(onNext.getCall(0).args[0]).toEqual({
+
+      onNext(value);
+      expect(onNext).toHaveBeenCalledOnce();
+      expect(onNext.calls[0].positionalArguments[0]).toEqual({
         'jsonGraph': {
           'lists': {0: $ref('two.be[956]'), 1: $ref('lists[0]')},
           'two': {
@@ -444,12 +456,18 @@ main() {
 }
 
 getPrecedenceRouter({onTitle, onRating}) {
+
   return new Router([
     {
       'route': 'videos[{integers:ids}].title',
       'get': (alias) {
+
+        print('expand');
+        print(alias);
         var ids = alias.ids;
-        onTitle && onTitle(alias);
+        if (onTitle != null) {
+          onTitle(alias);
+        }
         return ids.map((id) {
           return {
             'path': ['videos', id, 'title'],
@@ -462,20 +480,9 @@ getPrecedenceRouter({onTitle, onRating}) {
       'route': 'videos[{integers:ids}].rating',
       'get': (alias) {
         var ids = alias.ids;
-        onRating && onRating(alias);
-        return ids.map((id) {
-          return {
-            'path': ['videos', id, 'rating'],
-            'value': 'rating ' + id
-          };
-        });
-      }
-    },
-    {
-      'route': 'videos[{integers:ids}].rating',
-      'get': (alias) {
-        var ids = alias.ids;
-        onRating && onRating(alias);
+        if (onRating != null) {
+          onRating(alias);
+        }
         return ids.map((id) {
           return {
             'path': ['videos', id, 'rating'],
@@ -487,7 +494,7 @@ getPrecedenceRouter({onTitle, onRating}) {
     {
       'route': 'lists[{keys:ids}][{integers:indices}]',
       'get': (alias) {
-        return alias.ids.flatMap((id) {
+        return alias.ids.expand((id) {
           return alias.indices.map((idx) {
             return {'id': id, 'idx': idx};
           });

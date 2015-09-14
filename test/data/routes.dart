@@ -9,12 +9,14 @@ routes() {
 
 videoRoutes() {
   return {
-    'Summary': (fn) {
+    'Summary': ({fn}) {
       return [
         {
           'route': 'videos.summary',
           'get': (path) {
-            fn && fn(path);
+            if (fn != null) {
+              fn(path);
+            }
             return {
               'jsonGraph': {
                 'videos': {'summary': $atom(75)}
@@ -135,7 +137,7 @@ genreListsRoutes() {
         {
           'route': 'genreLists[{ranges:indices}]',
           'get': (path) {
-            if (fn) {
+            if (fn != null) {
               fn(path);
             }
             var genreLists = {};

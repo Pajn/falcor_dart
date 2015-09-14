@@ -9,9 +9,9 @@ Future<List<Map>> runByPrecedence(pathSet, matches, ActionRunner actionRunner) a
 
   // Precendence matching
   var sortedMatches = new List.from(matches)..sort((a, b) {
-    if (a.precedence > b.precedence) {
+    if (a['precedence'] > b['precedence']) {
       return 1;
-    } else if (a.precedence < b.precedence) {
+    } else if (a['precedence'] < b['precedence']) {
       return -1;
     }
 

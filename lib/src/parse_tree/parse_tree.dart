@@ -121,11 +121,12 @@ setHashOrThrowError(Map parseMap, Map routeObject) {
   var call = routeObject['call'];
 
   getHashesFromRoute(route).map((hash) => hash.join(',')).forEach((hash) {
+    print('hash');
+    print(hash);
     if (get != null && parseMap[hash + 'get'] != null ||
         set != null && parseMap[hash + 'set'] != null ||
         call != null && parseMap[hash + 'call'] != null) {
-      throw new Exception(errors.routeWithSamePrecedence + ' ' +
-                      prettifyRoute(route));
+      throw new Exception('Two routes cannot have the same precedence or path. ${prettifyRoute(route)}');
     }
     if (get != null) {
       parseMap[hash + 'get'] = true;

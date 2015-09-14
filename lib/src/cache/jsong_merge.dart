@@ -49,7 +49,7 @@ merge(Map config, Map cache, message, depth, path, [fromParent, fromKey]) {
     // NOTE: If we have found a reference at our cloning position
     // and we have resolved our path then add the reference to
     // the unfulfilledRefernces.
-    if (message != null && message.isRef) {
+    if (message is Sentinel && message.isRef) {
       var references = config['references'];
       references.add({
         'path': new List.from(requestedPath),
@@ -64,7 +64,7 @@ merge(Map config, Map cache, message, depth, path, [fromParent, fromKey]) {
       var values = config['values'];
       values.add({
         'path': new List.from(requestedPath),
-        'value': (message != null && message.type != null) ? message.value : message
+        'value': (message is Sentinel && message.type != null) ? message.value : message
       });
     }
 

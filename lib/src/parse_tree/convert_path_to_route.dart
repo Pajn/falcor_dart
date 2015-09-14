@@ -31,6 +31,8 @@ convertPathToRoute(path, route) {
           break;
       }
       if (virt['named']) {
+        print('named');
+        print(matched);
         matched[virt['name']] = matched.last;
       }
     }
