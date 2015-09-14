@@ -23,12 +23,12 @@ List optimizePathSets(Map cache, List<PathSet> paths, int maxRefFollow) {
 }
 
 /// optimizes one pathSet at a time.
-void optimizePathSet(cache, Map cacheRoot, PathSet pathSet, depth, List out,
+void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
     List optimizedPath, int maxRefFollow) {
 
   // at missing, report optimized path.
   if (cache == null) {
-    out.add(catAndSlice(optimizedPath, pathSet.pathParts, depth));
+    out.add(catAndSlice(optimizedPath, pathSet, depth));
     return;
   }
 

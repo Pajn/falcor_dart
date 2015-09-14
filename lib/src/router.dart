@@ -24,16 +24,16 @@ class Router {
     _matcher = matcher(this._rst);
   }
 
-  Future get(paths) {
+  Future get(List paths) {
     var jsongCache = {};
     var action = runGetAction(this, jsongCache);
     var normPS = normalizePathSets(paths);
 
     return run(this._matcher, action, normPS, 'get', this, jsongCache)
-      .then((jsongEnv) => materializeMissing(this, paths, jsongEnv));
+        .then((jsongEnv) => materializeMissing(this, paths, jsongEnv));
   }
 
-  Future set(jsong) {
+  Future set(Map jsong) {
     // TODO: Remove the modelContext and replace with just jsongEnv
     // when http://github.com/Netflix/falcor-router/issues/24 is addressed
     var jsongCache = {};
@@ -41,44 +41,40 @@ class Router {
     var normPS = normalizePathSets(jsong['paths']);
 
     return run(this._matcher, action, normPS, 'set', this, jsongCache)
-      .then((jsongEnv) => materializeMissing(this, jsong['paths'], jsongEnv));
+        .then((jsongEnv) => materializeMissing(this, jsong['paths'], jsongEnv));
   }
 
-  call(callPath, args, suffixes, paths) {
+  call(List callPath, List args, [List suffixes, List paths]) async {
     var jsongCache = {};
-    var action = runCallAction(this, callPath, args,
-    suffixes, paths, jsongCache);
-    var callPaths = [callPath];
+    var action =
+        runCallAction(this, callPath, args, suffixes, paths, jsongCache);
+    var callPaths = normalizePathSets([callPath]);
 
-    return run(this._matcher, action, callPaths, call, this, jsongCache)
-      .map((jsongResult) {
-      var reportedPaths = jsongResult.reportedPaths;
-      var jsongEnv = materializeMissing(this, callPaths, jsongResult, {
-        r'$type': r'$atom',
-        r'$expires': 0
-      });
-      materializeMissing(this, reportedPaths, jsongResult);
+    var jsongResult =
+        await run(this._matcher, action, callPaths, 'call', this, jsongCache);
+    var reportedPaths = jsongResult['reportedPaths'];
+    var jsongEnv = materializeMissing(
+        this, callPaths, jsongResult, $atom(null, expires:  0));
+    materializeMissing(this, reportedPaths, jsongResult);
 
+    if (reportedPaths.isNotEmpty) {
+      jsongEnv['paths'] = reportedPaths;
+    } else {
+      jsongEnv['paths'] = [];
+    }
 
-      if (reportedPaths.length) {
-        jsongEnv['paths'] = reportedPaths;
-      } else {
-        jsongEnv['paths'] = [];
-      }
-
-      jsongEnv['paths'].push(callPath);
-      var invalidated = jsongResult.invalidated;
-      if (invalidated && invalidated.length) {
-        jsongEnv['invalidations'] = invalidated;
-      }
-      jsongEnv['paths'] = collapse(jsongEnv['paths']);
-      return jsongEnv;
-    });
+    jsongEnv['paths'].add(callPath);
+    var invalidated = jsongResult['invalidated'];
+    if (invalidated != null && invalidated.isNotEmpty) {
+      jsongEnv['invalidated'] = invalidated;
+    }
+    jsongEnv['paths'] = collapse(jsongEnv['paths']);
+    return jsongEnv;
   }
 }
 
-run(matcherFn, actionRunner, paths, method,
-    routerInstance, jsongCache) {
+Future<Map> run(
+    matcherFn, actionRunner, paths, method, routerInstance, jsongCache) {
   return recurseMatchAndExecute(
       matcherFn, actionRunner, paths, method, routerInstance, jsongCache);
 }
@@ -89,11 +85,9 @@ materializeMissing(Router router, paths, jsongEnv, [missingAtom]) {
 
   // Optimizes the pathSets from the jsong then
   // inserts atoms of undefined.
-  optimizePathSets(jsonGraph, paths, router.maxRefFollow).forEach((optMissingPath) {
-    pathValueMerge(jsonGraph, {
-      'path': optMissingPath,
-      'value': missingAtom,
-    });
+  optimizePathSets(jsonGraph, paths, router.maxRefFollow)
+      .forEach((optMissingPath) {
+    pathValueMerge(jsonGraph, {'path': optMissingPath, 'value': missingAtom,});
   });
 
   return {'jsonGraph': jsonGraph};

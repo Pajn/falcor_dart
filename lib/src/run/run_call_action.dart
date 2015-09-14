@@ -1,113 +1,110 @@
 library falcor_dart.run_call_action;
 
+import 'dart:async';
 import 'package:falcor_dart/src/run/run_get_action.dart';
 import 'package:falcor_dart/src/utils.dart';
+import 'package:falcor_dart/src/router.dart';
+import 'package:falcor_dart/src/path_set.dart';
+import 'package:falcor_dart/src/run/merge_cache_and_gather_refs_and_invalidations.dart';
 
-runCallAction(routerInstance, callPath, args,
-    suffixes, paths, jsongCache) {
+runCallAction(Router routerInstance, List callPath, List args, List suffixes,
+    List<PathSet> paths, Map jsongCache) {
   return (matchAndPath) {
-    return innerRunCallAction(matchAndPath, routerInstance, callPath,
-        args, suffixes, paths, jsongCache);
+    return innerRunCallAction(matchAndPath, routerInstance, callPath, args,
+        suffixes, paths, jsongCache);
   };
 }
 
-innerRunCallAction(matchAndPath, routerInstance, callPath, args,
-    suffixes, paths, jsongCache) {
-
-  var match = matchAndPath.match;
-  var matchedPath = matchAndPath.path;
+Future innerRunCallAction(
+    Map matchAndPath,
+    Router routerInstance,
+    List callPath,
+    List args,
+    List suffixes,
+    List<PathSet> paths,
+    Map jsongCache) async {
+  Map match = matchAndPath['match'];
+  var matchedPath = matchAndPath['path'];
   var out;
 
   // We are at out destination.  Its time to get out
   // the pathValues from the
-  if (match.isCall) {
-
+  if (match['isCall']) {
     // This is where things get interesting
-    out = Observable.
-    defer(() {
-    var next;
+    var result;
     try {
-    next = match.
-    action.call(
-    routerInstance, matchedPath, args, suffixes, paths);
-    } catch (e) {
-    e.throwToNext = true;
-    throw e;
+      result = [await match['action'](matchedPath, args)];
+      print('result');
+      print(result);
+    } catch (error) {
+      rethrow;
+      return [convertNoteToJsongOrPV(matchAndPath, error, error: true)];
     }
-    return outputToStream(next).
-    toArray();
-    }).
-
     // Required to get the references from the outputting jsong
     // and pathValues.
-    map((res) {
-    // checks call for isJSONG and if there is jsong without paths
-    // throw errors.
-    var refs = [];
-    var values = [];
+      // checks call for isJSONG and if there is jsong without paths
+      // throw errors.
+      var refs = [];
+      var values = [];
 
-    // Will flatten any arrays of jsong/pathValues.
-    var callOutput = res.reduce(function(flattenedRes, next) {
-      return flattenedRes.concat(next);
-    }, []);
+      // Will flatten any arrays of jsong/pathValues.
+      var callOutput = result.fold([], (flattenedRes, next) {
+        if (next is List) {
+          return flattenedRes..addAll(next);
+        } else {
+          return flattenedRes..add(next);
+        }
+      });
 
-var refLen = -1;
-callOutput.forEach((r) {
-
-  // its json graph.
-  if (isJSONG(r)) {
-
-    // This is a hard error and must fully stop the server
-    if (!r.paths) {
-      var err =
-      new Exception(errors.callJSONGraphWithouPaths);
+      callOutput.forEach((r) {
+        // its json graph.
+        if (isJSONG(r)) {
+          // This is a hard error and must fully stop the server
+          if (r['paths'] == null) {
+            var err = new Exception(errors.callJSONGraphWithouPaths);
 //      err.throwToNext = true;
-      throw err;
-    }
-  }
+            throw err;
+          }
+        }
+      });
 
-});
+      var invsRefsAndValues =
+          mergeCacheAndGatherRefsAndInvalidations(jsongCache, callOutput);
+      refs.addAll(invsRefsAndValues['references']);
 
-var invsRefsAndValues = mCGRI(jsongCache, callOutput);
-invsRefsAndValues.references.forEach((ref) {
-  refs[++refLen] = ref;
-});
+      values = invsRefsAndValues['values'].map((pv) {
+        return pv['path'];
+      });
 
-values = invsRefsAndValues.values.map((pv) {
-  return pv.path;
-});
-
-var callLength = callOutput.length;
-var callPathSave1 = callPath.slice(0, callPath.length - 1);
-var hasSuffixes = suffixes && suffixes.length;
-var hasPaths = paths && paths.length;
+      var callPathSave1 = callPath.sublist(0, callPath.length - 1);
+      var hasSuffixes = suffixes != null && suffixes.isNotEmpty;
+      var hasPaths = paths != null && paths.isNotEmpty;
 
 // We are going to use recurseMatchAndExecute to run
 // the paths and suffixes for call.  For that to happen
 // we must send a message to the outside to switch from
 // call to get.
-callOutput[++callLength] = {'isMessage': true, 'method': 'get'};
+      callOutput.add({'isMessage': true, 'method': 'get'});
 
 // If there are paths to add then push them into the next
 // paths through 'additionalPaths' message.
-if (hasPaths && (callLength + 1)) {
-paths.forEach((path) {
-callOutput[++callLength] = {
-'isMessage': true,
-'additionalPath': callPathSave1.concat(path)
-};
-});
-}
+      if (hasPaths) {
+        paths.forEach((path) {
+          callOutput.add({
+            'isMessage': true,
+            'additionalPath': callPathSave1..addAll(path)
+          });
+        });
+      }
 
 // Suffix is the same as paths except for how to calculate
 // a path per reference found from the callPath.
-if (hasSuffixes) {
-
+      if (hasSuffixes) {
 // matchedPath is the optimized path to call.
 // e.g:
 // callPath: [genreLists, 0, add] ->
 // matchedPath: [lists, 'abc', add]
-var optimizedPathLength = matchedPath.length - 1;
+        var optimizedPathLength = matchedPath.length - 1;
 
 // For every reference build the complete path
 // from the callPath - 1 and concat remaining
@@ -124,57 +121,48 @@ var optimizedPathLength = matchedPath.length - 1;
 //
 // Add the deoptimizedPath to the callOutput messages.
 // This will make the outer expand run those as a 'get'
-refs.forEach((ref) {
-var deoptimizedPath = callPathSave1.concat(
-ref.path.slice(optimizedPathLength));
-suffixes.forEach((suffix) {
-var additionalPath =
-deoptimizedPath.concat(suffix);
-callOutput[++callLength] = {
-'isMessage': true,
-'additionalPath': additionalPath
-};
-});
-});
-}
+        refs.forEach((ref) {
+          var deoptimizedPath = callPathSave1
+            ..addAll(ref['path'].sublist(optimizedPathLength));
+          suffixes.forEach((suffix) {
+            var additionalPath = deoptimizedPath..addAll(suffix);
+            callOutput
+                .add({'isMessage': true, 'additionalPath': additionalPath});
+          });
+        });
+      }
 
-// If there are no suffixes but there are references, report
-// the paths to the references.  There may be values as well,
-// add those to the output.
-if (refs.length && !hasSuffixes || values.length) {
-var additionalPaths = [];
-if (refs.length && !hasSuffixes) {
-additionalPaths = refs.
-map((x) { return x.path; });
-}
-additionalPaths.
-concat(values).
-forEach((path) {
-callOutput[++callLength] = {
-'isMessage': true,
-'additionalPath': path
-};
-});
-}
+      // If there are no suffixes but there are references, report
+      // the paths to the references.  There may be values as well,
+      // add those to the output.
+      if (refs.isNotEmpty && !hasSuffixes || values.isNotEmpty) {
+        var additionalPaths = [];
+        if (refs.isNotEmpty && !hasSuffixes) {
+          additionalPaths = refs.map((x) {
+            return x.path;
+          });
+        }
+        additionalPaths..addAll(values)..forEach((path) {
+          callOutput.add({'isMessage': true, 'additionalPath': path});
+        });
+      }
 
-return callOutput;
-}).
+    return callOutput.map(noteToJsongOrPV(matchAndPath));
 
-// When call has an error it needs to be propagated to the next
-// level instead of onCompleted'ing
-do(null, function(e) {
-  e.throwToNext = true;
-  throw e;
-});
-} else {
-out = match.action.call(routerInstance, matchAndPath.path);
-out = outputToObservable(out);
-}
+        // When call has an error it needs to be propagated to the next
+        // level instead of onCompleted'ing
+//        do(null, (e) {
+//      e.throwToNext = true;
+//      throw e;
+//    });
+  } else {
+    try {
+      var matchAction = await match['action'](matchAndPath['path']);
 
-return out.
-materialize().
-filter((note) {
-  return note.kind != 'C';
-}).
-map(noteToJsongOrPV(matchAndPath));
+      return [matchAction].map(noteToJsongOrPV(matchAndPath));
+    } catch (error) {
+      rethrow;
+      return [convertNoteToJsongOrPV(matchAndPath, error, error: true)];
+    }
+  }
 }

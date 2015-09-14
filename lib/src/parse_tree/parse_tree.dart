@@ -102,7 +102,7 @@ void buildParseTree(Map<Keys, Map> node, Map routeObject, [int depth = 0]) {
         matchObject['setId'] = routeObject['setId'];
       }
       if (call != null) {
-        matchObject['call'] = createNamedVariables(route, call);
+        matchObject['call'] = createNamedVariablesCall(route, call);
         matchObject['callId'] = routeObject['callId'];
       }
     } else {

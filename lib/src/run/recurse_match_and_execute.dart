@@ -6,10 +6,8 @@ import 'package:falcor_dart/src/operations/matcher.dart';
 import 'package:falcor_dart/src/router.dart';
 import 'package:falcor_dart/src/run/precedence/run_by_precedence.dart';
 import 'package:falcor_dart/src/path_utils/collapse.dart';
-import 'package:falcor_dart/src/cache/path_value_merge.dart';
-import 'package:falcor_dart/src/utils.dart';
-import 'package:falcor_dart/src/cache/jsong_merge.dart';
 import 'package:falcor_dart/src/path_set.dart';
+import 'package:falcor_dart/src/run/merge_cache_and_gather_refs_and_invalidations.dart';
 
 /**
  * The recurse and match function will async recurse as long as
@@ -74,24 +72,24 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
         pathSet.addAll(next['value']);
         pathSet.addAll(suffix);
         return pathSet;
-      });
+      }).toList();
 
       // Alters the behavior of the expand
       messages.forEach((message) {
         // mutates the method type for the matcher
-        if (message['method']) {
+        if (message['method'] != null) {
           currentMethod = message['method'];
         }
 
         // Mutates the nextPaths and adds any additionalPaths
-        else if (message['additionalPath']) {
+        else if (message['additionalPath'] !=null) {
           var path = message['additionalPath'];
           pathsToExpand.add(path);
           reportedPaths.add(path);
         }
 
         // Any invalidations that come down from a call
-        else if (message['invalidations']) {
+        else if (message['invalidations'] != null) {
           invalidated.addAll(message['invalidations']);
         }
       });
@@ -121,61 +119,5 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
     'invalidated': invalidated,
     'jsonGraph': jsongCache,
     'reportedPaths': reportedPaths
-  };
-}
-
-/**
- * takes the response from an action and merges it into the
- * cache.  Anything that is an invalidation will be added to
- * the first index of the return value, and the inserted refs
- * are the second index of the return value.  The third index
- * of the return value is messages from the action handlers
- *
- * @param {Object} cache
- * @param {Array} jsongOrPVs
- */
-mergeCacheAndGatherRefsAndInvalidations(cache, jsongOrPVs) {
-  var references = [];
-  var len = -1;
-  var invalidations = [];
-  var messages = [];
-  var values = [];
-
-  jsongOrPVs.forEach((jsongOrPV) {
-    var refsAndValues = {};
-
-    if (isMessage(jsongOrPV)) {
-      messages[messages.length] = jsongOrPV;
-    } else if (isJSONG(jsongOrPV)) {
-      refsAndValues = jsongMerge(cache, jsongOrPV);
-    }
-
-    // Last option are path values.
-    else {
-      refsAndValues = pathValueMerge(cache, jsongOrPV);
-    }
-
-    var refs = refsAndValues['references'];
-    var vals = refsAndValues['values'];
-    var invs = refsAndValues['invalidations'];
-
-    if (vals is List && vals.isNotEmpty) {
-      values.addAll(vals);
-    }
-
-    if (invs is List && invs.isNotEmpty) {
-      invalidations.addAll(invs);
-    }
-
-    if (refs != null && refs.isNotEmpty) {
-      references.addAll(refs);
-    }
-  });
-
-  return {
-    'invalidations': invalidations,
-    'references': references,
-    'messages': messages,
-    'values': values
   };
 }
