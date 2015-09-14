@@ -1,7 +1,8 @@
-library falcor_dart.convert_path_key_to_integers;
+library falcor_dart.convert_path_key_to_range;
 
 import 'package:falcor_dart/src/types/range.dart';
 import 'package:falcor_dart/src/utils.dart';
+import 'package:falcor_dart/src/operations/convert_path_key_to.dart';
 
 void onRange(List out, Range range) {
   out.add(range);
@@ -10,7 +11,7 @@ void onRange(List out, Range range) {
 /**
  * @param {Number|String} key must be a number
  */
-Range keyReduce(List out, key, Range range) {
+Range keyReduce(List out, key, [Range range]) {
   if (!isNumeric(key)) {
     return range;
   }
@@ -37,3 +38,5 @@ Range keyReduce(List out, key, Range range) {
 
   return range;
 }
+
+var convertPathKeyToRange = convertPathKeyTo(onRange, keyReduce);

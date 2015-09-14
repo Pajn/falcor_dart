@@ -4,11 +4,14 @@ class Range {
   int from;
   int to;
 
-  int get length => (to ?? from) - from ?? 0;
+  int get length => to - from;
 
-  Range(this.from, this.to);
+  Range(this.from, this.to) {
+    from ??= 0;
+    to ??= from;
+  }
 
-  List toList() => new List.generate(length, (index) => index + from);
+  List toList() => new List.generate(length+1, (index) => index + from);
 
   String toString() => 'Range{from: $from, to: $to}';
 

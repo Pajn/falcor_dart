@@ -38,6 +38,6 @@ bool isPathValue(output) {
   return output is Map && output.containsKey('path') && output.containsKey('value');
 }
 
-bool isRoutedToken(Map output) {
-  return output.containsKey('type') && output.containsKey('named');
+bool isRoutedToken(output) {
+  return output is Map && output.containsKey('type') && output.containsKey('named');
 }

@@ -1,6 +1,10 @@
 library falcor_dart.convert_path_key_to;
 
-convertPathKeyTo(onRange, onKey) {
+import 'package:falcor_dart/src/types/range.dart';
+
+typedef dynamic OnKey(List out, key, [reducer]);
+
+convertPathKeyTo(onRange, OnKey onKey) {
   return (keySet) {
     var out = [];
 
@@ -17,7 +21,7 @@ convertPathKeyTo(onRange, onKey) {
     }
 
     // What passed in is a range.
-    else if (keySet is Map) {
+    else if (keySet is Range) {
       onRange(out, keySet);
     }
 

@@ -30,7 +30,7 @@ import 'package:falcor_dart/src/operations/strip/strip.dart';
  * @param {PathSet} matchedPath
  * @param {PathSet} virtualPath
  */
-stripPath(matchedPath, virtualPath) {
+List stripPath(List matchedPath, List virtualPath) {
   var relativeComplement = [];
   var exactMatch = [];
   var current = [];
@@ -50,11 +50,12 @@ stripPath(matchedPath, virtualPath) {
     // 2.  If there is both the catAndslice.
 
     if (hasComplement) {
+      print('DANGER!!!!!!!!!!!!!!!!');
+      print('hasComplement may be wierd');
       var flattendIC =
           innerComplement.length == 1 ? innerComplement[0] : innerComplement;
       current[i] = flattendIC;
-      relativeComplement[relativeComplement.length] =
-          catAndSlice(current, matchedPath, i + 1);
+      relativeComplement.add(catAndSlice(current, matchedPath, i + 1));
     }
 
   // The exact match needs to be produced for calling function.

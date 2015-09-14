@@ -73,9 +73,10 @@ Matcher matcher(Map<Keys, Map> rst) {
       // they can collapse and alter the amount of arrays.
       var collapsedResults = collapse(reducedMatch.map((x) => x['requested']).toList());
 
-      var i, index = 0;
+      var i = 0;
+      var index = 0;
       collapsedResults.forEach((path) {
-        var reducedVirtualPath = reducedMatch[i].virtual;
+        var reducedVirtualPath = reducedMatch[i]['virtual'];
         path.forEach((atom) {
 
           // If its not a routed atom then wholesale replace
@@ -100,10 +101,10 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
   [int depth = 0, List requested, List virtual, List precedence]) {
   if (curr == null) return;
 
-  if (matchedFunctions == null) matchedFunctions = [];
-  if (requested == null) requested = [];
-  if (virtual == null) virtual = [];
-  if (precedence == null) precedence = [];
+  matchedFunctions ??= [];
+  requested ??= [];
+  virtual ??= [];
+  precedence ??= [];
 
   // At this point in the traversal we have hit a matching function.
   // Its time to terminate.
@@ -200,7 +201,7 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
 
       virtual.add({
         'type': type,
-        'named': next[Keys.named],
+        'named': next[Keys.named] ?? false,
         'name': next[Keys.name]
       });
 

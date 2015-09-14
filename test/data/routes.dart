@@ -155,13 +155,13 @@ genreListsRoutes() {
 generateVideoJSONG(id) {
   var videos;
   var jsongEnv = {
-    'jsonGraph': {videos: (videos = {})},
+    'jsonGraph': {'videos': (videos = {})},
     'paths': [
       ['videos', id, 'summary']
     ]
   };
   videos[id] = {
-    'summary': $atom({'title': 'Some Movie ' + id})
+    'summary': $atom({'title': 'Some Movie $id'})
   };
 
   return jsongEnv;
@@ -177,7 +177,7 @@ generateVideoStateJSONG(id) {
       ['videos', 'state', id]
     ]
   };
-  videos['state'][id] = $atom({'title': 'Some State ' + id});
+  videos['state'][id] = $atom({'title': 'Some State $id'});
 
   return jsongEnv;
 }

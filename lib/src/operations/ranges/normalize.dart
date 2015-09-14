@@ -1,16 +1,18 @@
 library falcor_dart.normalize;
 
+import 'package:falcor_dart/src/types/range.dart';
+
 /**
  * takes in a range and normalizes it to have a to / from
  */
-normalize(range) {
-  var from = range.from || 0;
+normalize(Map range) {
+  var from = range['from'] ?? 0;
   var to;
-  if (typeof range.to === 'number') {
-    to = range.to;
+  if (range['to'] is num) {
+    to = range['to'];
   } else {
     to = from + range.length - 1;
   }
 
-  return {to: to, from: from};
+  return new Range(from, to);
 }

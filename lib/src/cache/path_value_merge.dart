@@ -1,6 +1,7 @@
 library falcor_dart.path_value_merge;
 
 import 'package:falcor_dart/src/path_utils/iterate_key_set.dart';
+import 'package:falcor_dart/src/types/sentinels.dart';
 
 
 /**
@@ -19,7 +20,7 @@ Map pathValueMerge(Map cache, Map pathValue) {
 
   // References.  Needed for evaluationg suffixes in
   // both call and get/set.
-  else if (pathValue['value'][r'$type'] == r'$ref') {
+  else if (pathValue['value'] is Sentinel && pathValue['value'].isRef) {
     refs.add({
       'path': pathValue['path'],
       'value': pathValue['value']['value']
@@ -45,7 +46,7 @@ Map pathValueMerge(Map cache, Map pathValue) {
 }
 
 innerPathValueMerge(Map cache, pathValue) {
-  var path = pathValue.path;
+  var path = pathValue['path'];
   var curr = cache;
   var next, key, cloned, outerKey, iteratorNote;
   var i = 0;
@@ -65,7 +66,7 @@ innerPathValueMerge(Map cache, pathValue) {
     do {
       next = curr[key];
 
-      if (!next) {
+      if (next == null) {
         next = curr[key] = {};
       }
 

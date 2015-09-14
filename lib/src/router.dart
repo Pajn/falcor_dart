@@ -10,6 +10,7 @@ import 'package:falcor_dart/src/cache/path_value_merge.dart';
 import 'package:falcor_dart/src/operations/matcher.dart';
 import 'package:falcor_dart/src/parse_tree/parse_tree.dart';
 import 'package:falcor_dart/src/run/run_call_action.dart';
+import 'package:falcor_dart/src/operations/ranges/normalize_path_sets.dart';
 
 class Router {
   List<Map> _routes;
@@ -25,8 +26,8 @@ class Router {
   Future get(paths) {
     var jsongCache = {};
     var action = runGetAction(this, jsongCache);
-//    var normPS = normalizePathSets(paths);
-    var normPS = paths;
+    var normPS = normalizePathSets(paths);
+//    var normPS = paths;
 
     return run(this._matcher, action, normPS, 'get', this, jsongCache)
       .then((jsongEnv) => materializeMissing(this, paths, jsongEnv));

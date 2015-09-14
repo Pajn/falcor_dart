@@ -1,6 +1,7 @@
 library falcor_dart.testruner;
 
 import 'package:guinness2/guinness2.dart';
+import 'package:falcor_dart/src/types/sentinels.dart';
 
 class TestRunner {
   static run(value, compares) async {
@@ -11,11 +12,11 @@ class TestRunner {
       jsongPartialCompare(c['jsonGraph'], value['jsonGraph']);
     });
 
-    value.forEach((v) {
+    value.forEach((k, v) {
       count++;
     });
 
-    expect(count, 'The observable should of onNext one time').toEqual(1);
+    expect(count).toEqual(1);
   }
 
   static rangeToArray(ranges) {
@@ -67,16 +68,19 @@ traverseAndConvert(obj) {
 }
 
 contains(Map expectedPartial, actual, position) {
-  print(expectedPartial);
-  print(actual);
   expectedPartial.keys.forEach((k) {
     var message = 'Object' + position;
     expect(actual.keys).toContain(k);
 
     if (expectedPartial[k] is! Map || actual[k] is! Map) {
-      expect(actual[k], message + '.' + k).toEqual(expectedPartial[k]);
+      if (actual[k] is Sentinel) {
+        expect(actual[k].type).toEqual(expectedPartial[k].type);
+        expect(actual[k].value).toEqual(expectedPartial[k].value);
+      } else {
+        expect(actual[k]).toEqual(expectedPartial[k]);
+      }
     } else {
-      contains(expectedPartial[k], actual[k], position + '.' + k);
+      contains(expectedPartial[k], actual[k], position + '.$k');
     }
   });
 }

@@ -30,6 +30,7 @@ Map<Keys, Map> parseTree(List<Map> routes) {
     }
 
     setHashOrThrowError(parseMap, route);
+    route['route'] = route['route'].toList();
     buildParseTree(pTree, route);
   });
   return pTree;
@@ -37,7 +38,7 @@ Map<Keys, Map> parseTree(List<Map> routes) {
 
 void buildParseTree(Map<Keys, Map> node, Map routeObject, [int depth = 0]) {
 
-  var route = routeObject['route'].toList();
+  var route = routeObject['route'];
   var get = routeObject['get'];
   var set = routeObject['set'];
   var call = routeObject['call'];

@@ -5,19 +5,26 @@ import 'package:falcor_dart/src/types/sentinels.dart';
 import 'package:falcor_dart/src/router.dart';
 import 'package:falcor_dart/src/utils.dart';
 
-runGetAction(Router routerInstance, Map jsongCache) {
-  return (matchAndPath) {
+typedef Stream ActionRunner(Map matchAndPath);
+
+ActionRunner runGetAction(Router routerInstance, Map jsongCache) {
+  return (Map matchAndPath) {
     return getAction(routerInstance, matchAndPath, jsongCache);
   };
 }
 
-Stream getAction(Router routerInstance, matchAndPath, Map jsongCache) {
+Future<List> getAction(Router routerInstance, Map matchAndPath, Map jsongCache) async {
   var match = matchAndPath['match'];
-  var matchAction = match['action'](matchAndPath['path']);
-  var out = outputToStream(matchAction);
+  var matchAction = await match['action'](matchAndPath['path']);
+  if (matchAction is Iterable) {
+    matchAction = matchAction.toList();
+  }
+  else {
+    matchAction = [matchAction];
+  }
+//  var out = outputToStream(matchAction);
 
-  return out
-    .where((note) => note.kind != 'C')
+  return matchAction
     .map(noteToJsongOrPV(matchAndPath));
 }
 
@@ -48,11 +55,9 @@ noteToJsongOrPV(match) {
 
 convertNoteToJsongOrPV(matchAndPath, note) {
   var incomingJSONGOrPathValues;
-  var kind = note.kind;
-  var onNext = 'N';
 
-  if (kind == onNext) {
-    incomingJSONGOrPathValues = note.value;
+  if (true) {
+    incomingJSONGOrPathValues = note;
   }
 
   else {
@@ -60,11 +65,11 @@ convertNoteToJsongOrPV(matchAndPath, note) {
     var exception = {};
 
     // Rx3, what will this be called?
-    if (note.exception) {
+    if (note['exception'] != null) {
       exception = note.exception;
     }
 
-    if (exception.throwToNext) {
+    if (exception['throwToNext'] == true) {
       throw exception;
     }
 
@@ -78,7 +83,7 @@ convertNoteToJsongOrPV(matchAndPath, note) {
     }
 
     incomingJSONGOrPathValues = {
-      'path': matchAndPath.path,
+      'path': matchAndPath['path'],
       'value': typeValue
     };
   }
@@ -86,15 +91,15 @@ convertNoteToJsongOrPV(matchAndPath, note) {
   // If its jsong we may need to optionally attach the
   // paths if the paths do not exist
   if (isJSONG(incomingJSONGOrPathValues) &&
-      !incomingJSONGOrPathValues.paths) {
+      incomingJSONGOrPathValues['paths'] == null) {
 
     incomingJSONGOrPathValues = {
-      'jsonGraph': incomingJSONGOrPathValues.jsonGraph,
-      'paths': [matchAndPath.path]
+      'jsonGraph': incomingJSONGOrPathValues['jsonGraph'],
+      'paths': [matchAndPath['path']]
     };
   }
 
-  return [matchAndPath.match, incomingJSONGOrPathValues];
+  return [matchAndPath['match'], incomingJSONGOrPathValues];
 }
 
 class JSONGraphError {

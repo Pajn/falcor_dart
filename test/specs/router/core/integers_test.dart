@@ -11,7 +11,6 @@ main() {
     it('should match integers for videos with int keys passed in.', () {
       var router =
           new Router(routes()['Videos']['Integers']['Summary']((pathSet) {
-            print(pathSet);
         TestRunner.comparePath([
           'videos',
           [1],
@@ -90,8 +89,7 @@ main() {
       var router = new Router([
         {
           'route': 'titlesById[{integers}]["name", "rating"]',
-          'get': () {
-            print('inside get');
+          'get': ([_]) {
             return [
               {
                 'path': ['titlesById', 1, 'name'],

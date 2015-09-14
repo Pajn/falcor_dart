@@ -1,6 +1,8 @@
 library falcor_dart.parse_tree.convert_path_to_route;
 
 import 'package:falcor_dart/src/keys.dart';
+import 'package:falcor_dart/src/operations/convert_path_key_to_integers.dart';
+import 'package:falcor_dart/src/operations/convert_path_key_to_range.dart';
 
 /// takes the path that was matched and converts it to the
 /// virtual path.
@@ -10,19 +12,14 @@ convertPathToRoute(path, route) {
   // it contains suffixes.
   for (var i = 0, len = route.length; i < len; ++i) {
 
-    print('route');
-    print(route);
-    print(route[i]);
     if (route[i] is Map && route[i]['type'] is Keys) {
       var virt = route[i];
       switch (virt['type']) {
         case Keys.ranges:
-          matched[i] =
-          convertPathKeyToRange(path[i]);
+          matched.add(convertPathKeyToRange(path[i]));
           break;
         case Keys.integers:
-          matched[i] =
-          convertPathKeyToIntegers(path[i]);
+          matched.add(convertPathKeyToIntegers(path[i]));
           break;
         case Keys.keys:
           matched[i] =
@@ -33,8 +30,8 @@ convertPathToRoute(path, route) {
 //          err.throwToNext = true;
           break;
       }
-      if (virt.named) {
-        matched[virt.name] = matched[matched.length - 1];
+      if (virt['named']) {
+        matched[virt['name']] = matched.last;
       }
     }
 
