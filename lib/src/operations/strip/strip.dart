@@ -40,19 +40,17 @@ List strip(matchedAtom, virtualAtom) {
   // Its a complex object set potentially.  Let the
   // subroutines handle the cases.
   else {
-    var results;
-
     // The matchedAtom needs to reduced to everything that is not in
     // the virtualAtom.
     if (matchedAtom is List) {
-      results = stripFromArray(virtualAtom, matchedAtom);
+      var results = stripFromArray(virtualAtom, matchedAtom);
       matchedResults = results[0];
       relativeComplement = results[1];
     } else {
       if (matchedAtom is! Range) {
         matchedAtom = new Range(matchedAtom['from'], matchedAtom['to']);
       }
-      results = stripFromRange(virtualAtom, matchedAtom);
+      var results = stripFromRange(virtualAtom, matchedAtom);
       matchedResults = results[0];
       relativeComplement = results[1];
     }

@@ -36,7 +36,7 @@ List stripPath(List matchedPath, List virtualPath) {
   var current = [];
 
   // Always use virtual path because it can be shorter.
-  for (var i = 0, len = virtualPath.length; i < len; ++i) {
+  for (var i = 0; i < virtualPath.length; ++i) {
     var matchedAtom = matchedPath[i];
     var virtualAtom = virtualPath[i];
     var stripResults = strip(matchedAtom, virtualAtom);
@@ -58,7 +58,7 @@ List stripPath(List matchedPath, List virtualPath) {
       relativeComplement.add(catAndSlice(current, matchedPath, i + 1));
     }
 
-  // The exact match needs to be produced for calling function.
+    // The exact match needs to be produced for calling function.
     exactMatch.add(innerMatch);
     if (i < current.length) {
       current[i] = innerMatch;

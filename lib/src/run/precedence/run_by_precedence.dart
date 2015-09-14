@@ -5,7 +5,7 @@ import 'package:falcor_dart/src/run/precedence/get_executable_matches.dart';
 import 'package:falcor_dart/src/run/run_get_action.dart';
 
 /// Sorts and strips the set of available matches given the pathSet.
-Future<List<Map>> runByPrecedence(pathSet, matches, ActionRunner actionRunner) async {
+Future<List<Map>> runByPrecedence(pathSet, List matches, ActionRunner actionRunner) async {
 
   // Precendence matching
   var sortedMatches = new List.from(matches)..sort((a, b) {

@@ -39,7 +39,7 @@ main() {
       expect(value).toEqual(expectedRoutes()['Videos']['someKey']['summary']);
     });
 
-    it('should match array of keys.', () {
+    it('should match array of keys.', () async {
       var router = new Router(routes()['Videos']['Keys']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
@@ -47,7 +47,7 @@ main() {
           'summary'
         ], pathSet);
       }));
-      var obs = router.get([
+      var obs = await router.get([
         [
           'videos',
           [1, 'someKey'],

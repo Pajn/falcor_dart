@@ -44,7 +44,6 @@ void optimizePathSet(cache, Map cacheRoot, PathSet pathSet, depth, List out,
     return;
   }
 
-  print(cache);
   var keySet = pathSet[depth];
   var nextDepth = depth + 1;
   var iteratorNote = {};

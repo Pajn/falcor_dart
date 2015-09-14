@@ -31,7 +31,7 @@ List stripFromArray(toStrip, List array) {
   var isNumber = toStrip is num;
   var isString = toStrip is String;
   var isRoutedToken = !isNumber && !isString;
-  var routeType = isRoutedToken && toStrip['type'] != null || false;
+  var routeType = toStrip['type'];
   var isKeys = routeType == Keys.keys;
 
   // The early break case.  If its a key, then there is never a

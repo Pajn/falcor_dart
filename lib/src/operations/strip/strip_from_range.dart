@@ -33,21 +33,19 @@ stripFromRange(argToStrip, Range range) {
   // Strip out NaNs
   if (toStrip is String) {
     ranges = [range];
-  }
-
-  else if (toStrip is List) {
+  } else if (toStrip is List) {
     var currenRanges = [range];
     toStrip.forEach((atom) {
       var nextRanges = [];
       currenRanges.forEach((currentRename) {
-      var matchAndComplement = stripFromRange(atom, currentRename);
-      if (matchAndComplement[0] != null) {
-      matches.addAll(matchAndComplement[0]);
-      }
+        var matchAndComplement = stripFromRange(atom, currentRename);
+        if (matchAndComplement[0] != null) {
+          matches.addAll(matchAndComplement[0]);
+        }
 
-      nextRanges.addAll(matchAndComplement[1]);
-    });
-    currenRanges = nextRanges;
+        nextRanges.addAll(matchAndComplement[1]);
+      });
+      currenRanges = nextRanges;
     });
 
     ranges = currenRanges;
@@ -55,7 +53,6 @@ stripFromRange(argToStrip, Range range) {
 
   // The simple case, its just a number.
   else if (toStrip is num) {
-
     if (range.from < toStrip && toStrip < range.to) {
       ranges[0] = new Range(range.from, toStrip - 1);
       ranges[1] = new Range(toStrip + 1, range.to);
@@ -68,14 +65,10 @@ stripFromRange(argToStrip, Range range) {
     else if (range.from == toStrip && range.to == toStrip) {
       ranges = [];
       matches = [toStrip];
-    }
-
-    else if (range.from == toStrip) {
+    } else if (range.from == toStrip) {
       ranges[0] = new Range(toStrip + 1, range.to);
       matches = [toStrip];
-    }
-
-    else if (range.to == toStrip) {
+    } else if (range.to == toStrip) {
       ranges[0] = new Range(range.from, toStrip - 1);
       matches = [toStrip];
     }
