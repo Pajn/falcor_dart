@@ -3,6 +3,7 @@ library falcor_dart.cache.optimize_path_set;
 import 'package:falcor_dart/src/cache/follow_reference.dart';
 import 'package:falcor_dart/src/path_utils/iterate_key_set.dart';
 import 'package:falcor_dart/src/utils.dart';
+import 'package:falcor_dart/src/path_parts.dart';
 
 /// The fastest possible optimize of paths.
 ///
@@ -21,7 +22,7 @@ List optimizePathSets(Map cache, List<List> paths, int maxRefFollow) {
 }
 
 /// optimizes one pathSet at a time.
-void optimizePathSet(Map cache, Map cacheRoot, List pathSet, depth, List out,
+void optimizePathSet(Map cache, Map cacheRoot, PathSet pathSet, depth, List out,
     List optimizedPath, int maxRefFollow) {
   // at missing, report optimized path.
   if (cache == null) {

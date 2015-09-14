@@ -255,7 +255,7 @@ main() {
       });
     });
 
-    it('should validate that optimizedPathSets strips out already found data.',
+    iit('should validate that optimizedPathSets strips out already found data.',
         () async {
       //    this.timeout(10000);
       var serviceCalls = 0;
@@ -264,7 +264,7 @@ main() {
         {
           'route': 'lists[{keys:ids}]',
           'get': (aliasMap) {
-            return aliasMap.ids.map((id) {
+            return aliasMap['ids'].map((id) {
               if (id == 0) {
                 return {
                   'path': ['lists', id],
@@ -279,13 +279,13 @@ main() {
                 .
 
                 // Note: this causes the batching to work.
-                toArray();
+                toList();
           }
         },
         {
           'route': 'two.be[{integers:ids}].summary',
           'get': (aliasMap) {
-            return aliasMap.ids.map((id) {
+            return aliasMap['ids'].map((id) {
               serviceCalls++;
               return {
                 'path': ['two', 'be', id, 'summary'],

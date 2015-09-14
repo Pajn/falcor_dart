@@ -4,11 +4,12 @@ import 'package:falcor_dart/src/keys.dart';
 import 'package:falcor_dart/src/operations/convert_path_key_to_integers.dart';
 import 'package:falcor_dart/src/operations/convert_path_key_to_keys.dart';
 import 'package:falcor_dart/src/operations/convert_path_key_to_range.dart';
+import 'package:falcor_dart/src/path_parts.dart';
 
 /// takes the path that was matched and converts it to the
 /// virtual path.
 convertPathToRoute(path, route) {
-  var matched = [];
+  var matched = new PathSet();
   // Always use virtual path since path can be longer since
   // it contains suffixes.
   for (var i = 0, len = route.length; i < len; ++i) {

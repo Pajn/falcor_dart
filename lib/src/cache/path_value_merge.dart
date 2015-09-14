@@ -23,7 +23,7 @@ Map pathValueMerge(Map cache, Map pathValue) {
   else if (pathValue['value'] is Sentinel && pathValue['value'].isRef) {
     refs.add({
       'path': pathValue['path'],
-      'value': pathValue['value']['value']
+      'value': pathValue['value'].value
     });
   }
 

@@ -5,10 +5,15 @@ class Key {
 }
 
 class PathSet {
-  final List pathParts;
-  final Map namedPathParts;
+  final List pathParts = [];
+  final Map namedPathParts = {};
 
-  PathSet(this.pathParts, this.namedPathParts);
+  get last => pathParts.last;
+  int get length => pathParts.length;
+
+  PathSet();
+
+  add(value) => pathParts.add(value);
 
   operator [](key) {
     if (key is int) return pathParts[key];
@@ -16,5 +21,9 @@ class PathSet {
     else {
       throw new UnsupportedError('Unsupported type "${key.runtimeType}" as PathSet key');
     }
+  }
+
+  operator []=(key, value) {
+    namedPathParts[key] = value;
   }
 }

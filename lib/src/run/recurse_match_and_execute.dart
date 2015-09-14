@@ -70,7 +70,9 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
 
       // Merges the remaining suffix with remaining nextPaths
       pathsToExpand = pathsToExpand.map((next) {
-        return next['value'].concat(suffix);
+        print('TYPE');
+        print(suffix);
+        return next['value'] + suffix.join('');
       });
 
       // Alters the behavior of the expand
@@ -165,7 +167,7 @@ mergeCacheAndGatherRefsAndInvalidations(cache, jsongOrPVs) {
 
     if (refs != null && refs.isNotEmpty) {
       refs.forEach((ref) {
-        references[++len] = ref;
+        references.add(ref);
       });
     }
   });
