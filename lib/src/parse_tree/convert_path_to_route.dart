@@ -4,7 +4,7 @@ import 'package:falcor_dart/src/keys.dart';
 import 'package:falcor_dart/src/operations/convert_path_key_to_integers.dart';
 import 'package:falcor_dart/src/operations/convert_path_key_to_keys.dart';
 import 'package:falcor_dart/src/operations/convert_path_key_to_range.dart';
-import 'package:falcor_dart/src/path_parts.dart';
+import 'package:falcor_dart/src/path_set.dart';
 
 /// takes the path that was matched and converts it to the
 /// virtual path.
@@ -32,8 +32,6 @@ convertPathToRoute(path, route) {
           break;
       }
       if (virt['named']) {
-        print('named');
-        print(matched);
         matched[virt['name']] = matched.last;
       }
     }

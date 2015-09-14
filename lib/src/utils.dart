@@ -48,8 +48,6 @@ bool isRoutedToken(output) {
 prettifyRoute(Iterable route) {
   var length = 0;
   var str = [];
-  print('route');
-  print(route);
 
   route = route.toList();
 

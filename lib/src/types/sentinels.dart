@@ -1,5 +1,7 @@
 library falcor_dart.sentinels;
 
+import 'package:falcor_dart/path_syntax.dart' as pathSyntax;
+
 class Sentinel {
   final String type;
   final value;
@@ -43,16 +45,12 @@ class Sentinel {
 
   operator ==(other) {
     return other is Sentinel &&
-        type == other.type &&
-        value == other.value &&
-        expires == other.expires &&
-        timestamp == other.timestamp &&
-        size == other.size;
+           toString() == other.toString();
   }
 }
 
-Sentinel $ref(value, {int expires, int timestamp, int size}) =>
-    new Sentinel(r'ref', value,
+Sentinel $ref(path, {int expires, int timestamp, int size}) =>
+    new Sentinel(r'ref', path is String ? pathSyntax.parse(path) : path,
         expires: expires, timestamp: timestamp, size: size);
 
 Sentinel $atom(value, {int expires, int timestamp, int size}) =>

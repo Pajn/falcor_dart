@@ -9,6 +9,7 @@ import 'package:falcor_dart/src/path_utils/collapse.dart';
 import 'package:falcor_dart/src/cache/path_value_merge.dart';
 import 'package:falcor_dart/src/utils.dart';
 import 'package:falcor_dart/src/cache/jsong_merge.dart';
+import 'package:falcor_dart/src/path_set.dart';
 
 /**
  * The recurse and match function will async recurse as long as
@@ -26,30 +27,29 @@ Future recurseMatchAndExecute(
 /**
  * performs the actual recursing
  */
-Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
+Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
     String method, Router routerInstance, jsongCache) async {
   var missing = [];
   var invalidated = [];
   var reportedPaths = [];
   var currentMethod = method;
 
-  await Future.wait(paths.map((List nextPaths) async {
-    if (nextPaths.isEmpty) {
-      return [];
-    }
+  var toExecute = new List.from(paths);
+
+  while (toExecute.isNotEmpty) {
+    var nextPaths = toExecute.removeAt(0);
+    if (nextPaths.isEmpty) continue;
 
     var matchedResults = match(currentMethod, nextPaths);
 
-    if (matchedResults.matched.isEmpty) {;
-      return [];
-    }
+    if (matchedResults.matched.isEmpty) continue;
 
     var matchedResult = matchedResults.matched;
     var results = await runByPrecedence(nextPaths, matchedResult, actionRunner);
 
     // Generate from the combined results the next requestable paths
     // and insert errors / values into the cache.
-    return results.expand((results) {
+    results.forEach((results) {
       var value = results['value'];
       var suffix = results['match']['suffix'];
 
@@ -70,9 +70,10 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
 
       // Merges the remaining suffix with remaining nextPaths
       pathsToExpand = pathsToExpand.map((next) {
-        print('TYPE');
-        print(suffix);
-        return next['value'] + suffix.join('');
+        var pathSet = new PathSet();
+        pathSet.addAll(next['value']);
+        pathSet.addAll(suffix);
+        return pathSet;
       });
 
       // Alters the behavior of the expand
@@ -106,9 +107,10 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<List> paths,
       }
 
       missing.addAll(matchedResults.missingPaths);
-      return pathsToExpand;
-    }).toList();
-  }));
+
+      toExecute.addAll(pathsToExpand);
+    });
+  }
 
   // Each pathSet (some form of collapsed path) need to be sent
   // independently.  for each collapsed pathSet will, if producing
@@ -166,9 +168,7 @@ mergeCacheAndGatherRefsAndInvalidations(cache, jsongOrPVs) {
     }
 
     if (refs != null && refs.isNotEmpty) {
-      refs.forEach((ref) {
-        references.add(ref);
-      });
+      references.addAll(refs);
     }
   });
 

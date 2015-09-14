@@ -1,6 +1,6 @@
 library falcor_dart.route;
 
-import 'package:falcor_dart/src/path_parts.dart';
+import 'package:falcor_dart/src/path_set.dart';
 
 typedef dynamic Handler(PathSet pathSet);
 

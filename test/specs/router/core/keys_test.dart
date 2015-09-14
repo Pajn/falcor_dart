@@ -21,9 +21,6 @@ main() {
         ['videos', 1, 'summary']
       ]);
       expect(value).toEqual(expectedRoutes()['Videos'][1]['summary']);
-      called = true;
-
-      expect(called, 'expect onNext called 1 time.').toEqual(true);
     });
 
     it('should match specific key with keys.', () async {
@@ -40,9 +37,6 @@ main() {
       ]);
 
       expect(value).toEqual(expectedRoutes()['Videos']['someKey']['summary']);
-      called = true;
-
-      expect(called, 'expect onNext called 1 time.').toEqual(true);
     });
 
     it('should match array of keys.', () {

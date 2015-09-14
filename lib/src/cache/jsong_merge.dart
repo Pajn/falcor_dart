@@ -30,7 +30,7 @@ Map jsongMerge(Map cache, jsongEnv) {
   };
 }
 
-merge(Map config, Map cache, message, depth, path, [fromParent, fromKey]) {
+merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
   var cacheRoot = config['cacheRoot'];
   var messageRoot = config['messageRoot'];
   var requestedPath = config['requestedPath'];

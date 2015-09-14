@@ -14,7 +14,7 @@ Map pathValueMerge(Map cache, Map pathValue) {
 
   // The invalidation case.  Needed for reporting
   // of call.
-  if (pathValue['value'] == null) {
+  if (!pathValue.containsKey('value')) {
     invalidations.add({'path': pathValue['path']});
   }
 
@@ -46,7 +46,7 @@ Map pathValueMerge(Map cache, Map pathValue) {
 }
 
 innerPathValueMerge(Map cache, pathValue) {
-  var path = pathValue['path'];
+  List path = pathValue['path'];
   var curr = cache;
   var next, key, cloned, outerKey, iteratorNote;
   var i = 0;
@@ -60,7 +60,6 @@ innerPathValueMerge(Map cache, pathValue) {
       key = iterateKeySet(outerKey, iteratorNote);
     } else {
       key = outerKey;
-      iteratorNote = false;
     }
 
     do {
@@ -70,14 +69,14 @@ innerPathValueMerge(Map cache, pathValue) {
         next = curr[key] = {};
       }
 
-      if (iteratorNote) {
+      if (iteratorNote != null) {
         innerPathValueMerge(
             next, {
-          'path': path.slice(i + 1),
-          'value': pathValue.value
+          'path': path.sublist(i + 1),
+          'value': pathValue['value']
         });
 
-        if (!iteratorNote.done) {
+        if (!iteratorNote['done']) {
           key = iterateKeySet(outerKey, iteratorNote);
         }
       }
@@ -85,11 +84,11 @@ innerPathValueMerge(Map cache, pathValue) {
       else {
         curr = next;
       }
-    } while (iteratorNote && !iteratorNote.done);
+    } while (iteratorNote != null && !iteratorNote['done']);
 
     // All memoized paths need to be stopped to avoid
     // extra key insertions.
-    if (iteratorNote) {
+    if (iteratorNote != null) {
       return;
     }
   }

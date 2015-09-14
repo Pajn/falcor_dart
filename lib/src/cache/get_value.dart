@@ -7,6 +7,7 @@
 /// @param {PathSet} path
 getValue(Map cache, List path) {
   return path.fold(cache, (acc, key) {
+    if (acc is! Map) return null;
     return acc[key];
   });
 }

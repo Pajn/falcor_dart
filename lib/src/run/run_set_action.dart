@@ -6,21 +6,22 @@ import 'package:falcor_dart/src/router.dart';
 import 'package:falcor_dart/src/cache/optimize_path_set.dart';
 import 'package:falcor_dart/src/path_utils/has_intersection.dart';
 import 'package:falcor_dart/src/cache/path_value_merge.dart';
+import 'package:falcor_dart/src/run/spread_paths.dart';
 
-outerRunSetAction(Router routerInstance, modelContext, Map jsongCache) {
+runSetAction(Router routerInstance, modelContext, Map jsongCache) {
   return (matchAndPath) =>
-      runSetAction(routerInstance, modelContext, matchAndPath, jsongCache);
+      innerRunSetAction(routerInstance, modelContext, matchAndPath, jsongCache);
 }
 
-runSetAction(Router routerInstance, jsongMessage, matchAndPath, [Map jsongCache]) {
-  var match = matchAndPath.match;
+innerRunSetAction(Router routerInstance, jsongMessage, matchAndPath, [Map jsongCache]) async {
+  var match = matchAndPath['match'];
   var out;
-  var arg = matchAndPath.path;
+  var arg = matchAndPath['path'];
 
   // We are at out destination.  Its time to get out
   // the pathValues from the
-  if (match.isSet) {
-    var paths = spreadPaths(jsongMessage.paths);
+  if (match['isSet']) {
+    var paths = spreadPaths(jsongMessage['paths']);
 
     // We have to ensure that the paths maps in order
     // to the optimized paths array.
@@ -30,22 +31,22 @@ runSetAction(Router routerInstance, jsongMessage, matchAndPath, [Map jsongCache]
             jsongCache, [path], routerInstance.maxRefFollow)[0])
         // only includes the paths from the set that intersect
         // the virtual path
-        .filter((path) => hasIntersection(path, match.virtual));
+        .where((path) => hasIntersection(path.asMap(), match['virtual']))
+        .toList();
 
     // Constructs the json that is the set request virtual path.
-    arg = paths.reduce((json, path, i) {
+    var i = 0;
+    arg = paths.fold({}, (json, path) {
       pathValueMerge(json, {
         'path': optimizedPaths[i],
-        'value': getValue(jsongMessage.jsonGraph, path)
+        'value': getValue(jsongMessage['jsonGraph'], path)
       });
+      i += 1;
       return json;
-    }, {});
+    });
   }
-  out = match.action.call(routerInstance, arg);
-  out = outputToStream(out);
+  out = await match['action'](arg);
 
-  return authorize(routerInstance, match, out)
-      .materialize()
-      .filter((note) => note.kind != 'C')
+  return out
       .map(noteToJsongOrPV(matchAndPath));
 }

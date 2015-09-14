@@ -121,8 +121,6 @@ setHashOrThrowError(Map parseMap, Map routeObject) {
   var call = routeObject['call'];
 
   getHashesFromRoute(route).map((hash) => hash.join(',')).forEach((hash) {
-    print('hash');
-    print(hash);
     if (get != null && parseMap[hash + 'get'] != null ||
         set != null && parseMap[hash + 'set'] != null ||
         call != null && parseMap[hash + 'call'] != null) {

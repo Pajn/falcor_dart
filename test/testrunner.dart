@@ -69,7 +69,6 @@ traverseAndConvert(obj) {
 
 contains(Map expectedPartial, actual, position) {
   expectedPartial.keys.forEach((k) {
-    var message = 'Object' + position;
     expect(actual.keys).toContain(k);
 
     if (expectedPartial[k] is! Map || actual[k] is! Map) {

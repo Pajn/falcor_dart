@@ -11,6 +11,7 @@ import 'package:falcor_dart/src/operations/matcher.dart';
 import 'package:falcor_dart/src/parse_tree/parse_tree.dart';
 import 'package:falcor_dart/src/run/run_call_action.dart';
 import 'package:falcor_dart/src/operations/ranges/normalize_path_sets.dart';
+import 'package:falcor_dart/src/types/sentinels.dart';
 
 class Router {
   List<Map> _routes;
@@ -27,7 +28,6 @@ class Router {
     var jsongCache = {};
     var action = runGetAction(this, jsongCache);
     var normPS = normalizePathSets(paths);
-//    var normPS = paths;
 
     return run(this._matcher, action, normPS, 'get', this, jsongCache)
       .then((jsongEnv) => materializeMissing(this, paths, jsongEnv));
@@ -38,9 +38,10 @@ class Router {
     // when http://github.com/Netflix/falcor-router/issues/24 is addressed
     var jsongCache = {};
     var action = runSetAction(this, jsong, jsongCache);
+    var normPS = normalizePathSets(jsong['paths']);
 
-    return run(this._matcher, action, jsong.paths, 'set', this, jsongCache)
-      .then((jsongEnv) => materializeMissing(this, jsong.paths, jsongEnv));
+    return run(this._matcher, action, normPS, 'set', this, jsongCache)
+      .then((jsongEnv) => materializeMissing(this, jsong['paths'], jsongEnv));
   }
 
   call(callPath, args, suffixes, paths) {
@@ -82,7 +83,8 @@ run(matcherFn, actionRunner, paths, method,
       matcherFn, actionRunner, paths, method, routerInstance, jsongCache);
 }
 
-materializeMissing(Router router, paths, jsongEnv, [missingAtom = const {r'$type': r'$atom'}]) {
+materializeMissing(Router router, paths, jsongEnv, [missingAtom]) {
+  missingAtom ??= $atom(null);
   var jsonGraph = jsongEnv['jsonGraph'];
 
   // Optimizes the pathSets from the jsong then
@@ -90,7 +92,7 @@ materializeMissing(Router router, paths, jsongEnv, [missingAtom = const {r'$type
   optimizePathSets(jsonGraph, paths, router.maxRefFollow).forEach((optMissingPath) {
     pathValueMerge(jsonGraph, {
       'path': optMissingPath,
-      'value': missingAtom
+      'value': missingAtom,
     });
   });
 

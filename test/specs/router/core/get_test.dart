@@ -5,6 +5,7 @@ import 'package:falcor_dart/src/types/sentinels.dart';
 
 import '../../../data/routes.dart';
 import '../../../data/expected.dart';
+import 'package:falcor_dart/src/path_set.dart';
 
 main() {
   describe('Get', () {
@@ -255,7 +256,7 @@ main() {
       });
     });
 
-    iit('should validate that optimizedPathSets strips out already found data.',
+    it('should validate that optimizedPathSets strips out already found data.',
         () async {
       //    this.timeout(10000);
       var serviceCalls = 0;
@@ -324,20 +325,22 @@ main() {
       var rating = 0;
       var called = 0;
       var router = getPrecedenceRouter(onTitle: (alias) {
-        var expected = [
+        var expected = new PathSet();
+        expected.addAll([
           'videos',
           [123],
           'title'
-        ];
+        ]);
         expected['ids'] = expected[1];
         expect(alias).toEqual(expected);
         title++;
       }, onRating: (alias) {
-        var expected = [
+        var expected = new PathSet();
+        expected.addAll([
           'videos',
           [123],
           'rating'
-        ];
+        ]);
         expected['ids'] = expected[1];
         expect(alias).toEqual(expected);
         rating++;
@@ -353,7 +356,7 @@ main() {
       expect(value).toEqual({
         'jsonGraph': {
           'videos': {
-            '123': {'title': 'title 123', 'rating': 'rating 123'}
+            123: {'title': 'title 123', 'rating': 'rating 123'}
           }
         }
       });
@@ -373,7 +376,7 @@ main() {
       expect(value).toEqual({
         'jsonGraph': {
           'lists': {
-            'abc': {'0': $ref('videos[0]')}
+            'abc': {0: $ref('videos[0]')}
           }
         }
       });
@@ -446,7 +449,7 @@ main() {
         'jsonGraph': {
           'videos': {
             1: {
-              'title': {r'$type': 'atom'}
+              'title': $atom(null)
             }
           }
         }
@@ -462,16 +465,14 @@ getPrecedenceRouter({onTitle, onRating}) {
       'route': 'videos[{integers:ids}].title',
       'get': (alias) {
 
-        print('expand');
-        print(alias);
-        var ids = alias.ids;
+        var ids = alias['ids'];
         if (onTitle != null) {
           onTitle(alias);
         }
         return ids.map((id) {
           return {
             'path': ['videos', id, 'title'],
-            'value': 'title ' + id
+            'value': 'title $id',
           };
         });
       }
@@ -479,14 +480,14 @@ getPrecedenceRouter({onTitle, onRating}) {
     {
       'route': 'videos[{integers:ids}].rating',
       'get': (alias) {
-        var ids = alias.ids;
+        var ids = alias['ids'];
         if (onRating != null) {
           onRating(alias);
         }
         return ids.map((id) {
           return {
             'path': ['videos', id, 'rating'],
-            'value': 'rating ' + id
+            'value': 'rating $id',
           };
         });
       }
@@ -494,14 +495,14 @@ getPrecedenceRouter({onTitle, onRating}) {
     {
       'route': 'lists[{keys:ids}][{integers:indices}]',
       'get': (alias) {
-        return alias.ids.expand((id) {
-          return alias.indices.map((idx) {
+        return alias['ids'].expand((id) {
+          return alias['indices'].map((idx) {
             return {'id': id, 'idx': idx};
           });
         }).map((data) {
           return {
-            'path': ['lists', data.id, data.idx],
-            'value': $ref(['videos', data.idx])
+            'path': ['lists', data['id'], data['idx']],
+            'value': $ref(['videos', data['idx']])
           };
         });
       }

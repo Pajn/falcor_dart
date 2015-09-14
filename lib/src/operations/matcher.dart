@@ -130,7 +130,7 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
   // From https://github.com/Netflix/falcor-router/issues/76
   // Set: When there is no set hander then we should default to running
   // the get handler so that we do not destroy the client local values.
-  if (currentMatch != null && isSet && !currentMatch['set']) {
+  if (currentMatch != null && isSet && currentMatch['set'] == null) {
     methodToUse = 'get';
   }
 

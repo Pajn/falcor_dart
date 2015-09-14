@@ -26,7 +26,6 @@ Future<List<Map>> runByPrecedence(pathSet, matches, ActionRunner actionRunner) a
     // Note: We do not wait for each observable to finish,
     // but repeat the cycle per onNext.
     .map((actionTuple) {
-      actionTuple = actionTuple.toList();
       return {
         'match': actionTuple[0],
         'value': actionTuple[1]
