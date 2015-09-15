@@ -114,9 +114,6 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
   // independently.  for each collapsed pathSet will, if producing
   // refs, be the highest likelihood of collapsibility.
 
-//  print('returns');
-//  print(jsongCache);
-
   return {
     'missing': missing,
     'invalidated': invalidated,

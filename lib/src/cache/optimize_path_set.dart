@@ -28,7 +28,6 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
     List optimizedPath, int maxRefFollow, [bool containsKey = true]) {
 
 
-//    print(cache);
   // at missing, report optimized path.
   if (!containsKey) {
     out.add(catAndSlice(optimizedPath, pathSet, depth));

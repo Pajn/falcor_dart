@@ -354,14 +354,14 @@ main() {
       var routeResponse = {
         'jsonGraph': {
           'ProffersById': {
-            '1': {
+            1: {
               'ProductsList': {
-                '0': {
+                0: {
                   r'$size': 52,
                   r'$type': 'ref',
                   'value': ['ProductsById', 'CSC1471105X']
                 },
-                '1': {
+                1: {
                   r'$size': 52,
                   r'$type': 'ref',
                   'value': ['ProductsById', 'HON4033T']
