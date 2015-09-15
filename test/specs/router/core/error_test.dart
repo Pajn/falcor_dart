@@ -43,7 +43,7 @@ main() {
           ["videos", 1, "title"]
         ]);
         throw 'Should have thrown a CircularReferenceError';
-      } on CircularReferenceError catch(_) {}
+      } on CircularReferenceError catch (_) {}
     });
 
     it('thrown non-Error should insert in the value property of error object for all requested paths.',
@@ -103,12 +103,8 @@ main() {
       expect(routerSetValue).toEqual({
         'jsonGraph': {
           'videos': {
-            1234: {
-              'rating': $error({})
-            },
-            333: {
-              'rating': $error({})
-            }
+            1234: {'rating': $error({})},
+            333: {'rating': $error({})}
           }
         }
       });
@@ -142,12 +138,8 @@ main() {
       expect(routerSetValue).toEqual({
         'jsonGraph': {
           'videos': {
-            1234: {
-              'rating': $error({})
-            },
-            333: {
-              'rating': $error({})
-            }
+            1234: {'rating': $error({})},
+            333: {'rating': $error({})}
           }
         }
       });

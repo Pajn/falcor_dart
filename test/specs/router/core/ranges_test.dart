@@ -10,12 +10,11 @@ import 'package:falcor_dart/src/types/range.dart';
 main() {
   describe('Ranges', () {
     it('should match integers for videos with int keys passed in.', () {
-      var router = new Router(routes()['Videos']['Ranges']['Summary']((pathSet) {
+      var router =
+          new Router(routes()['Videos']['Ranges']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
-          [
-            new Range(1, 1)
-          ],
+          [new Range(1, 1)],
           'summary'
         ], pathSet);
       }));
@@ -27,12 +26,11 @@ main() {
     });
 
     it('should match ranges for videos with array of ints passed in.', () {
-      var router = new Router(routes()['Videos']['Ranges']['Summary']((pathSet) {
+      var router =
+          new Router(routes()['Videos']['Ranges']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
-          [
-            new Range(1, 2)
-          ],
+          [new Range(1, 2)],
           'summary'
         ], pathSet);
       }));
@@ -52,13 +50,11 @@ main() {
 
     it('should match ranges for videos with array of ints passed in that are not adjacent.',
         () async {
-      var router = new Router(routes()['Videos']['Ranges']['Summary']((pathSet) {
+      var router =
+          new Router(routes()['Videos']['Ranges']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
-          [
-            new Range(0, 0),
-            new Range(2, 2)
-          ],
+          [new Range(0, 0), new Range(2, 2)],
           'summary'
         ], pathSet);
       }));
@@ -77,12 +73,11 @@ main() {
     });
 
     it('should match ranges with a range passed in.', () async {
-      var router = new Router(routes()['Videos']['Ranges']['Summary']((pathSet) {
+      var router =
+          new Router(routes()['Videos']['Ranges']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
-          [
-            new Range(0, 2)
-          ],
+          [new Range(0, 2)],
           'summary'
         ], pathSet);
       }));
@@ -106,9 +101,7 @@ main() {
         TestRunner.comparePath([
           'videos',
           'state',
-          [
-            new Range(0, 0)
-          ]
+          [new Range(0, 0)]
         ], pathSet);
       }));
       var obs = router.get([

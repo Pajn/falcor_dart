@@ -179,22 +179,16 @@ main() {
     });
 
     it('should perform a simple set.', () async {
-      var did = false;
-      var called = 0;
       var router = new Router([
         {
           'route': 'videos[{integers:id}].rating',
           'set': (json) {
-            try {
-              expect(json).toEqual({
-                'videos': {
-                  1234: {'rating': 5},
-                  333: {'rating': 5}
-                }
-              });
-            } catch (e) {
-              did = true;
-            }
+            expect(json).toEqual({
+              'videos': {
+                1234: {'rating': 5},
+                333: {'rating': 5},
+              }
+            });
             return [
               {
                 'path': ['videos', 1234, 'rating'],
@@ -212,7 +206,7 @@ main() {
         'jsonGraph': {
           'videos': {
             1234: {'rating': 5},
-            333: {'rating': 5}
+            333: {'rating': 5},
           }
         },
         'paths': [
@@ -231,11 +225,6 @@ main() {
           }
         }
       });
-      called++;
-
-      if (!did) {
-        expect(called).toEqual(1);
-      }
     });
   });
 }

@@ -2,6 +2,7 @@ library falcor_dart.spread_paths;
 
 import 'package:falcor_dart/src/path_utils/iterate_key_set.dart';
 import 'package:falcor_dart/src/path_set.dart';
+import 'package:falcor_dart/src/types/range.dart';
 
 /**
  * Takes in a ptahSet and will create a set of simple paths.
@@ -27,7 +28,7 @@ void _spread(PathSet pathSet, depth, List<PathSet> out, [PathSet currentPath]) {
 
   // Simple case
   var key = pathSet[depth];
-  if (key is Map) {
+  if (key is! Map && key is! List && key is! Range) {
     currentPath[depth] = key;
     _spread(pathSet, depth + 1, out, currentPath);
     return;
@@ -40,9 +41,7 @@ void _spread(PathSet pathSet, depth, List<PathSet> out, [PathSet currentPath]) {
     // spreads the paths
     currentPath.add(innerKey);
     _spread(pathSet, depth + 1, out, currentPath);
-    if (currentPath.length == depth) {
-      print('SUPER MUCH DDANGER, SETTING LENGTH OF LIST');
-    }
+    currentPath.length = depth;
 
     innerKey = iterateKeySet(key, iteratorNote);
   } while (!iteratorNote['done']);

@@ -23,7 +23,7 @@ Map jsongMerge(Map cache, jsongEnv) {
     'requestedPath': [],
     'requestIdx': -1,
     'ignoreCount': 0
-    },  cache, j, 0, p);
+    }, cache, j, 0, p);
   });
 
   return {
@@ -92,6 +92,9 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
 
     if (updateRequestedPath) {
       if (requestIdx == requestedPath.length) {
+        requestedPath.add(key);
+      } else if (requestIdx > requestedPath.length) {
+        requestedPath.length = requestIdx;
         requestedPath.add(key);
       } else {
         requestedPath[requestIdx] = key;

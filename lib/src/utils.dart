@@ -33,8 +33,8 @@ bool isMessage(Map output) {
   return output.containsKey('isMessage');
 }
 
-bool isJSONG(Map output) {
-  return output.containsKey('jsonGraph');
+bool isJSONG(output) {
+  return output is Map && output.containsKey('jsonGraph');
 }
 
 bool isPathValue(output) {

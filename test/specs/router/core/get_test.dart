@@ -226,7 +226,6 @@ main() {
 
     it('should validate that optimizedPathSets strips out already found data.',
         () async {
-      //    this.timeout(10000);
       var serviceCalls = 0;
       var routes = [
         {
@@ -243,11 +242,7 @@ main() {
                 'path': ['lists', id],
                 'value': $ref('lists[0]')
               };
-            })
-                .
-
-                // Note: this causes the batching to work.
-                toList();
+            });
           }
         },
         {
@@ -349,7 +344,7 @@ main() {
       expect(called).toEqual(1);
     });
 
-    iit('should not follow references if no keys specified after path to reference',
+    it('should not follow references if no keys specified after path to reference',
         () async {
       var routeResponse = {
         'jsonGraph': {
@@ -408,7 +403,6 @@ main() {
       var obs = await router.get([
         ['videos', 1, 'title']
       ]);
-      var called = false;
       expect(obs).toEqual({
         'jsonGraph': {
           'videos': {

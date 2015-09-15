@@ -23,34 +23,12 @@ Future<List> getAction(Router routerInstance, Map matchAndPath, Map jsongCache) 
     else {
       matchAction = [matchAction];
     }
-    //  var out = outputToStream(matchAction);
 
     return matchAction
         .map(noteToJsongOrPV(matchAndPath));
   } catch(error) {
     return [convertNoteToJsongOrPV(matchAndPath, error, error: true)];
   }
-}
-
-/// For the router there are several return types from user
-/// functions.  The standard set are: synchronous type (boolean or
-/// json graph) or an async type (observable or a thenable).
-Stream outputToStream(valueOrObservable) {
-  var value = valueOrObservable;
-
-  if (value is Stream) {
-    return value;
-  } else if (value is Future) {
-    return new Stream.fromFuture(value);
-  } else if (value is Iterable) {
-    return new Stream.fromIterable(value);
-  } else {
-    // this will be jsong or pathValue at this point.
-    // NOTE: For the case of authorize this will be a boolean
-    return new Stream.fromIterable([value]);
-  }
-
-  return value;
 }
 
 noteToJsongOrPV(match) {

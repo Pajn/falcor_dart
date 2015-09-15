@@ -113,13 +113,13 @@ innerPathValueMerge(Map cache, pathValue) {
 }
 
 clone(a) {
-  print('from clone');
-  print(a.runtimeType);
-
   if (a is Map) {
     return new Map.from(a);
   } else if (a is List) {
     return new List.from(a);
+  } else if (a is! int && a is! String && a != null) {
+    print('from clone');
+    print(a.runtimeType);
   }
 
   return a;

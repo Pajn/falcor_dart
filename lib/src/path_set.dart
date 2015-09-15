@@ -26,7 +26,15 @@ class PathSet extends Object with ListMixin implements List {
   }
 
   operator []=(key, value) {
-    if (key is int) return pathParts[key] = value;
+    if (key is int) {
+      if (key < pathParts.length) {
+        return pathParts[key] = value;
+      } else if (key == pathParts.length) {
+        return pathParts.add(value);
+      } else {
+        throw new StateError('Cant set index after end');
+      }
+    }
     else if (key is String) return namedPathParts[key] = value;
     else {
       throw new UnsupportedError('Unsupported type "${key.runtimeType}" as PathSet key');

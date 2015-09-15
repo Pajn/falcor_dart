@@ -1,11 +1,12 @@
 library falcor_dart.exceptions.dart;
 
-class CallJsonGraphWithoutPaths extends Error {
-  String toString() => 'Any JSONG-Graph returned from call must have paths.';
-}
-
 class FalcorError extends Error {
   final throwToNext = false;
+}
+
+class CallJsonGraphWithoutPaths extends FalcorError {
+  final throwToNext = true;
+  String toString() => 'Any JSONG-Graph returned from call must have paths.';
 }
 
 class CircularReferenceError extends FalcorError {

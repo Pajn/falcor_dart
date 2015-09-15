@@ -33,15 +33,16 @@ class Router {
         .then((jsongEnv) => materializeMissing(this, paths, jsongEnv));
   }
 
-  Future set(Map jsong) {
+  Future set(Map jsong) async {
     // TODO: Remove the modelContext and replace with just jsongEnv
     // when http://github.com/Netflix/falcor-router/issues/24 is addressed
     var jsongCache = {};
     var action = runSetAction(this, jsong, jsongCache);
     var normPS = normalizePathSets(jsong['paths']);
 
-    return run(this._matcher, action, normPS, 'set', this, jsongCache)
-        .then((jsongEnv) => materializeMissing(this, jsong['paths'], jsongEnv));
+    var jsongEnv = await run(this._matcher, action, normPS, 'set', this, jsongCache);
+
+    return materializeMissing(this, jsong['paths'], jsongEnv);
   }
 
   call(List callPath, List args, [List suffixes, List paths]) async {
@@ -53,9 +54,7 @@ class Router {
     var jsongResult =
         await run(this._matcher, action, callPaths, 'call', this, jsongCache);
     var reportedPaths = jsongResult['reportedPaths'];
-    var jsongEnv = materializeMissing(
-        this, callPaths, jsongResult, $atom(null, expires:  0));
-    materializeMissing(this, reportedPaths, jsongResult);
+    var jsongEnv = materializeMissing(this, reportedPaths, jsongResult);
 
     if (reportedPaths.isNotEmpty) {
       jsongEnv['paths'] = reportedPaths;
@@ -63,7 +62,6 @@ class Router {
       jsongEnv['paths'] = [];
     }
 
-    jsongEnv['paths'].add(callPath);
     var invalidated = jsongResult['invalidated'];
     if (invalidated != null && invalidated.isNotEmpty) {
       jsongEnv['invalidated'] = invalidated;

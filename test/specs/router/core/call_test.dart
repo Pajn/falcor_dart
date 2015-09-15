@@ -53,21 +53,22 @@ main() {
           'route': 'genrelist[{integers:indices}].titles.remove',
           'call': (callPath, args) {
             return callPath['indices'].fold([], (acc, genreIndex) {
-              return acc..addAll([
-                {
-                  'path': [
-                    'genrelist',
-                    genreIndex,
-                    'titles',
-                    {'from': 2, 'to': 2}
-                  ],
-                  'invalidated': true
-                },
-                {
-                  'path': ['genrelist', genreIndex, 'titles', 'length'],
-                  'value': 2
-                }
-              ]);
+              return acc
+                ..addAll([
+                  {
+                    'path': [
+                      'genrelist',
+                      genreIndex,
+                      'titles',
+                      {'from': 2, 'to': 2}
+                    ],
+                    'invalidated': true
+                  },
+                  {
+                    'path': ['genrelist', genreIndex, 'titles', 'length'],
+                    'value': 2
+                  }
+                ]);
             });
           }
         }
@@ -110,13 +111,12 @@ main() {
       try {
         await router.call(['videos', 1234, 'rating'], [5]);
         throw 'should throw';
-      } on Exception catch(e) {
+      } on Exception catch (e) {
         expect(e.toString()).toEqual('Exception: Oops?');
       }
     });
 
-    it('should onError when an Error is thrown from call.',
-        () async {
+    it('should onError when an Error is thrown from call.', () async {
       var router = new Router([
         {
           'route': 'videos[{integers:id}].rating',
@@ -126,11 +126,10 @@ main() {
         }
       ]);
 
-
       try {
         await router.call(['videos', 1234, 'rating'], [5]);
         throw 'should throw';
-      } on Exception catch(e) {
+      } on Exception catch (e) {
         expect(e.toString()).toEqual('Exception: Oops?');
       }
     });
@@ -146,10 +145,7 @@ main() {
                 "genrelist": {
                   "0": {
                     "titles": {
-                      "18": {
-                        r"$type": "ref",
-                        "value": ["titlesById", 1]
-                      },
+                      "18": $ref(["titlesById", 1]),
                       "length": 19
                     }
                   }
@@ -174,20 +170,14 @@ main() {
         'titles',
         'push'
       ], [
-        {
-          r'$type': "ref",
-          'value': ['titlesById', 1]
-        }
+        $ref(['titlesById', 1])
       ], [], []);
       expect(value).toEqual({
         "jsonGraph": {
           "genrelist": {
             0: {
               "titles": {
-                "18": {
-                  r"$type": "ref",
-                  "value": ["titlesById", 1]
-                },
+                "18": $ref(['titlesById', 1]),
                 "length": 19
               }
             }
@@ -206,7 +196,8 @@ main() {
 
     //todo(rasmus): fix
     xit('should cause the router to on error only.', () async {
-      getRouter(noPaths: true).call(['videos', 1234, 'rating'], [5]).doAction(() {
+      getRouter(noPaths: true).call(['videos', 1234, 'rating'], [5]).doAction(
+          () {
         throw new Exception('Should not be called.  onNext');
       }, (x) {
         expect(x.message).toEqual(errors.callJSONGraphWithouPaths);
@@ -230,10 +221,7 @@ main() {
             return new Future.value([
               {
                 "path": ["genrelist", 0, "titles", 18],
-                "value": {
-                  r"$type": "ref",
-                  "value": ["titlesById", 1]
-                }
+                "value": $ref(["titlesById", 1])
               },
               {
                 "path": ["genrelist", 0, "titles", "length"],
@@ -250,20 +238,14 @@ main() {
         'titles',
         'push'
       ], [
-        {
-          r'$type': "ref",
-          'value': ['titlesById', 1]
-        }
+        $ref(['titlesById', 1])
       ], [], []);
       expect(value).toEqual({
         "jsonGraph": {
           "genrelist": {
-            "0": {
+            0: {
               "titles": {
-                "18": {
-                  r"$type": "ref",
-                  "value": ["titlesById", 1]
-                },
+                18: $ref(["titlesById", 1]),
                 "length": 19
               }
             }
@@ -336,7 +318,7 @@ main() {
         },
         'paths': [
           ['lolomo', 'length'],
-          ['lolomos', 123, '0']
+          ['lolomos', 123, 0]
         ]
       });
     });
@@ -377,26 +359,20 @@ main() {
         'titles',
         'push'
       ], [
-        {
-          r'$type': 'ref',
-          'value': ['titlesById', 1]
-        }
+        $ref(['titlesById', 1])
       ]);
       expect(value).toEqual({
         'jsonGraph': {
           'genrelist': {
             0: {
               'titles': {
-                2: {
-                  r'$type': 'ref',
-                  'value': ['titlesById', 1]
-                }
+                2: $ref(['titlesById', 1])
               }
             }
           }
         },
         'paths': [
-          ['genrelist', 0, 'titles', '2']
+          ['genrelist', 0, 'titles', 2]
         ]
       });
     });
@@ -409,10 +385,7 @@ main() {
         'titles',
         'push'
       ], [
-        {
-          r'$type': 'ref',
-          'value': ['titlesById', 1]
-        }
+        $ref(['titlesById', 1])
       ], [
         ['name'],
         ['rating']
@@ -422,10 +395,7 @@ main() {
           'genrelist': {
             0: {
               'titles': {
-                2: {
-                  r'$type': 'ref',
-                  'value': ['titlesById', 1]
-                }
+                2: $ref(['titlesById', 1])
               }
             }
           },
@@ -450,7 +420,7 @@ main() {
       try {
         await router.call(['videos', 1234, 'rating'], [5]);
         throw 'should throw';
-      } on Exception catch(e) {
+      } on Exception catch (e) {
         expect(e.toString()).toEqual('Exception: function does not exist');
       }
     });
@@ -463,7 +433,7 @@ main() {
       try {
         await router.call(['videos', 1234, 'rating'], [5]);
         throw 'should throw';
-      } on Exception catch(e) {
+      } on Exception catch (e) {
         expect(e.toString()).toEqual('Exception: function does not exist');
       }
     });
@@ -477,10 +447,7 @@ getCallRouter() {
       'call': (callPath, args) {
         return {
           'path': ['genrelist', 0, 'titles', 2],
-          'value': {
-            r'$type': 'ref',
-            'value': ['titlesById', 1]
-          }
+          'value': $ref(['titlesById', 1])
         };
       }
     },
@@ -489,16 +456,13 @@ getCallRouter() {
       'get': (pathSet) {
         return {
           'path': ['genrelist', 0, 'titles', 1],
-          'value': {
-            r'$type': 'ref',
-            'value': ['titlesById', 1]
-          }
+          'value': $ref(['titlesById', 1])
         };
       }
     },
     {
       'route': 'titlesById[{integers}]["name", "rating"]',
-      'get': (callPath, args) {
+      'get': (pathSet) {
         return [
           {
             'path': ['titlesById', 1, 'name'],
@@ -528,10 +492,11 @@ getRouter({bool noPaths: false, bool throwError: false}) {
               1234: {'rating': args[0]}
             }
           },
-          'paths': noPaths ? null :
-                  [
-                    ['videos', 1234, 'rating']
-                  ]
+          'paths': noPaths
+              ? null
+              : [
+                  ['videos', 1234, 'rating']
+                ]
         };
       }
     }
@@ -599,11 +564,11 @@ getExtendedRouter([Map initialIdsAndNames]) {
     {
       'route': 'listsById[{integers:indices}].name',
       'get': (alias) {
-        return alias.indices.map((idx) {
-          if (listsById[idx]) {
+        return alias['indices'].map((idx) {
+          if (listsById[idx] != null) {
             return {
               'path': ['listsById', idx, 'name'],
-              'value': listsById[idx].name
+              'value': listsById[idx]['name']
             };
           }
           return {

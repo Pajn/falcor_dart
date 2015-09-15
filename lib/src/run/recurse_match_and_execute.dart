@@ -64,7 +64,7 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
         pathsToExpand = invsRefsAndValues['references'];
       }
 
-      invalidated.addAll(invalidations);
+      invalidated.addAll(invalidations.map((invalidation) => invalidation['path']));
 
       // Merges the remaining suffix with remaining nextPaths
       pathsToExpand = pathsToExpand.map((next) {

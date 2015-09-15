@@ -25,7 +25,8 @@ main() {
     });
 
     it('should match integers for videos with array of ints passed in.', () {
-      var router = new Router(routes()['Videos']['Integers']['Summary']((pathSet) {
+      var router =
+          new Router(routes()['Videos']['Integers']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
           [1, 2],
@@ -47,7 +48,8 @@ main() {
     });
 
     it('should match integers for videos with range passed in.', () {
-      var router = new Router(routes()['Videos']['Integers']['Summary']((pathSet) {
+      var router =
+          new Router(routes()['Videos']['Integers']['Summary']((pathSet) {
         TestRunner.comparePath([
           'videos',
           [0, 1],
@@ -69,7 +71,8 @@ main() {
     });
 
     it('should match integers as last key.', () {
-      var router = new Router(routes()['Videos']['State']['Integers']((pathSet) {
+      var router =
+          new Router(routes()['Videos']['State']['Integers']((pathSet) {
         TestRunner.comparePath([
           'videos',
           'state',
