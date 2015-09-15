@@ -14,6 +14,9 @@ Map jsongMerge(Map cache, jsongEnv) {
   var references = [];
   var values = [];
 
+//  print('cache');
+//  print(cache);
+
   paths.forEach((p) {
     merge({
     'cacheRoot': cache,
@@ -121,7 +124,7 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
       if (messageRes != null && messageRes is Sentinel && messageRes.isRef && depth < path.length - 1) {
         nextDepth = 0;
         nextPath = catAndSlice(messageRes.value, path, depth + 1);
-        cache[key] = new Map.from(messageRes);
+        cache[key] = messageRes;
 
         // Reset position in message and cache.
         nextIgnoreCount = messageRes.value.length;

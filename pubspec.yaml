@@ -7,8 +7,8 @@ author: Rasmus Eneman <rasmus@eneman.eu>
 environment:
   sdk: '>=1.0.0 <2.0.0'
 
-#dependencies:
-#  lib_name: any
+dependencies:
+  dart_ext: "^0.0.12"
 
 dev_dependencies:
   guinness2: any

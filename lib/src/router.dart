@@ -81,6 +81,9 @@ materializeMissing(Router router, paths, jsongEnv, [missingAtom]) {
   missingAtom ??= $atom(null);
   var jsonGraph = jsongEnv['jsonGraph'];
 
+  print('jsonGraph');
+  print(jsonGraph);
+
   // Optimizes the pathSets from the jsong then
   // inserts atoms of undefined.
 
