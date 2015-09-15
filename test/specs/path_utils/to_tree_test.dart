@@ -27,7 +27,7 @@ main() {
         ],
         [
           'one',
-          {'from': 0, 'to': 3},
+          new Range(0, 3),
           'summary'
         ]
       ];
