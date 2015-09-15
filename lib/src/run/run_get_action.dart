@@ -24,6 +24,7 @@ Future<List> getAction(Router routerInstance, Map matchAndPath, Map jsongCache) 
     return [matchAction]
         .map(noteToJsongOrPV(matchAndPath));
   } catch(error) {
+    rethrow;
     return [convertNoteToJsongOrPV(matchAndPath, error, error: true)];
   }
 }

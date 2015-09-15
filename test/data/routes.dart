@@ -4,7 +4,7 @@ import 'package:falcor_dart/falcor_dart.dart';
 import '../testrunner.dart';
 
 routes() {
-  return {'Videos': videoRoutes(), 'GenreLists': genreListsRoutes()};
+  return {'Videos': videoRoutes(), 'Genrelists': genreListsRoutes()};
 }
 
 videoRoutes() {

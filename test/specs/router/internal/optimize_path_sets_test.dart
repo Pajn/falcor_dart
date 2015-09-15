@@ -2,7 +2,6 @@ import 'package:guinness2/guinness2.dart';
 
 import 'package:falcor_dart/falcor_dart.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
-import 'package:falcor_dart/src/cache/jsong_merge.dart';
 import 'package:falcor_dart/src/cache/optimize_path_set.dart';
 
 main() {
