@@ -54,6 +54,9 @@ stripFromRange(argToStrip, Range range) {
   // The simple case, its just a number.
   else if (toStrip is num) {
     if (range.from < toStrip && toStrip < range.to) {
+      if (ranges.length < 2) {
+        ranges.length = 2;
+      }
       ranges[0] = new Range(range.from, toStrip - 1);
       ranges[1] = new Range(toStrip + 1, range.to);
       matches = [toStrip];
@@ -66,9 +69,15 @@ stripFromRange(argToStrip, Range range) {
       ranges = [];
       matches = [toStrip];
     } else if (range.from == toStrip) {
+      if (ranges.length < 1) {
+        ranges.length = 1;
+      }
       ranges[0] = new Range(toStrip + 1, range.to);
       matches = [toStrip];
     } else if (range.to == toStrip) {
+      if (ranges.length < 1) {
+        ranges.length = 1;
+      }
       ranges[0] = new Range(range.from, toStrip - 1);
       matches = [toStrip];
     }
@@ -81,6 +90,8 @@ stripFromRange(argToStrip, Range range) {
 
   // Its a routed token.  Everything is matched.
   else {
+    print ('toStrip');
+    print (toStrip);
     matches = range.toList();
   }
 

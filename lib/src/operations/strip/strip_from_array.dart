@@ -57,7 +57,7 @@ List stripFromArray(toStrip, List array) {
   // The simple case, remove only the matching element from array.
   else if (!isRangedArray && !isRoutedToken) {
     matches = [toStrip];
-    complement = array.where((x) => toStrip != x);
+    complement = array.where((x) => toStrip != x).toList();
   }
 
   // 1: from comments above
@@ -67,7 +67,7 @@ List stripFromArray(toStrip, List array) {
       if (results[0] != null) {
         matches.addAll(results[0]);
       }
-      return comp.concat(results[1]);
+      return comp..addAll(results[1]);
     });
   }
 
@@ -80,7 +80,7 @@ List stripFromArray(toStrip, List array) {
         return false;
       }
       return true;
-    });
+    }).toList();
   }
 
   // The final complement is rangedArray with a routedToken,

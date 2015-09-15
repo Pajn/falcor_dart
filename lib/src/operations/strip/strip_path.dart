@@ -50,8 +50,6 @@ List stripPath(List matchedPath, List virtualPath) {
     // 2.  If there is both the catAndslice.
 
     if (hasComplement) {
-      print('DANGER!!!!!!!!!!!!!!!!');
-      print('hasComplement may be wierd');
       var flattendIC =
           innerComplement.length == 1 ? innerComplement.first : innerComplement;
       current.add(flattendIC);
