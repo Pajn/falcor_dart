@@ -440,7 +440,7 @@ main() {
   });
 }
 
-getCallRouter() {
+Router getCallRouter() {
   return new Router([
     {
       'route': 'genrelist[{integers}].titles.push',
@@ -478,7 +478,7 @@ getCallRouter() {
   ]);
 }
 
-getRouter({bool noPaths: false, bool throwError: false}) {
+Router getRouter({bool noPaths: false, bool throwError: false}) {
   return new Router([
     {
       'route': 'videos[{integers:id}].rating',
@@ -503,7 +503,7 @@ getRouter({bool noPaths: false, bool throwError: false}) {
   ]);
 }
 
-getExtendedRouter([Map initialIdsAndNames]) {
+Router getExtendedRouter([Map initialIdsAndNames]) {
   var listsById = {};
   var idsAndNames = initialIdsAndNames ?? {};
   idsAndNames.keys.fold(listsById, (acc, id) {
