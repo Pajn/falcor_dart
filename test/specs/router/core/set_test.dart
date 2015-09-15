@@ -285,7 +285,7 @@ main() {
     it('should perform a set with get reference following.', () async {
       var called = 0;
       var refFollowed = false;
-      var router = new Router(routes()['GenreLists']['Integers']((_) {
+      var router = new Router(routes()['Genrelists']['Integers']((_) {
         refFollowed = true;
       })
         ..addAll([
