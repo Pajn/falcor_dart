@@ -143,7 +143,7 @@ main() {
             return new Future.value({
               "jsonGraph": {
                 "genrelist": {
-                  "0": {
+                  0: {
                     "titles": {
                       "18": $ref(["titlesById", 1]),
                       "length": 19
@@ -194,22 +194,11 @@ main() {
       });
     });
 
-    //todo(rasmus): fix
-    xit('should cause the router to on error only.', () async {
-      getRouter(noPaths: true).call(['videos', 1234, 'rating'], [5]).doAction(
-          () {
-        throw new Exception('Should not be called.  onNext');
-      }, (x) {
-        expect(x.message).toEqual(errors.callJSONGraphWithouPaths);
-      }, () {
-        throw new Exception('Should not be called.  onCompleted');
-      }).subscribe(noOp, (e) {
-        if (e.message == errors.callJSONGraphWithouPaths) {
-          done();
-          return;
-        }
-        done(e);
-      });
+    it('should cause the router to on error only.', () async {
+      try {
+        await getRouter(noPaths: true).call(['videos', 1234, 'rating'], [5]);
+        throw 'should have thrown';
+      } on CallJsonGraphWithoutPaths {}
     });
 
     it('should return paths in jsonGraphEnvelope if array of pathValues is returned from promise.',
