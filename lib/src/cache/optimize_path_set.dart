@@ -15,6 +15,7 @@ import 'package:falcor_dart/src/path_set.dart';
 /// - Any missing path will be optimized as much as possible.
 List optimizePathSets(Map cache, List<PathSet> paths, int maxRefFollow) {
   var optimized = [];
+
   paths.forEach((path) {
     optimizePathSet(cache, cache, path, 0, optimized, [], maxRefFollow);
   });
@@ -50,9 +51,11 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
   var key, next, nextOptimized;
 
   key = iterateKeySet(keySet, iteratorNote);
+
   do {
     next = cache[key];
     var optimizedPathLength = optimizedPath.length;
+
     if (key != null) {
       optimizedPath.add(key);
     }
@@ -68,6 +71,11 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
     } else {
       nextOptimized = optimizedPath;
     }
+
+//    print('max');
+//    print(pathSet.length);
+//    print('next');
+//    print(next);
 
     optimizePathSet(
         next, cacheRoot, pathSet, nextDepth, out, nextOptimized, maxRefFollow);

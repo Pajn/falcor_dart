@@ -13,6 +13,7 @@ Map jsongMerge(Map cache, jsongEnv) {
   var j = jsongEnv['jsonGraph'];
   var references = [];
   var values = [];
+
   paths.forEach((p) {
     merge({
     'cacheRoot': cache,
@@ -24,6 +25,7 @@ Map jsongMerge(Map cache, jsongEnv) {
     'ignoreCount': 0
     },  cache, j, 0, p);
   });
+
   return {
     'references': references,
     'values': values
@@ -87,6 +89,7 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
 
     var nextPath = path;
     var nextDepth = depth + 1;
+
     if (updateRequestedPath) {
       if (requestIdx == requestedPath.length) {
         requestedPath.add(key);
@@ -102,7 +105,8 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
 
     // TODO: Can we hit a leaf node in the cache when traversing?
 
-    if (messageRes != null) {
+    // TODO(Jesper): JS version treats undefined here so we cannot treat null...
+    if (messageRes != 'undefined') {
       var nextIgnoreCount = ignoreCount;
 
       // TODO: Potential performance gain since we know that
