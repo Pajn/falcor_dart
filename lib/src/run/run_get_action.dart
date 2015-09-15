@@ -20,11 +20,8 @@ Future<List> getAction(Router routerInstance, Map matchAndPath, Map jsongCache) 
     if (matchAction is Iterable) {
       matchAction = matchAction.toList();
     }
-    else {
-      matchAction = [matchAction];
-    }
 
-    return matchAction
+    return [matchAction]
         .map(noteToJsongOrPV(matchAndPath));
   } catch(error) {
     return [convertNoteToJsongOrPV(matchAndPath, error, error: true)];

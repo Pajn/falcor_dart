@@ -14,8 +14,6 @@ Map jsongMerge(Map cache, jsongEnv) {
   var references = [];
   var values = [];
 
-//  print('cache');
-//  print(cache);
 
   paths.forEach((p) {
     merge({

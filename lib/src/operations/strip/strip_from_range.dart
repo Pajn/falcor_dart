@@ -90,8 +90,6 @@ stripFromRange(argToStrip, Range range) {
 
   // Its a routed token.  Everything is matched.
   else {
-    print ('toStrip');
-    print (toStrip);
     matches = range.toList();
   }
 

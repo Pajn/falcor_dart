@@ -228,9 +228,6 @@ mergeTest(jsong) {
 
   var expected = extMerge.merge(cache, jsong['jsonGraph']);
 
-  print('TEST');
-  print(cache);
-
   var out = jsongMerge(cache, jsong);
   expect(cache).toEqual(expected);
 

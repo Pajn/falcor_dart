@@ -44,7 +44,6 @@ List followReference(Map cacheRoot, List ref, int maxRefFollow) {
     }
     current = next;
   }
-  print(current);
 
   return [current, new List.from(refPath)];
 }
