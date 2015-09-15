@@ -18,7 +18,7 @@ main() {
       expect(obs).toEqual(expectedRoutes()['Videos']['Summary']);
     });
 
-    iit('should not return empty atoms for a null value in jsonGraph', () async {
+    it('should not return empty atoms for a null value in jsonGraph', () async {
       var router = new Router([
         {
           'route': 'videos.falsey',
@@ -349,7 +349,7 @@ main() {
       expect(called).toEqual(1);
     });
 
-    it('should not follow references if no keys specified after path to reference',
+    iit('should not follow references if no keys specified after path to reference',
         () async {
       var routeResponse = {
         'jsonGraph': {
@@ -393,7 +393,6 @@ main() {
           {'from': 0, 'to': 1}
         ]
       ]);
-      var called = false;
       expect(obs).toEqual(routeResponse);
     });
 

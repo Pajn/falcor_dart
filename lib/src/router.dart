@@ -85,6 +85,7 @@ materializeMissing(Router router, paths, jsongEnv, [missingAtom]) {
 
   // Optimizes the pathSets from the jsong then
   // inserts atoms of undefined.
+
   optimizePathSets(jsonGraph, paths, router.maxRefFollow)
       .forEach((optMissingPath) {
     pathValueMerge(jsonGraph, {'path': optMissingPath, 'value': missingAtom,});

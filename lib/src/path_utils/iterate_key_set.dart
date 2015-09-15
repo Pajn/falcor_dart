@@ -69,9 +69,10 @@ iterateKeySet(keySet, Map note) {
 
   // Range iteration
   else if (note['isRange']) {
-    if (note['loaded'] == null) {
+    if (note['loaded'] == null || !note['loaded']) {
       initializeRange(keySet, note);
     }
+
     if (note['rangeOffset'] > note['to']) {
       note['done'] = true;
       return null;

@@ -82,7 +82,7 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
         }
 
         // Mutates the nextPaths and adds any additionalPaths
-        else if (message['additionalPath'] !=null) {
+        else if (message['additionalPath'] != null) {
           var path = message['additionalPath'];
           pathsToExpand.add(path);
           reportedPaths.add(path);
@@ -113,6 +113,9 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
   // Each pathSet (some form of collapsed path) need to be sent
   // independently.  for each collapsed pathSet will, if producing
   // refs, be the highest likelihood of collapsibility.
+
+//  print('returns');
+//  print(jsongCache);
 
   return {
     'missing': missing,

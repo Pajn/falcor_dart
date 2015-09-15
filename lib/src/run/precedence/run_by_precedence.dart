@@ -20,8 +20,6 @@ Future<List<Map>> runByPrecedence(pathSet, List matches, ActionRunner actionRunn
 
   var matchesWithPaths = getExecutableMatches(sortedMatches, [pathSet]);
   var actionTuples = await Future.wait(matchesWithPaths.map(actionRunner));
-  print('actionTuples');
-  print(actionTuples);
   return actionTuples
     .expand((actionTuples) => actionTuples)
 

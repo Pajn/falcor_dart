@@ -48,6 +48,9 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
   if (message == null || message is! Map || message[r'$type'] != null) {
     fromParent[fromKey] = clone(message);
 
+    print('MERGE');
+    print(requestIdx);
+
     // NOTE: If we have found a reference at our cloning position
     // and we have resolved our path then add the reference to
     // the unfulfilledRefernces.
