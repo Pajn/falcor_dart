@@ -27,7 +27,6 @@ List optimizePathSets(Map cache, List<PathSet> paths, int maxRefFollow) {
 void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
     List optimizedPath, int maxRefFollow, [bool containsKey = true]) {
 
-
   // at missing, report optimized path.
   if (!containsKey) {
     out.add(catAndSlice(optimizedPath, pathSet, depth));
@@ -36,7 +35,7 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
 
   // If the reference is the last item in the path then do not
   // continue to search it.
-  if (cache == null || (cache is Sentinel && cache.isRef && depth == pathSet.length)) {
+  if ((containsKey && cache == null) || (cache is Sentinel && cache.isRef && depth == pathSet.length)) {
     return;
   }
 
@@ -55,6 +54,7 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
 
   do {
     next = cache[key];
+    var isDefined = cache.containsKey(key);
     var optimizedPathLength = optimizedPath.length;
 
     if (key != null) {
@@ -66,6 +66,9 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
         nextDepth < pathSet.length) {
       var refResults = followReference(cacheRoot, next.value, maxRefFollow);
       next = refResults[0];
+      if (next == null) {
+        isDefined = false;
+      }
 
       // must clone to avoid the mutation from above destroying the cache.
       nextOptimized = new List.from(refResults[1]);
@@ -74,7 +77,7 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
     }
 
     optimizePathSet(
-        next, cacheRoot, pathSet, nextDepth, out, nextOptimized, maxRefFollow, cache.containsKey(key));
+        next, cacheRoot, pathSet, nextDepth, out, nextOptimized, maxRefFollow, isDefined);
     optimizedPath.length = optimizedPathLength;
 
     if (!iteratorNote['done']) {

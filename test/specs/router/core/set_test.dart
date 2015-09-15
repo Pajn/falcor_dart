@@ -1,6 +1,8 @@
 import 'package:guinness2/guinness2.dart';
 
 import 'package:falcor_dart/falcor_dart.dart';
+import '../../../data/routes.dart';
+import 'package:test/test.dart' show expectAsync;
 
 main() {
   describe('Set', () {
@@ -222,6 +224,144 @@ main() {
           'videos': {
             1234: {'rating': 5},
             333: {'rating': 5}
+          }
+        }
+      });
+    });
+
+    it('should ensure that set gets called with only the data it needs.',
+        () async {
+      var setSpy = new SpyFunction('set').andCallFake((jsonGraph) {
+        return {'jsonGraph': jsonGraph};
+      });
+      var router = new Router([
+        {'route': "titlesById[{integers:titleIds}].userRating", 'set': setSpy},
+        {
+          'route': "genreLists[{integers:titleIds}]",
+          'get': (p) {
+            var id = p['titleIds'][0];
+            return {
+              'path': ['genreLists', id],
+              'value': $ref(['titlesById', id])
+            };
+          }
+        }
+      ]);
+
+      var value = await router.set({
+        "jsonGraph": {
+          "genreLists": {
+            9: {"userRating": 9},
+            10: {"userRating": 10}
+          }
+        },
+        "paths": [
+          ["genreLists", 9, "userRating"],
+          ["genreLists", 10, "userRating"]
+        ]
+      });
+      expect(setSpy.calls.length).toEqual(2);
+      expect(setSpy.calls[0].positionalArguments[0]).toEqual({
+        "titlesById": {
+          9: {"userRating": 9}
+        }
+      });
+      expect(setSpy.calls[1].positionalArguments[0]).toEqual({
+        "titlesById": {
+          10: {"userRating": 10}
+        }
+      });
+      expect(value).toEqual({
+        "jsonGraph": {
+          "genreLists": {9: $ref('titlesById[9]'), 10: $ref('titlesById[10]')},
+          "titlesById": {
+            10: {"userRating": 10},
+            9: {"userRating": 9}
+          }
+        }
+      });
+    });
+
+    it('should perform a set with get reference following.', () async {
+      var called = 0;
+      var refFollowed = false;
+      var router = new Router(routes()['GenreLists']['Integers']((_) {
+        refFollowed = true;
+      })
+        ..addAll([
+          {
+            'route': 'videos[{integers:id}].rating',
+            'set': (json) {
+              called++;
+              try {
+                expect(json).toEqual({
+                  'videos': {
+                    0: {'rating': 5}
+                  }
+                });
+              } catch (e) {
+                print(e);
+                expect('did throw').toEqual('not throw');
+              }
+              return [
+                {
+                  'path': ['videos', 0, 'rating'],
+                  'value': 5
+                }
+              ];
+            }
+          }
+        ]));
+
+      var value = await router.set({
+        'jsonGraph': {
+          'genreLists': {
+            0: {'rating': 5}
+          }
+        },
+        'paths': [
+          ['genreLists', 0, 'rating']
+        ]
+      });
+      expect(value).toEqual({
+        'jsonGraph': {
+          'genreLists': {0: $ref('videos[0]')},
+          'videos': {
+            0: {'rating': 5}
+          }
+        }
+      });
+
+      expect(called).toEqual(1);
+      expect(refFollowed).toBeTrue();
+    });
+
+    it('should invoke getter on attempt to set read-only property.', () async {
+      var router = new Router([
+        {
+          'route': 'a.b.c',
+          'get': (_) {
+            return {
+              'path': ['a', 'b', 'c'],
+              'value': 5
+            };
+          }
+        }
+      ]);
+      var value = await router.set({
+        'paths': [
+          ['a', 'b', 'c']
+        ],
+        'jsonGraph': {
+          'a': {
+            'b': {'c': 7}
+          }
+        }
+      });
+      expect(value).toEqual({
+        'jsonGraph': {
+          'a': {
+            'b': {'c': 5}
           }
         }
       });

@@ -141,7 +141,7 @@ genreListsRoutes() {
               fn(path);
             }
             var genreLists = {};
-            TestRunner.rangeToArray(path.indices).forEach((x) {
+            TestRunner.rangeToArray(path['indices']).forEach((x) {
               genreLists[x] = $ref(['videos', x]);
             });
             return {
