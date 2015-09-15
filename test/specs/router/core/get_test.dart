@@ -351,16 +351,11 @@ main() {
           'ProffersById': {
             1: {
               'ProductsList': {
-                0: {
-                  r'$size': 52,
-                  r'$type': 'ref',
-                  'value': ['ProductsById', 'CSC1471105X']
-                },
-                1: {
-                  r'$size': 52,
-                  r'$type': 'ref',
-                  'value': ['ProductsById', 'HON4033T']
-                }
+                0: $ref(
+                  ['ProductsById', 'CSC1471105X']
+                , size: 52),
+                1: $ref(['ProductsById', 'HON4033T']
+                , size: 52)
               }
             }
           }
