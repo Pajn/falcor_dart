@@ -3,7 +3,7 @@ import 'package:falcor_dart/falcor_dart.dart';
 
 main() {
   describe('Materialized Paths.', () {
-    iit('should validate routes that do not return all the paths asked for.',
+    it('should validate routes that do not return all the paths asked for.',
         () async {
       var routes = [
         {
