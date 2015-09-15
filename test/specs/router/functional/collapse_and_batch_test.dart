@@ -43,265 +43,257 @@ main() {
           }
         }
       });
+    });
 
-      it('should validate that paths are ran in parallel, not sequentially.',
-          () async {
-        // Not sure about this so just commented out for now...
-        // this.timeout(10000);
-        var calls;
-        var serviceCalls = 0;
-        var testedTwo = false;
-        called(res) {
-          if (!calls) {
-            calls = [];
-          }
-          calls[calls.length] = res;
-          serviceCalls++;
-          // Not sure about this so just commented out for now...
-          // process.nextTick(() {
-          // if (calls.length == 0) {
-          // return;
-          // }
-
-          expect(serviceCalls).toEqual(2);
-          expect(calls.length).toEqual(2);
-          calls.length = 0;
-          testedTwo = true;
+    //todo(Rasmus): Fix this test
+    xit('should validate that paths are ran in parallel, not sequentially.',
+        () async {
+      // Not sure about this so just commented out for now...
+      // this.timeout(10000);
+      var calls;
+      var serviceCalls = 0;
+      var testedTwo = false;
+      called(res) {
+        if (!calls) {
+          calls = [];
         }
-        ;
+        calls.add(res);
+        serviceCalls++;
+        // Not sure about this so just commented out for now...
+        // process.nextTick(() {
+        // if (calls.length == 0) {
+        // return;
+        // }
 
-        var routes = [
-          {
-            'route': 'one[{integers:ids}]',
-            'get': (aliasMap) {
-              return aliasMap['ids'].map((id) {
-                if (id == 0) {
-                  return {
-                    'path': ['one', id],
-                    'value': $ref('two.be[956]')
-                  };
-                }
+        expect(serviceCalls).toEqual(2);
+        expect(calls.length).toEqual(2);
+        calls.length = 0;
+        testedTwo = true;
+      };
+
+      var routes = [
+        {
+          'route': 'one[{integers:ids}]',
+          'get': (aliasMap) {
+            return aliasMap['ids'].map((id) {
+              if (id == 0) {
                 return {
                   'path': ['one', id],
-                  'value': $ref('three.four[111]')
+                  'value': $ref('two.be[956]')
                 };
-              });
-            }
-          },
-          {
-            'route': 'two.be[{integers:ids}].summary',
-            'get': (aliasMap) {
-              // Not sure about this so just commented out for now...
-              // called(1);
-              return aliasMap['ids']
-                  // Not sure about this so just commented out for now...
-                  // delay(2000).
-                  .map((id) {
-                return {
-                  'path': ['two', 'be', id, 'summary'],
-                  'value': 'hello world'
-                };
-              });
-            }
-          },
-          {
-            'route': 'three.four[{integers:ids}].summary',
-            'get': (aliasMap) {
-              // Not sure about this so just commented out for now...
-              // called(2);
-              return aliasMap['ids']
-                  // Not sure about this so just commented out for now...
-                  // delay(2000).
-                  .map((id) {
-                return {
-                  'path': ['three', 'four', id, 'summary'],
-                  'value': 'hello saturn'
-                };
-              });
-            }
+              }
+              return {
+                'path': ['one', id],
+                'value': $ref('three.four[111]')
+              };
+            });
           }
-        ];
-        var router2 = new Router(routes);
-        var obs = await router2.get([
-          [
-            'one',
-            [0, 1],
-            'summary'
-          ]
-        ]);
-        var count = 0;
-        var time = new DateTime.now().millisecondsSinceEpoch;
-        var nextTime = new DateTime.now().millisecondsSinceEpoch;
-        expect(nextTime - time >= 4000).toEqual(false);
-        count++;
+        },
+        {
+          'route': 'two.be[{integers:ids}].summary',
+          'get': (aliasMap) {
+            called(1);
+            return aliasMap['ids']
+            // Not sure about this so just commented out for now...
+            // delay(2000).
+                .map((id) {
+              return {
+                'path': ['two', 'be', id, 'summary'],
+                'value': 'hello world'
+              };
+            });
+          }
+        },
+        {
+          'route': 'three.four[{integers:ids}].summary',
+          'get': (aliasMap) {
+            // Not sure about this so just commented out for now...
+            // called(2);
+            return aliasMap['ids']
+            // Not sure about this so just commented out for now...
+            // delay(2000).
+                .map((id) {
+              return {
+                'path': ['three', 'four', id, 'summary'],
+                'value': 'hello saturn'
+              };
+            });
+          }
+        }
+      ];
+      var router2 = new Router(routes);
+      var obs = await router2.get([
+        [
+          'one',
+          [0, 1],
+          'summary'
+        ]
+      ]);
+      var time = new DateTime.now().millisecondsSinceEpoch;
+      var nextTime = new DateTime.now().millisecondsSinceEpoch;
+      expect(nextTime - time >= 4000).toEqual(false);
 
-        expect(count, 'expect onNext called 1 time.').toEqual(1);
-        expect(testedTwo, 'process.nextTick').toEqual(true);
-      });
+      expect(testedTwo).toEqual(true);
+    });
 
-      it('should validate that optimizedPathSets strips out already found data and collapse makes one request.',
-          () async {
-        var serviceCalls = 0;
-        var routes = [
-          {
-            'route': 'lists[{keys:ids}]',
-            'get': (aliasMap) {
-              return aliasMap['ids'].map((id) {
-                if (id == 0) {
-                  return {
-                    'path': ['lists', id],
-                    'value': $ref('two.be[956]')
-                  };
-                }
+    it('should validate that optimizedPathSets strips out already found data and collapse makes one request.',
+        () async {
+      var serviceCalls = 0;
+      var routes = [
+        {
+          'route': 'lists[{keys:ids}]',
+          'get': (aliasMap) {
+            return aliasMap['ids'].map((id) {
+              if (id == 0) {
                 return {
                   'path': ['lists', id],
-                  'value': $ref('lists[0]')
+                  'value': $ref('two.be[956]')
                 };
-              })
-                  .
-
-                  // Note: this causes the batching to work.
-                  toList();
-            }
-          },
-          {
-            'route': 'two.be[{integers:ids}].summary',
-            'get': (aliasMap) {
-              return aliasMap['ids'].map((id) {
-                serviceCalls++;
-                return {
-                  'path': ['two', 'be', id, 'summary'],
-                  'value': 'hello world'
-                };
-              });
-            }
-          }
-        ];
-        var router = new Router(routes);
-        var res = await router.get([
-          [
-            'lists',
-            [0, 1],
-            'summary'
-          ]
-        ]);
-        var count = 0;
-        expect(res).toEqual({
-          'jsonGraph': {
-            'lists': {0: $ref('two.be[956]'), 1: $ref('lists[0]')},
-            'two': {
-              'be': {
-                956: {'summary': 'hello world'}
               }
-            }
-          }
-        });
-        count++;
-        expect(count, 'expect onNext called 1 time.').toEqual(1);
-        expect(serviceCalls).toEqual(1);
-      });
+              return {
+                'path': ['lists', id],
+                'value': $ref('lists[0]')
+              };
+            })
+                .
 
-      it('should validate batching/collapsing makes two request since its onNextd without toArray().',
-          () async {
-        var serviceCalls = 0;
-        var routes = [
-          {
-            'route': 'lists[{keys:ids}]',
-            'get': (aliasMap) {
-              return aliasMap['ids'].map((id) {
-                if (id == 0) {
-                  return {
-                    'path': ['lists', id],
-                    'value': $ref('two.be[956]')
-                  };
-                }
-                return {
-                  'path': ['lists', id],
-                  'value': $ref('lists[0]')
-                };
-              });
-            }
-          },
-          {
-            'route': 'two.be[{integers:ids}].summary',
-            'get': (aliasMap) {
-              return aliasMap['ids'].map((id) {
-                serviceCalls++;
-                return {
-                  'path': ['two', 'be', id, 'summary'],
-                  'value': 'hello world'
-                };
-              });
-            }
+            // Note: this causes the batching to work.
+            toList();
           }
-        ];
-        var router = new Router(routes);
-        var res = await router.get([
-          [
-            'lists',
-            [0, 1],
-            'summary'
-          ]
-        ]);
-        var count = 0;
-        expect(res).toEqual({
-          'jsonGraph': {
-            'lists': {0: $ref('two.be[956]'), 1: $ref('lists[0]')},
-            'two': {
-              'be': {
-                956: {'summary': 'hello world'}
-              }
-            }
-          }
-        });
-        count++;
-        expect(count, 'expect onNext called 1 time.').toEqual(1);
-        expect(serviceCalls).toEqual(2);
-      });
-
-      it('should validate that a Promise that emits an array gets properly batched.',
-          () async {
-        var serviceCalls = 0;
-        var routes = [
-          {
-            'route': 'promise[{integers:ids}]',
-            'get': (aliasMap) {
-              return new Future.value((resolve) {
-                var pVs = aliasMap.ids.map((id) {
-                  return {
-                    'path': ['promise', id],
-                    'value': $ref(['two', 'be', id, 'summary'])
-                  };
-                });
-
-                resolve(pVs);
-              });
-            }
-          },
-          {
-            'route': 'two.be[{integers:ids}].summary',
-            'get': (aliasMap) {
+        },
+        {
+          'route': 'two.be[{integers:ids}].summary',
+          'get': (aliasMap) {
+            return aliasMap['ids'].map((id) {
               serviceCalls++;
-              return aliasMap.ids.map((id) {
-                return {
-                  'path': ['two', 'be', id, 'summary'],
-                  'value': 'hello promise'
-                };
-              });
+              return {
+                'path': ['two', 'be', id, 'summary'],
+                'value': 'hello world'
+              };
+            });
+          }
+        }
+      ];
+      var router = new Router(routes);
+      var res = await router.get([
+        [
+          'lists',
+          [0, 1],
+          'summary'
+        ]
+      ]);
+      expect(res).toEqual({
+        'jsonGraph': {
+          'lists': {0: $ref('two.be[956]'), 1: $ref('lists[0]')},
+          'two': {
+            'be': {
+              956: {'summary': 'hello world'}
             }
           }
-        ];
-        var router = new Router(routes);
-        var res = await router.get([
-          [
-            'promise',
-            [0, 1],
-            'summary'
-          ]
-        ]);
-
-        expect(serviceCalls).toEqual(1);
+        }
       });
+      expect(serviceCalls).toEqual(1);
+    });
+
+    //todo(Rasmus): How do this translate to a world without Rx?
+    xit('should validate batching/collapsing makes two request since its onNextd without toArray().',
+        () async {
+      var serviceCalls = 0;
+      var routes = [
+        {
+          'route': 'lists[{keys:ids}]',
+          'get': (aliasMap) {
+            return aliasMap['ids'].map((id) {
+              if (id == 0) {
+                return {
+                  'path': ['lists', id],
+                  'value': $ref('two.be[956]')
+                };
+              }
+              return {
+                'path': ['lists', id],
+                'value': $ref('lists[0]')
+              };
+            });
+          }
+        },
+        {
+          'route': 'two.be[{integers:ids}].summary',
+          'get': (aliasMap) {
+            print(aliasMap);
+            return aliasMap['ids'].map((id) {
+              serviceCalls++;
+              return {
+                'path': ['two', 'be', id, 'summary'],
+                'value': 'hello world'
+              };
+            });
+          }
+        }
+      ];
+      var router = new Router(routes);
+      var res = await router.get([
+        [
+          'lists',
+          [0, 1],
+          'summary'
+        ]
+      ]);
+      expect(res).toEqual({
+        'jsonGraph': {
+          'lists': {0: $ref('two.be[956]'), 1: $ref('lists[0]')},
+          'two': {
+            'be': {
+              956: {'summary': 'hello world'}
+            }
+          }
+        }
+      });
+      expect(serviceCalls).toEqual(2);
+    });
+
+    it('should validate that a Promise that emits an array gets properly batched.',
+        () async {
+      var serviceCalls = 0;
+      var routes = [
+        {
+          'route': 'promise[{integers:ids}]',
+          'get': (aliasMap) {
+            return new Future.sync(() {
+              var pVs = aliasMap['ids'].map((id) {
+                return {
+                  'path': ['promise', id],
+                  'value': $ref(['two', 'be', id, 'summary'])
+                };
+              });
+
+              return pVs;
+            });
+          }
+        },
+        {
+          'route': 'two.be[{integers:ids}].summary',
+          'get': (aliasMap) {
+            serviceCalls++;
+            return aliasMap['ids'].map((id) {
+              return {
+                'path': ['two', 'be', id, 'summary'],
+                'value': 'hello promise'
+              };
+            });
+          }
+        }
+      ];
+      var router = new Router(routes);
+      await router.get([
+        [
+          'promise',
+          [0, 1],
+          'summary'
+        ]
+      ]);
+
+      expect(serviceCalls).toEqual(1);
     });
   });
 }

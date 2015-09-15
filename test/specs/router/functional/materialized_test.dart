@@ -46,33 +46,33 @@ main() {
       count++;
 
       expect(count).toEqual(1);
+    });
 
-      it('should validate when no route is matched', () async {
-        var routes = [];
-        var router = new Router(routes);
-        var res = await router.get([
-          [
-            'one',
-            [0, 1],
-            'summary'
-          ]
-        ]);
-        var count = 0;
-        expect(res).toEqual({
-          'jsonGraph': {
-            'one': {
-              0: {
-                'summary': $atom(null)
-              },
-              1: {
-                'summary': $atom(null)
-              }
+    it('should validate when no route is matched', () async {
+      var routes = [];
+      var router = new Router(routes);
+      var res = await router.get([
+        [
+          'one',
+          [0, 1],
+          'summary'
+        ]
+      ]);
+      var count = 0;
+      expect(res).toEqual({
+        'jsonGraph': {
+          'one': {
+            0: {
+              'summary': $atom(null)
+            },
+            1: {
+              'summary': $atom(null)
             }
           }
-        });
-        count++;
-        expect(count).toEqual(1);
+        }
       });
+      count++;
+      expect(count).toEqual(1);
     });
   });
 }
