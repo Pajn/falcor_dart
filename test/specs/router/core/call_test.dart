@@ -49,29 +49,29 @@ main() {
 
     it('should return invalidations.', () async {
       var router = new Router([
-        {
-          'route': 'genrelist[{integers:indices}].titles.remove',
-          'call': (callPath, args) {
-            return callPath['indices'].fold([], (acc, genreIndex) {
-              return acc
-                ..addAll([
-                  {
-                    'path': [
-                      'genrelist',
-                      genreIndex,
-                      'titles',
-                      {'from': 2, 'to': 2}
-                    ],
-                    'invalidated': true
-                  },
-                  {
-                    'path': ['genrelist', genreIndex, 'titles', 'length'],
-                    'value': 2
-                  }
-                ]);
-            });
-          }
-        }
+        route(
+            'genrelist[{integers:indices}].titles.remove',
+            call: (callPath, args) {
+              return callPath['indices'].fold([], (acc, genreIndex) {
+                return acc
+                  ..addAll([
+                    {
+                      'path': [
+                        'genrelist',
+                        genreIndex,
+                        'titles',
+                        {'from': 2, 'to': 2}
+                      ],
+                      'invalidated': true
+                    },
+                    {
+                      'path': ['genrelist', genreIndex, 'titles', 'length'],
+                      'value': 2
+                    }
+                  ]);
+              });
+            }
+        ),
       ]);
 
       var value = await router.call(['genrelist', 0, 'titles', 'remove'], [1]);
@@ -100,12 +100,10 @@ main() {
     it('should onError when a Future.error of Error is returned from call.',
         () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:id}].rating',
-          'call': (callPath, args) {
-            return new Future.error(new Exception("Oops?"));
-          }
-        }
+        route(
+            'videos[{integers:id}].rating',
+            call: (callPath, args) => new Future.error(new Exception("Oops?"))
+        ),
       ]);
 
       try {
@@ -118,12 +116,10 @@ main() {
 
     it('should onError when an Error is thrown from call.', () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:id}].rating',
-          'call': (callPath, args) {
-            throw new Exception("Oops?");
-          }
-        }
+        route(
+            'videos[{integers:id}].rating',
+            call: (callPath, args) => throw new Exception("Oops?")
+        ),
       ]);
 
       try {
@@ -137,31 +133,31 @@ main() {
     it('should return paths in jsonGraphEnvelope if route returns a promise of jsonGraphEnvelope with paths.',
         () async {
       var router = new Router([
-        {
-          'route': 'genrelist[{integers:indices}].titles.push',
-          'call': (callPath, args) {
-            return new Future.value({
-              "jsonGraph": {
-                "genrelist": {
-                  0: {
-                    "titles": {
-                      "18": $ref(["titlesById", 1]),
-                      "length": 19
+        route(
+            'genrelist[{integers:indices}].titles.push',
+            call: (callPath, args) {
+              return new Future.value({
+                "jsonGraph": {
+                  "genrelist": {
+                    0: {
+                      "titles": {
+                        "18": $ref(["titlesById", 1]),
+                        "length": 19
+                      }
                     }
                   }
-                }
-              },
-              "paths": [
-                [
-                  "genrelist",
-                  0,
-                  "titles",
-                  ["18", "length"]
+                },
+                "paths": [
+                  [
+                    "genrelist",
+                    0,
+                    "titles",
+                    ["18", "length"]
+                  ]
                 ]
-              ]
-            });
-          }
-        }
+              });
+            }
+        ),
       ]);
 
       var value = await router.call([
@@ -204,21 +200,21 @@ main() {
     it('should return paths in jsonGraphEnvelope if array of pathValues is returned from promise.',
         () async {
       var router = new Router([
-        {
-          'route': 'genrelist[{integers:indices}].titles.push',
-          'call': (callPath, args) {
-            return new Future.value([
-              {
-                "path": ["genrelist", 0, "titles", 18],
-                "value": $ref(["titlesById", 1])
-              },
-              {
-                "path": ["genrelist", 0, "titles", "length"],
-                "value": 19
-              }
-            ]);
-          }
-        }
+        route(
+            'genrelist[{integers:indices}].titles.push',
+            call: (callPath, args) {
+              return new Future.value([
+                {
+                  "path": ["genrelist", 0, "titles", 18],
+                  "value": $ref(["titlesById", 1])
+                },
+                {
+                  "path": ["genrelist", 0, "titles", "length"],
+                  "value": 19
+                }
+              ]);
+            }
+        ),
       ]);
 
       var value = await router.call([
@@ -417,7 +413,7 @@ main() {
     it('should throw when calling a function that does not exist, but get handler does.',
         () async {
       var router = new Router([
-        {'route': 'videos[1234].rating', 'get': () {}}
+        route('videos[1234].rating', get: (_) {}),
       ]);
       try {
         await router.call(['videos', 1234, 'rating'], [5]);
@@ -431,28 +427,23 @@ main() {
 
 Router getCallRouter() {
   return new Router([
-    {
-      'route': 'genrelist[{integers}].titles.push',
-      'call': (callPath, args) {
-        return {
+    route(
+        'genrelist[{integers}].titles.push',
+        call: (callPath, args) => {
           'path': ['genrelist', 0, 'titles', 2],
           'value': $ref(['titlesById', 1])
-        };
-      }
-    },
-    {
-      'route': 'genrelist[{integers}].titles[{integers}]',
-      'get': (pathSet) {
-        return {
+        }
+    ),
+    route(
+        'genrelist[{integers}].titles[{integers}]',
+        get: (pathSet) => {
           'path': ['genrelist', 0, 'titles', 1],
           'value': $ref(['titlesById', 1])
-        };
-      }
-    },
-    {
-      'route': 'titlesById[{integers}]["name", "rating"]',
-      'get': (pathSet) {
-        return [
+        }
+    ),
+    route(
+        'titlesById[{integers}]["name", "rating"]',
+        get: (pathSet) => [
           {
             'path': ['titlesById', 1, 'name'],
             'value': 'Orange is the new Black'
@@ -461,34 +452,33 @@ Router getCallRouter() {
             'path': ['titlesById', 1, 'rating'],
             'value': 5
           }
-        ];
-      }
-    }
+        ]
+    ),
   ]);
 }
 
 Router getRouter({bool noPaths: false, bool throwError: false}) {
   return new Router([
-    {
-      'route': 'videos[{integers:id}].rating',
-      'call': (callPath, args) {
-        if (throwError) {
-          throw new Exception('Oops?');
+    route(
+        'videos[{integers:id}].rating',
+        call: (callPath, args) {
+          if (throwError) {
+            throw new Exception('Oops?');
+          }
+          return {
+            'jsonGraph': {
+              'videos': {
+                1234: {'rating': args[0]}
+              }
+            },
+            'paths': noPaths
+                     ? null
+                     : [
+                       ['videos', 1234, 'rating']
+                     ]
+          };
         }
-        return {
-          'jsonGraph': {
-            'videos': {
-              1234: {'rating': args[0]}
-            }
-          },
-          'paths': noPaths
-              ? null
-              : [
-                  ['videos', 1234, 'rating']
-                ]
-        };
-      }
-    }
+    ),
   ]);
 }
 
@@ -513,114 +503,112 @@ Router getExtendedRouter([Map initialIdsAndNames]) {
   }
 
   return new Router([
-    {
-      'route': 'lolomo',
-      'get': (_) {
-        return {
+    route(
+        'lolomo',
+        get: (pathSet) => {
           'path': ['lolomo'],
           'value': $ref('lolomos[123]')
-        };
-      }
-    },
-    {
-      'route': 'lolomos[{keys:ids}][{integers:indices}]',
-      'get': (alias) {
-        var id = alias.ids[0];
-        return alias.indices.map((idx) {
-          if (listsById[idx]) {
+        }
+    ),
+    route(
+        'lolomos[{keys:ids}][{integers:indices}]',
+        get: (pathSet) {
+          var id = pathSet['ids'][0];
+          return pathSet['indices'].map((idx) {
+            if (listsById[idx]) {
+              return {
+                'path': ['lolomos', id, idx],
+                'value': $ref(['listsById', idx])
+              };
+            }
             return {
-              'path': ['lolomos', id, idx],
-              'value': $ref(['listsById', idx])
+              'path': ['lolomos', id],
+              'value': $atom(null)
             };
-          }
+          });
+        }
+    ),
+    route(
+        'lolomos[{keys:ids}].length',
+        get: (pathSet) {
+          var id = pathSet['ids'][0];
           return {
-            'path': ['lolomos', id],
-            'value': $atom(null)
+            'path': ['lolomos', id, 'length'],
+            'value': listsLength()
           };
-        });
-      }
-    },
-    {
-      'route': 'lolomos[{keys:ids}].length',
-      'get': (alias) {
-        var id = alias['ids'][0];
-        return {
-          'path': ['lolomos', id, 'length'],
-          'value': listsLength()
-        };
-      }
-    },
-    {
-      'route': 'listsById[{integers:indices}].name',
-      'get': (alias) {
-        return alias['indices'].map((idx) {
-          if (listsById[idx] != null) {
+        }
+    ),
+    route(
+        'listsById[{integers:indices}].name',
+        get: (pathSet) {
+          return pathSet['indices'].map((idx) {
+            if (listsById[idx] != null) {
+              return {
+                'path': ['listsById', idx, 'name'],
+                'value': listsById[idx]['name']
+              };
+            }
             return {
-              'path': ['listsById', idx, 'name'],
-              'value': listsById[idx]['name']
+              'path': ['listsById', idx],
+              'value': $atom(null)
             };
-          }
-          return {
-            'path': ['listsById', idx],
-            'value': $atom(null)
-          };
-        });
-      }
-    },
-    {
-      'route': 'listsById[{integers:indices}].invalidate',
-      'call': (alias, args) {
-        var indices = alias.indices;
-        return indices.map((idx) {
-          return {
-            'path': ['listsById', idx, 'name']
-          };
-        });
-      }
-    },
-    {
-      'route': 'listsById[{integers:indices}].rating',
-      'get': (alias) {
-        return alias.indices.map((idx) {
-          if (listsById[idx]) {
+          });
+        }
+    ),
+    route(
+        'listsById[{integers:indices}].invalidate',
+        call: (callPath, args) {
+          var indices = callPath.indices;
+          return indices.map((idx) {
             return {
-              'path': ['listsById', idx, 'rating'],
-              'value': listsById[idx].rating
+              'path': ['listsById', idx, 'name']
             };
-          }
+          });
+        }
+    ),
+    route(
+        'listsById[{integers:indices}].rating',
+        get: (pathSet) {
+          return pathSet.indices.map((idx) {
+            if (listsById[idx]) {
+              return {
+                'path': ['listsById', idx, 'rating'],
+                'value': listsById[idx].rating
+              };
+            }
+            return {
+              'path': ['listsById', idx],
+              'value': $atom(null)
+            };
+          });
+        }
+    ),
+    route(
+        'lolomos[{keys:ids}].pvAdd',
+        call: (callPath, args) {
+          var id = callPath['ids'][0];
+          var idx = addToList(args[0]);
           return {
-            'path': ['listsById', idx],
-            'value': $atom(null)
+            'path': ['lolomos', id, idx],
+            'value': $ref(['listsById', idx])
           };
-        });
-      }
-    },
-    {
-      'route': 'lolomos[{keys:ids}].pvAdd',
-      'call': (callPath, args) {
-        var id = callPath['ids'][0];
-        var idx = addToList(args[0]);
-        return {
-          'path': ['lolomos', id, idx],
-          'value': $ref(['listsById', idx])
-        };
-      }
-    },
-    {
-      'route': 'lolomos[{keys:ids}].jsongAdd',
-      'call': (callPath, args) {
-        var id = callPath['ids'][0];
-        var idx = addToList(args[0]);
-        var lolomos = {};
-        lolomos[id] = {};
-        lolomos[id][idx] = $ref(['listsById', idx]);
-        return {
-          'jsonGraph': {'lolomos': lolomos},
-          'paths': [
-            ['lolomos', id, idx]
-          ]
-        };
-      }
-    }
+        }
+    ),
+    route(
+        'lolomos[{keys:ids}].jsongAdd',
+        call: (callPath, args) {
+          var id = callPath['ids'][0];
+          var idx = addToList(args[0]);
+          var lolomos = {};
+          lolomos[id] = {};
+          lolomos[id][idx] = $ref(['listsById', idx]);
+          return {
+            'jsonGraph': {'lolomos': lolomos},
+            'paths': [
+              ['lolomos', id, idx]
+            ]
+          };
+        }
+    ),
   ]);
 }

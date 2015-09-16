@@ -7,12 +7,10 @@ main() {
   describe('Error', () {
     it('should return an empty error when throwing a non error.', () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:ids}]',
-          'get': (alias) {
-            throw 'hello world';
-          }
-        }
+        route(
+            'videos[{integers:ids}]',
+            get: (pathSet) => throw 'hello world'
+        ),
       ]);
 
       var value = await router.get([
@@ -27,15 +25,13 @@ main() {
 
     it('should throw an error when maxExpansion has been exceeded.', () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:ids}]',
-          'get': (alias) {
-            return {
+        route(
+            'videos[{integers:ids}]',
+            get: (pathSet) => {
               'path': ['videos', 1],
               'value': $ref('videos[1]')
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       try {
@@ -49,12 +45,12 @@ main() {
     it('thrown non-Error should insert in the value property of error object for all requested paths.',
         () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:id}].rating',
-          'get': (json) {
-            throw {'message': 'not authorized', 'unauthorized': true};
-          }
-        }
+        route(
+            'videos[{integers:ids}].rating',
+            get: (pathSet) {
+              throw {'message': 'not authorized', 'unauthorized': true};
+            }
+        ),
       ]);
       var value = await router.get([
         [
@@ -76,13 +72,13 @@ main() {
     it('promise rejection of non Error should insert object as the value property within an error for all requested paths (either being set or get).',
         () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:id}].rating',
-          'set': (json) {
-            return new Future.error(
-                {'message': 'user not authorized', 'unauthorized': true});
-          }
-        }
+        route(
+            'videos[{integers:ids}].rating',
+            set: (json) {
+              return new Future.error(
+                  {'message': 'user not authorized', 'unauthorized': true});
+            }
+        ),
       ]);
       var routerSetValue = await router.set({
         'jsonGraph': {
@@ -113,12 +109,12 @@ main() {
     it('thrown non-Error should insert in the value property of error object for all requested paths (either being set or get).',
         () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:id}].rating',
-          'set': (json) {
-            throw {'message': 'not authorized', 'unauthorized': true};
-          }
-        }
+        route(
+            'videos[{integers:ids}].rating',
+            set: (json) {
+              throw {'message': 'user not authorized', 'unauthorized': true};
+            }
+        ),
       ]);
       var routerSetValue = await router.set({
         'jsonGraph': {
