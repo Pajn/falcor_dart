@@ -46,7 +46,7 @@ main() {
     });
 
     //todo(Rasmus): Fix this test
-    xit('should validate that paths are ran in parallel, not sequentially.',
+    it('should validate that paths are ran in parallel, not sequentially.',
         () async {
       // Not sure about this so just commented out for now...
       // this.timeout(10000);
@@ -91,11 +91,10 @@ main() {
         },
         {
           'route': 'two.be[{integers:ids}].summary',
-          'get': (aliasMap) {
+          'get': (aliasMap) async {
             called(1);
+            await new Future.delayed(new Duration(milliseconds: 500));
             return aliasMap['ids']
-            // Not sure about this so just commented out for now...
-            // delay(2000).
                 .map((id) {
               return {
                 'path': ['two', 'be', id, 'summary'],
@@ -106,12 +105,11 @@ main() {
         },
         {
           'route': 'three.four[{integers:ids}].summary',
-          'get': (aliasMap) {
+          'get': (aliasMap) async{
             // Not sure about this so just commented out for now...
-            // called(2);
+            called(2);
+            await new Future.delayed(new Duration(milliseconds: 500));
             return aliasMap['ids']
-            // Not sure about this so just commented out for now...
-            // delay(2000).
                 .map((id) {
               return {
                 'path': ['three', 'four', id, 'summary'],
@@ -154,11 +152,7 @@ main() {
                 'path': ['lists', id],
                 'value': $ref('lists[0]')
               };
-            })
-                .
-
-            // Note: this causes the batching to work.
-            toList();
+            });
           }
         },
         {
@@ -196,25 +190,26 @@ main() {
     });
 
     //todo(Rasmus): How do this translate to a world without Rx?
-    xit('should validate batching/collapsing makes two request since its onNextd without toArray().',
+    it('should validate batching/collapsing makes two request since its onNextd without toArray().',
         () async {
       var serviceCalls = 0;
       var routes = [
         {
           'route': 'lists[{keys:ids}]',
           'get': (aliasMap) {
-            return aliasMap['ids'].map((id) {
+            return Future.wait(aliasMap['ids'].map((id) async {
               if (id == 0) {
                 return {
                   'path': ['lists', id],
                   'value': $ref('two.be[956]')
                 };
               }
+              await new Future.delayed(new Duration(milliseconds: 50));
               return {
                 'path': ['lists', id],
                 'value': $ref('lists[0]')
               };
-            });
+            }));
           }
         },
         {

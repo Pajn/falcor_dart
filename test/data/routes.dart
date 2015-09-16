@@ -11,119 +11,119 @@ videoRoutes() {
   return {
     'Summary': ({fn}) {
       return [
-        {
-          'route': 'videos.summary',
-          'get': (path) {
-            if (fn != null) {
-              fn(path);
+        route(
+            'videos.summary',
+            get: (path) {
+              if (fn != null) {
+                fn(path);
+              }
+              return {
+                'jsonGraph': {
+                  'videos': {'summary': $atom(75)}
+                },
+                'paths': [
+                  ['videos', 'summary']
+                ]
+              };
             }
-            return {
-              'jsonGraph': {
-                'videos': {'summary': $atom(75)}
-              },
-              'paths': [
-                ['videos', 'summary']
-              ]
-            };
-          }
-        }
+        ),
       ];
     },
     'Keys': {
       'Summary': (fn) {
         return [
-          {
-            'route': 'videos[{keys}].summary',
-            'get': (path) {
-              if (fn != null) {
-                fn(path);
+          route(
+              'videos[{keys}].summary',
+              get: (path) {
+                if (fn != null) {
+                  fn(path);
+                }
+                return path[1].map((id) {
+                  return generateVideoJSONG(id);
+                });
               }
-              return path[1].map((id) {
-                return generateVideoJSONG(id);
-              });
-            }
-          }
+          ),
         ];
       }
     },
     'Integers': {
       'Summary': (fn) {
         return [
-          {
-            'route': ['videos', Keys.integers, 'summary'],
-            'get': (path) {
-              if (fn != null) {
-                fn(path);
+          route(
+              ['videos', Keys.integers, 'summary'],
+              get: (path) {
+                if (fn != null) {
+                  fn(path);
+                }
+                return path[1].map((id) {
+                  return generateVideoJSONG(id);
+                });
               }
-              return path[1].map((id) {
-                return generateVideoJSONG(id);
-              });
-            }
-          }
+          ),
         ];
       }
     },
     'Ranges': {
       'Summary': (fn) {
         return [
-          {
-            'route': ['videos', Keys.ranges, 'summary'],
-            'get': (path) {
-              if (fn != null) {
-                fn(path);
+          route(
+              ['videos', Keys.ranges, 'summary'],
+              get: (path) {
+                if (fn != null) {
+                  fn(path);
+                }
+                return TestRunner.rangeToArray(path[1]).map((id) {
+                  return generateVideoJSONG(id);
+                });
               }
-              return TestRunner.rangeToArray(path[1]).map((id) {
-                return generateVideoJSONG(id);
-              });
-            }
-          }
+          ),
         ];
       }
     },
     'State': {
       'Keys': (fn) {
         return [
-          {
-            'route': ['videos', 'state', Keys.keys],
-            'get': (path) {
-              if (fn != null) {
-                fn(path);
+          route(
+              ['videos', 'state', Keys.keys],
+              get: (path) {
+                if (fn != null) {
+                  fn(path);
+                }
+                return path[2].map((key) {
+                  return generateVideoStateJSONG(key);
+                });
               }
-              return path[2].map((key) {
-                return generateVideoStateJSONG(key);
-              });
-            }
-          }
+          ),
         ];
       },
       'Integers': (fn) {
         return [
-          {
-            'route': ['videos', 'state', Keys.integers],
-            'get': (path) {
-              if (fn != null) {
-                fn(path);
+          route(
+              ['videos', 'state', Keys.integers],
+              get: (path) {
+                if (fn != null) {
+                  fn(path);
+                }
+                return path[2].map((key) {
+                  return generateVideoStateJSONG(key);
+                });
               }
-              return path[2].map((key) {
-                return generateVideoStateJSONG(key);
-              });
-            }
-          }
+          ),
         ];
       },
       'Ranges': (fn) {
         return [
-          {
-            'route': ['videos', 'state', Keys.ranges],
-            'get': (path) {
-              if (fn != null) {
-                fn(path);
+          route(
+              ['videos', 'state', Keys.ranges],
+              get: (path) {
+                if (fn != null) {
+                  fn(path);
+                }
+                return TestRunner.rangeToArray(path[2]).map((key) {
+                  return generateVideoStateJSONG(key);
+                });
               }
-              return TestRunner.rangeToArray(path[2]).map((key) {
-                return generateVideoStateJSONG(key);
-              });
-            }
-          }
+          ),
         ];
       }
     }

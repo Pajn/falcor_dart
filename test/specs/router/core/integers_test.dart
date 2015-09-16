@@ -89,10 +89,9 @@ main() {
     it('should match ranges with integers pattern and coerce match into an array of integers.',
         () async {
       var router = new Router([
-        {
-          'route': 'titlesById[{integers}]["name", "rating"]',
-          'get': ([_]) {
-            return [
+        route(
+            'titlesById[{integers}]["name", "rating"]',
+            get: (_) => [
               {
                 'path': ['titlesById', 1, 'name'],
                 'value': 'Orange is the new Black'
@@ -101,9 +100,8 @@ main() {
                 'path': ['titlesById', 1, 'rating'],
                 'value': 5
               }
-            ];
-          }
-        }
+            ]
+        ),
       ]);
 
       var value = await router.get([

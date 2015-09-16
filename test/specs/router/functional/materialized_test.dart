@@ -58,7 +58,6 @@ main() {
           'summary'
         ]
       ]);
-      var count = 0;
       expect(res).toEqual({
         'jsonGraph': {
           'one': {
@@ -71,8 +70,6 @@ main() {
           }
         }
       });
-      count++;
-      expect(count).toEqual(1);
     });
   });
 }

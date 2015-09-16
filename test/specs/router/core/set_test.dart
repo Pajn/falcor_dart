@@ -9,21 +9,21 @@ main() {
     xit('should not transform set values before passing them to route. (undefined)',
         () {
       var router = new Router([
-        {
-          'route': 'titlesById[{integers:titleIds}].userRating',
-          'set': (json) {
-            var exception = false;
-            try {
-              expect(json.titlesById[1].keys).toContain('userRating');
-              expect(json.titlesById[1]).toBeNull();
-            } catch (e) {
-              exception = true;
+        route(
+            'titlesById[{integers:titleIds}].userRating',
+            set: (json) {
+              var exception = false;
+              try {
+                expect(json.titlesById[1].keys).toContain('userRating');
+                expect(json.titlesById[1]).toBeNull();
+              } catch (e) {
+                exception = true;
+              }
+              if (!exception) {
+                return;
+              }
             }
-            if (!exception) {
-              return;
-            }
-          }
-        }
+        ),
       ]);
 
       router.set({
@@ -41,25 +41,25 @@ main() {
     xit('should call the route when setting a value to null', () {
       var called = false;
       var router = new Router([
-        {
-          'route': 'titlesById[{integers:titleIds}].userRating',
-          'set': (json) {
-            called = true;
-            var exception = false;
-            try {
-              expect(json).toEqual({
-                'titlesById': {
-                  '1': {'userRating': null}
-                }
-              });
-            } catch (e) {
-              exception = true;
+        route(
+            'titlesById[{integers:titleIds}].userRating',
+            set: (json) {
+              called = true;
+              var exception = false;
+              try {
+                expect(json).toEqual({
+                  'titlesById': {
+                    '1': {'userRating': null}
+                  }
+                });
+              } catch (e) {
+                exception = true;
+              }
+              if (!exception) {
+                return;
+              }
             }
-            if (!exception) {
-              return;
-            }
-          }
-        }
+        ),
       ]);
 
       router.set({
@@ -78,24 +78,24 @@ main() {
     xit('should call get() with the same type of arguments when no route for set() found.',
         () {
       var router = new Router([
-        {
-          'route': 'titlesById[{integers:titleIds}].rating',
-          'get': (json) {
-            var exception = false;
-            try {
-              expect(json).toEqual([
-                'titlesById',
-                [0],
-                'rating'
-              ]);
-            } catch (e) {
-              exception = true;
+        route(
+            'titlesById[{integers:titleIds}].rating',
+            get: (pathSet) {
+              var exception = false;
+              try {
+                expect(pathSet).toEqual([
+                  'titlesById',
+                  [0],
+                  'rating'
+                ]);
+              } catch (e) {
+                exception = true;
+              }
+              if (!exception) {
+                return;
+              }
             }
-            if (!exception) {
-              return;
-            }
-          }
-        }
+        ),
       ]);
 
       router.set({
@@ -182,27 +182,27 @@ main() {
 
     it('should perform a simple set.', () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:id}].rating',
-          'set': (json) {
-            expect(json).toEqual({
-              'videos': {
-                1234: {'rating': 5},
-                333: {'rating': 5},
-              }
-            });
-            return [
-              {
-                'path': ['videos', 1234, 'rating'],
-                'value': 5
-              },
-              {
-                'path': ['videos', 333, 'rating'],
-                'value': 5
-              }
-            ];
-          }
-        }
+        route(
+            'videos[{integers:id}].rating',
+            set: (json) {
+              expect(json).toEqual({
+                'videos': {
+                  1234: {'rating': 5},
+                  333: {'rating': 5},
+                }
+              });
+              return [
+                {
+                  'path': ['videos', 1234, 'rating'],
+                  'value': 5
+                },
+                {
+                  'path': ['videos', 333, 'rating'],
+                  'value': 5
+                }
+              ];
+            }
+        ),
       ]);
       var value = await router.set({
         'jsonGraph': {
@@ -235,17 +235,17 @@ main() {
         return {'jsonGraph': jsonGraph};
       });
       var router = new Router([
-        {'route': "titlesById[{integers:titleIds}].userRating", 'set': setSpy},
-        {
-          'route': "genreLists[{integers:titleIds}]",
-          'get': (p) {
-            var id = p['titleIds'][0];
-            return {
-              'path': ['genreLists', id],
-              'value': $ref(['titlesById', id])
-            };
-          }
-        }
+        route('titlesById[{integers:titleIds}].userRating', set: setSpy),
+        route(
+            'genreLists[{integers:titleIds}]',
+            get: (pathSet) {
+              var id = pathSet['titleIds'][0];
+              return {
+                'path': ['genreLists', id],
+                'value': $ref(['titlesById', id])
+              };
+            }
+        ),
       ]);
 
       var value = await router.set({
@@ -289,28 +289,28 @@ main() {
         refFollowed = true;
       })
         ..addAll([
-          {
-            'route': 'videos[{integers:id}].rating',
-            'set': (json) {
-              called++;
-              try {
-                expect(json).toEqual({
-                  'videos': {
-                    0: {'rating': 5}
-                  }
-                });
-              } catch (e) {
-                print(e);
-                expect('did throw').toEqual('not throw');
-              }
-              return [
-                {
-                  'path': ['videos', 0, 'rating'],
-                  'value': 5
+          route(
+              'videos[{integers:id}].rating',
+              set: (json) {
+                called++;
+                try {
+                  expect(json).toEqual({
+                    'videos': {
+                      0: {'rating': 5}
+                    }
+                  });
+                } catch (e) {
+                  print(e);
+                  expect('did throw').toEqual('not throw');
                 }
-              ];
-            }
-          }
+                return [
+                  {
+                    'path': ['videos', 0, 'rating'],
+                    'value': 5
+                  }
+                ];
+              }
+          ),
         ]));
 
       var value = await router.set({
@@ -338,15 +338,13 @@ main() {
 
     it('should invoke getter on attempt to set read-only property.', () async {
       var router = new Router([
-        {
-          'route': 'a.b.c',
-          'get': (_) {
-            return {
+        route(
+            'a.b.c',
+            get: (_) => {
               'path': ['a', 'b', 'c'],
               'value': 5
-            };
-          }
-        }
+            }
+        ),
       ]);
       var value = await router.set({
         'paths': [

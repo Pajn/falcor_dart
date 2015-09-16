@@ -20,19 +20,17 @@ main() {
 
     it('should not return empty atoms for a null value in jsonGraph', () async {
       var router = new Router([
-        {
-          'route': 'videos.falsey',
-          'get': (path) {
-            return {
+        route(
+            'videos.falsey',
+            get: (_) => {
               'jsonGraph': {
                 'videos': {'falsey': null}
               },
               'paths': [
                 ['videos', 'falsey']
               ]
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       var value = await router.get([
@@ -49,19 +47,17 @@ main() {
     it('should not return empty atoms for a null value atom in jsonGraph',
         () async {
       var router = new Router([
-        {
-          'route': 'videos.falsey',
-          'get': (path) {
-            return {
+        route(
+            'videos.falsey',
+            get: (_) => {
               'jsonGraph': {
                 'videos': {'falsey': $atom(null)}
               },
               'paths': [
                 ['videos', 'falsey']
               ]
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       var value = await router.get([
@@ -76,19 +72,17 @@ main() {
 
     it('should not return empty atoms for a zero value in jsonGraph', () async {
       var router = new Router([
-        {
-          'route': 'videos.falsey',
-          'get': (path) {
-            return {
+        route(
+            'videos.falsey',
+            get: (_) => {
               'jsonGraph': {
                 'videos': {'falsey': 0}
               },
               'paths': [
                 ['videos', 'falsey']
               ]
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       var value = await router.get([
@@ -105,19 +99,17 @@ main() {
     it('should not return empty atoms for a zero value atom in jsonGraph',
         () async {
       var router = new Router([
-        {
-          'route': 'videos.falsey',
-          'get': (path) {
-            return {
+        route(
+            'videos.falsey',
+            get: (_) => {
               'jsonGraph': {
                 'videos': {'falsey': $atom(0)}
               },
               'paths': [
                 ['videos', 'falsey']
               ]
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       var value = await router.get([
@@ -132,15 +124,13 @@ main() {
 
     it('should not return empty atoms for a zero path value', () async {
       var router = new Router([
-        {
-          'route': 'videos.falsey',
-          'get': (path) {
-            return {
+        route(
+            'videos.falsey',
+            get: (_) => {
               'value': 0,
               'path': ['videos', 'falsey']
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       var value = await router.get([
@@ -155,15 +145,13 @@ main() {
 
     it('should not return empty atoms for a null path value', () async {
       var router = new Router([
-        {
-          'route': 'videos.falsey',
-          'get': (path) {
-            return {
+        route(
+            'videos.falsey',
+            get: (_) => {
               'value': null,
               'path': ['videos', 'falsey']
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       var value = await router.get([
@@ -178,15 +166,13 @@ main() {
 
     it('should not return empty atoms for a false path value', () async {
       var router = new Router([
-        {
-          'route': 'videos.falsey',
-          'get': (path) {
-            return {
+        route(
+            'videos.falsey',
+            get: (_) => {
               'value': false,
               'path': ['videos', 'falsey']
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       var value = await router.get([
@@ -202,15 +188,13 @@ main() {
 
     it('should not return empty atoms for a empty string path value', () async {
       var router = new Router([
-        {
-          'route': 'videos.falsey',
-          'get': (path) {
-            return {
+        route(
+            'videos.falsey',
+            get: (_) => {
               'value': '',
               'path': ['videos', 'falsey']
-            };
-          }
-        }
+            }
+        ),
       ]);
 
       var value = await router.get([
@@ -228,10 +212,9 @@ main() {
         () async {
       var serviceCalls = 0;
       var routes = [
-        {
-          'route': 'lists[{keys:ids}]',
-          'get': (aliasMap) {
-            return aliasMap['ids'].map((id) {
+        route(
+            'lists[{keys:ids}]',
+            get: (pathSet) => pathSet['ids'].map((id) {
               if (id == 0) {
                 return {
                   'path': ['lists', id],
@@ -242,21 +225,18 @@ main() {
                 'path': ['lists', id],
                 'value': $ref('lists[0]')
               };
-            });
-          }
-        },
-        {
-          'route': 'two.be[{integers:ids}].summary',
-          'get': (aliasMap) {
-            return aliasMap['ids'].map((id) {
+            })
+        ),
+        route(
+            'two.be[{integers:ids}].summary',
+            get: (pathSet) => pathSet['ids'].map((id) {
               serviceCalls++;
               return {
                 'path': ['two', 'be', id, 'summary'],
                 'value': 'hello world'
               };
-            });
-          }
-        }
+            })
+        ),
       ];
       var router = new Router(routes);
       var value = await router.get([
@@ -362,18 +342,14 @@ main() {
         }
       };
       var router = new Router([
-        {
-          'route': 'ProductsById[{keys}][{keys}]',
-          'get': (pathSet) {
-            throw new Exception('reference was followed in error');
-          }
-        },
-        {
-          'route': 'ProffersById[{integers}].ProductsList[{ranges}]',
-          'get': (pathSet) {
-            return routeResponse;
-          }
-        }
+        route(
+            'ProductsById[{keys}][{keys}]',
+            get: (_) => throw new Exception('reference was followed in error')
+        ),
+        route(
+            'ProffersById[{integers}].ProductsList[{ranges}]',
+            get: (_) => routeResponse
+        ),
       ]);
       var obs = await router.get([
         [
@@ -388,12 +364,10 @@ main() {
 
     it('should tolerate routes which return an empty observable', () async {
       var router = new Router([
-        {
-          'route': 'videos[{integers:ids}].title',
-          'get': (alias) {
-            return [];
-          }
-        }
+        route(
+            'videos[{integers:ids}].title',
+            get: (_) => []
+        ),
       ]);
       var obs = await router.get([
         ['videos', 1, 'title']
@@ -411,45 +385,42 @@ main() {
   });
 }
 
-getPrecedenceRouter({onTitle, onRating}) {
-
+getPrecedenceRouter({onTitle(PathSet pathSet), onRating(PathSet pathSet)}) {
   return new Router([
-    {
-      'route': 'videos[{integers:ids}].title',
-      'get': (alias) {
-
-        var ids = alias['ids'];
-        if (onTitle != null) {
-          onTitle(alias);
+    route(
+        'videos[{integers:ids}].title',
+        get: (pathSet) {
+          var ids = pathSet['ids'];
+          if (onTitle != null) {
+            onTitle(pathSet);
+          }
+          return ids.map((id) {
+            return {
+              'path': ['videos', id, 'title'],
+              'value': 'title $id',
+            };
+          });
         }
-        return ids.map((id) {
-          return {
-            'path': ['videos', id, 'title'],
-            'value': 'title $id',
-          };
-        });
-      }
-    },
-    {
-      'route': 'videos[{integers:ids}].rating',
-      'get': (alias) {
-        var ids = alias['ids'];
-        if (onRating != null) {
-          onRating(alias);
+    ),
+    route(
+        'videos[{integers:ids}].rating',
+        get: (pathSet) {
+          var ids = pathSet['ids'];
+          if (onRating != null) {
+            onRating(pathSet);
+          }
+          return ids.map((id) {
+            return {
+              'path': ['videos', id, 'rating'],
+              'value': 'rating $id',
+            };
+          });
         }
-        return ids.map((id) {
-          return {
-            'path': ['videos', id, 'rating'],
-            'value': 'rating $id',
-          };
-        });
-      }
-    },
-    {
-      'route': 'lists[{keys:ids}][{integers:indices}]',
-      'get': (alias) {
-        return alias['ids'].expand((id) {
-          return alias['indices'].map((idx) {
+    ),
+    route(
+        'lists[{keys:ids}][{integers:indices}]',
+        get: (pathSet) => pathSet['ids'].expand((id) {
+          return pathSet['indices'].map((idx) {
             return {'id': id, 'idx': idx};
           });
         }).map((data) {
@@ -457,8 +428,7 @@ getPrecedenceRouter({onTitle, onRating}) {
             'path': ['lists', data['id'], data['idx']],
             'value': $ref(['videos', data['idx']])
           };
-        });
-      }
-    }
+        })
+    ),
   ]);
 }
