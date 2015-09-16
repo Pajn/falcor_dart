@@ -80,5 +80,5 @@ prettifyRoute(Iterable route) {
     }
   }
 
-  return str;
+  return str.join(',');
 }
