@@ -15,7 +15,7 @@ main() {
  * are.
  */
   describe('JSONG - Merge', () {
-    iit('should write a simple path to the cache.', () async {
+    it('should write a simple path to the cache.', () async {
       var jsong = {
         'jsonGraph': {
           'there': {'is': $atom('a value')}
@@ -168,7 +168,7 @@ main() {
       mergeTest(jsong);
     });
 
-    it('should get the set refs.', () async {
+    iit('should get the set refs.', () async {
       var jsong = {
         'jsonGraph': {
           'there': {'is': $ref('a')}
@@ -190,7 +190,7 @@ main() {
       });
     });
 
-    it('should get the set values and refs.', () async {
+    iit('should get the set values and refs.', () async {
       var jsong = {
         'jsonGraph': {
           'there': {'is': $ref('a'), 'was': $ref('b')},
