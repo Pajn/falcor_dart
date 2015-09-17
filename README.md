@@ -11,7 +11,7 @@ A simple usage example:
 import 'package:falcor_dart/falcor_dart.dart';
 
 main() {
-  final router new Router([
+  final router = new Router([
       route(
         // match a request for the key "greeting"
         'greeting',
