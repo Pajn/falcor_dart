@@ -33,6 +33,9 @@ For in-depth information on the Falcor Router, see the Router Guide in the
 
 ## Features and bugs
 
+This release contains all the issues and feature requests from
+[falcor-router](https://github.com/Netflix/falcor-router/issues).
+
 Please file feature requests and bugs at the [issue tracker][tracker].
 
 [tracker]: https://github.com/Pajn/falcor_dart
