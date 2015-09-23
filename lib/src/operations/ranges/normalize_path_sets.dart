@@ -9,7 +9,7 @@ import 'package:falcor_dart/src/path_set.dart';
  * so the rest of the algos do not have to consider it.
  */
 List<PathSet> normalizePathSets(List path) {
-  for(var i = 0; i < path.length; ++i) {
+  for (var i = 0; i < path.length; ++i) {
     var key = path[i];
 
     // the algo becomes very simple if done recursively.  If

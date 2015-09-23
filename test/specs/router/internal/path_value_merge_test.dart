@@ -1,5 +1,5 @@
 import 'package:guinness2/guinness2.dart';
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'package:falcor_dart/src/cache/path_value_merge.dart';
 
 main() {

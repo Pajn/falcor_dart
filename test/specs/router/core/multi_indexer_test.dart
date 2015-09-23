@@ -1,7 +1,7 @@
 library falcor_dart.multi_indexer_test;
 
 import 'package:guinness2/guinness2.dart';
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 
 main() {
   describe('Multi-Indexer', () {
@@ -9,21 +9,18 @@ main() {
         () async {
       var serviceCalls = 0;
       var router = new Router([
-        route(
-            'test["one", "two", "three"]',
-            get: (pathSet) {
-              var keys = pathSet[1];
-              serviceCalls++;
+        route('test["one", "two", "three"]', get: (pathSet) {
+          var keys = pathSet[1];
+          serviceCalls++;
 
-              expect(keys).toBeA(List);
-              return keys.map((k) {
-                return {
-                  'path': ['test', k],
-                  'value': k
-                };
-              });
-            }
-        ),
+          expect(keys).toBeA(List);
+          return keys.map((k) {
+            return {
+              'path': ['test', k],
+              'value': k
+            };
+          });
+        }),
       ]);
 
       var value = await router.get([
@@ -44,21 +41,18 @@ main() {
         () async {
       var serviceCalls = 0;
       var router = new Router([
-        route(
-            'test["one", "two", "three"].summary',
-            get: (pathSet) {
-              var keys = pathSet[1];
-              serviceCalls++;
+        route('test["one", "two", "three"].summary', get: (pathSet) {
+          var keys = pathSet[1];
+          serviceCalls++;
 
-              expect(keys).toBeA(List);
-              return keys.map((k) {
-                return {
-                  'path': ['test', k, 'summary'],
-                  'value': k
-                };
-              });
-            }
-        ),
+          expect(keys).toBeA(List);
+          return keys.map((k) {
+            return {
+              'path': ['test', k, 'summary'],
+              'value': k
+            };
+          });
+        }),
       ]);
 
       var value = await router.get([
@@ -83,21 +77,19 @@ main() {
         () async {
       var serviceCalls = 0;
       var router = new Router([
-        route(
-            'test["one", "two", "three"][{ranges}][{integers:ids}]',
+        route('test["one", "two", "three"][{ranges}][{integers:ids}]',
             get: (pathSet) {
-              var keys = pathSet[1];
-              serviceCalls++;
+          var keys = pathSet[1];
+          serviceCalls++;
 
-              expect(keys).toBeA(List);
-              return keys.map((k) {
-                return {
-                  'path': ['test', k, 0, 0],
-                  'value': k
-                };
-              });
-            }
-        ),
+          expect(keys).toBeA(List);
+          return keys.map((k) {
+            return {
+              'path': ['test', k, 0, 0],
+              'value': k
+            };
+          });
+        }),
       ]);
 
       var value = await router.get([
@@ -127,21 +119,18 @@ main() {
         () async {
       var serviceCalls = 0;
       var router = new Router([
-        route(
-            'test["one", "two", "three"]',
-            get: (pathSet) {
-              var keys = pathSet[1];
-              serviceCalls++;
+        route('test["one", "two", "three"]', get: (pathSet) {
+          var keys = pathSet[1];
+          serviceCalls++;
 
-              expect(keys).toBeA(List);
-              return keys.map((k) {
-                return {
-                  'path': ['test', k],
-                  'value': k
-                };
-              });
-            }
-        ),
+          expect(keys).toBeA(List);
+          return keys.map((k) {
+            return {
+              'path': ['test', k],
+              'value': k
+            };
+          });
+        }),
       ]);
 
       var value = await router.get([
@@ -161,28 +150,25 @@ main() {
     it('should fire multiple service calls', () async {
       var serviceCalls = 0;
       var router = new Router([
-        route(
-            'test["one", "two"]["three", "four"]',
-            get: (pathSet) {
-              var part1 = pathSet[1];
-              var part2 = pathSet[2];
-              serviceCalls++;
+        route('test["one", "two"]["three", "four"]', get: (pathSet) {
+          var part1 = pathSet[1];
+          var part2 = pathSet[2];
+          serviceCalls++;
 
-              expect(part1).toBeA(List);
-              expect(part2).toBeA(List);
-              var res = [];
-              part1.forEach((p1) {
-                part2.forEach((p2) {
-                  res.add({
-                    'path': ['test', p1, p2],
-                    'value': p1 + p2
-                  });
-                });
+          expect(part1).toBeA(List);
+          expect(part2).toBeA(List);
+          var res = [];
+          part1.forEach((p1) {
+            part2.forEach((p2) {
+              res.add({
+                'path': ['test', p1, p2],
+                'value': p1 + p2
               });
+            });
+          });
 
-              return res;
-            }
-        ),
+          return res;
+        }),
       ]);
 
       var value = await router.get([

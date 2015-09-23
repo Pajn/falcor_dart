@@ -38,11 +38,15 @@ bool isJSONG(output) {
 }
 
 bool isPathValue(output) {
-  return output is Map && output.containsKey('path') && output.containsKey('value');
+  return output is Map &&
+      output.containsKey('path') &&
+      output.containsKey('value');
 }
 
 bool isRoutedToken(output) {
-  return output is Map && output.containsKey('type') && output.containsKey('named');
+  return output is Map &&
+      output.containsKey('type') &&
+      output.containsKey('named');
 }
 
 prettifyRoute(Iterable route) {
@@ -59,22 +63,14 @@ prettifyRoute(Iterable route) {
 
     if (value == Keys.integers) {
       str.add('integers');
-    }
-
-    else if (value == Keys.ranges) {
+    } else if (value == Keys.ranges) {
       str.add('ranges');
-    }
-
-    else if (value == Keys.keys) {
+    } else if (value == Keys.keys) {
       str.add('keys');
-    }
-
-    else {
+    } else {
       if (value is List) {
         str.add(JSON.encode(value));
-      }
-
-      else {
+      } else {
         str.add(value);
       }
     }

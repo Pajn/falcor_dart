@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:shelf/shelf.dart' as shelf;
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'package:falcor_dart/src/jsonSerializer.dart';
 
 var parseArgs = {
@@ -34,7 +34,7 @@ FalcorHandler createFalcorHandler(getDataSource) {
     }
     if (context['method'] != 'set' &&
         (context['paths'] is! List ||
-         context['paths'].any((path) => path is! List))) {
+            context['paths'].any((path) => path is! List))) {
       return new shelf.Response.internalServerError(
           body: 'Paths must be a set of paths');
     }
@@ -56,7 +56,8 @@ FalcorHandler createFalcorHandler(getDataSource) {
       return new shelf.Response.internalServerError(body: e.toString());
     }
 
-    return new shelf.Response.ok(JSON.encode(jsonGraphEnvelope, toEncodable: serializeToJson));
+    return new shelf.Response.ok(
+        JSON.encode(jsonGraphEnvelope, toEncodable: serializeToJson));
   };
 }
 

@@ -4,7 +4,6 @@ import 'package:falcor_dart/src/path_utils/iterate_key_set.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
 import 'package:falcor_dart/src/types/range.dart';
 
-
 /**
  * merges pathValue into a cache
  */
@@ -22,12 +21,8 @@ Map pathValueMerge(Map cache, Map pathValue) {
   // References.  Needed for evaluationg suffixes in
   // both call and get/set.
   else if (pathValue['value'] is Sentinel && pathValue['value'].isRef) {
-    refs.add({
-      'path': pathValue['path'],
-      'value': pathValue['value'].value
-    });
+    refs.add({'path': pathValue['path'], 'value': pathValue['value'].value});
   }
-
 
   // Values.  Needed for reporting for call.
   else {
@@ -39,11 +34,7 @@ Map pathValueMerge(Map cache, Map pathValue) {
     innerPathValueMerge(cache, pathValue);
   }
 
-  return {
-    'references': refs,
-    'values': values,
-    'invalidations': invalidations
-  };
+  return {'references': refs, 'values': values, 'invalidations': invalidations};
 }
 
 innerPathValueMerge(Map cache, pathValue) {
@@ -72,17 +63,12 @@ innerPathValueMerge(Map cache, pathValue) {
 
       if (iteratorNote != null) {
         innerPathValueMerge(
-            next, {
-          'path': path.sublist(i + 1),
-          'value': pathValue['value']
-        });
+            next, {'path': path.sublist(i + 1), 'value': pathValue['value']});
 
         if (!iteratorNote['done']) {
           key = iterateKeySet(outerKey, iteratorNote);
         }
-      }
-
-      else {
+      } else {
         curr = next;
       }
     } while (iteratorNote != null && !iteratorNote['done']);
@@ -94,7 +80,6 @@ innerPathValueMerge(Map cache, pathValue) {
     }
   }
 
-
   // TODO: This clearly needs a re-write.  I am just unsure of how i want
   // this to look.  Plus i want to measure performance.
   outerKey = path[i];
@@ -103,7 +88,6 @@ innerPathValueMerge(Map cache, pathValue) {
   key = iterateKeySet(outerKey, iteratorNote);
 
   do {
-
     cloned = clone(pathValue['value']);
     curr[key] = cloned;
 

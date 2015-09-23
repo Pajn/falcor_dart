@@ -1,6 +1,6 @@
 import 'package:guinness2/guinness2.dart';
 
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 
 import '../../../data/routes.dart';
 import '../../../testrunner.dart';
@@ -89,19 +89,17 @@ main() {
     it('should match ranges with integers pattern and coerce match into an array of integers.',
         () async {
       var router = new Router([
-        route(
-            'titlesById[{integers}]["name", "rating"]',
+        route('titlesById[{integers}]["name", "rating"]',
             get: (_) => [
-              {
-                'path': ['titlesById', 1, 'name'],
-                'value': 'Orange is the new Black'
-              },
-              {
-                'path': ['titlesById', 1, 'rating'],
-                'value': 5
-              }
-            ]
-        ),
+                  {
+                    'path': ['titlesById', 1, 'name'],
+                    'value': 'Orange is the new Black'
+                  },
+                  {
+                    'path': ['titlesById', 1, 'rating'],
+                    'value': 5
+                  }
+                ]),
       ]);
 
       var value = await router.get([

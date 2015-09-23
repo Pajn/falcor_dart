@@ -30,10 +30,10 @@ innerRunSetAction(Router routerInstance, jsongMessage, matchAndPath,
     var optimizedPathsAndPaths = paths
         // Optimizes each path.
         .map((path) {
-          var optimized =
-              optimizePathSets(jsongCache, [path], routerInstance.maxRefFollow);
-          return [optimized.isNotEmpty ? optimized[0] : null, path];
-        })
+      var optimized =
+          optimizePathSets(jsongCache, [path], routerInstance.maxRefFollow);
+      return [optimized.isNotEmpty ? optimized[0] : null, path];
+    })
         // only includes the paths from the set that intersect
         // the virtual path
         .where((path) => path[0] != null &&

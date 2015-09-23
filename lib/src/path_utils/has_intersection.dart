@@ -16,7 +16,7 @@ hasIntersection(Map tree, List path, [int depth]) {
 
   // Continue iteratively going down a path until a complex key is
   // encountered, then recurse.
-  for (;intersects && depth < path.length; ++depth) {
+  for (; intersects && depth < path.length; ++depth) {
     var key = path[depth];
 
     // We have to iterate key set

@@ -2,7 +2,7 @@ import 'package:guinness2/guinness2.dart';
 
 import 'package:dart_ext/collection_ext.dart' as extMerge;
 
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
 import 'package:falcor_dart/src/cache/jsong_merge.dart';
 

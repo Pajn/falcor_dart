@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:guinness2/guinness2.dart';
 import 'package:shelf/shelf.dart';
 
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'package:falcor_dart/shelf.dart';
 
 main() {

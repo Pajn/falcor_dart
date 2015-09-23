@@ -20,7 +20,7 @@ void routed(Tokenizer tokenizer, openingToken, Map state) {
     case RoutedTokens.integers:
     case RoutedTokens.ranges:
     case RoutedTokens.keys:
-    //valid
+      //valid
       break;
     default:
       throw 'Invalid routed token.  only integers|ranges|keys are supported -- ${tokenizer.parseString}';
@@ -60,5 +60,4 @@ void routed(Tokenizer tokenizer, openingToken, Map state) {
   else {
     throw 'Invalid routed token.  only integers|ranges|keys are supported -- ${tokenizer.parseString}';
   }
-
 }

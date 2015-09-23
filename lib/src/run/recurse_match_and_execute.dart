@@ -55,7 +55,7 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
         value = [value];
       }
       var invsRefsAndValues =
-      mergeCacheAndGatherRefsAndInvalidations(jsongCache, value);
+          mergeCacheAndGatherRefsAndInvalidations(jsongCache, value);
       var invalidations = invsRefsAndValues['invalidations'];
       var messages = invsRefsAndValues['messages'];
       var pathsToExpand = [];
@@ -64,7 +64,8 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
         pathsToExpand = invsRefsAndValues['references'];
       }
 
-      invalidated.addAll(invalidations.map((invalidation) => invalidation['path']));
+      invalidated
+          .addAll(invalidations.map((invalidation) => invalidation['path']));
 
       // Merges the remaining suffix with remaining nextPaths
       pathsToExpand = pathsToExpand.map((next) {

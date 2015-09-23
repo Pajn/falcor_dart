@@ -1,5 +1,5 @@
 import 'package:guinness2/guinness2.dart';
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 
 main() {
   describe('Materialized Paths.', () {
@@ -30,15 +30,11 @@ main() {
         'jsonGraph': {
           'one': {
             0: $ref('two.be[956]'),
-            1: {
-              'summary': $atom(null)
-            }
+            1: {'summary': $atom(null)}
           },
           'two': {
             'be': {
-              956: {
-                'summary': $atom(null)
-              }
+              956: {'summary': $atom(null)}
             }
           }
         }
@@ -61,12 +57,8 @@ main() {
       expect(res).toEqual({
         'jsonGraph': {
           'one': {
-            0: {
-              'summary': $atom(null)
-            },
-            1: {
-              'summary': $atom(null)
-            }
+            0: {'summary': $atom(null)},
+            1: {'summary': $atom(null)}
           }
         }
       });

@@ -1,6 +1,6 @@
 import 'package:guinness2/guinness2.dart';
 
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
 import 'package:falcor_dart/src/cache/optimize_path_set.dart';
 
@@ -185,7 +185,8 @@ main() {
         optimizePathSets(cache, paths, 50);
       } catch (e) {
         caught = true;
-        expect(e.toString()).toEqual('References with inner references are not allowed.');
+        expect(e.toString())
+            .toEqual('References with inner references are not allowed.');
       }
       expect(caught).toEqual(true);
     });

@@ -33,7 +33,9 @@ List strip(matchedAtom, virtualAtom) {
   }
 
   // See function comment 1)
-  else if (matchedAtom is! Map && matchedAtom is! List && matchedAtom is! Range) {
+  else if (matchedAtom is! Map &&
+      matchedAtom is! List &&
+      matchedAtom is! Range) {
     matchedResults = [matchedAtom];
   }
 

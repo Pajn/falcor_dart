@@ -23,9 +23,10 @@ main() {
         }
       ];
 
-      var paths = toPaths(pathMaps)..sort((a, b) {
-        return a.length - b.length;
-      });
+      var paths = toPaths(pathMaps)
+        ..sort((a, b) {
+          return a.length - b.length;
+        });
 
       var first = paths[0];
       var second = paths[1];
@@ -84,11 +85,7 @@ main() {
           'one',
           ['three', 'two']
         ],
-        [
-          'one',
-          new Range(0, 3),
-          'summary'
-        ]
+        ['one', new Range(0, 3), 'summary']
       ];
       var input = {
         2: {

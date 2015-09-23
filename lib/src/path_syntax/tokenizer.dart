@@ -62,7 +62,8 @@ Map toOutput(token, type, bool done) {
 getNext(String string, int idx, ext) {
   var output;
   var token = '';
-  var specialChars = (ext != null) ? EXT_SPECIAL_CHARACTERS : SPECIAL_CHARACTERS;
+  var specialChars =
+      (ext != null) ? EXT_SPECIAL_CHARACTERS : SPECIAL_CHARACTERS;
   var done;
   do {
     done = idx + 1 >= string.length;

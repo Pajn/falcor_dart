@@ -40,7 +40,8 @@ class Router {
     var action = runSetAction(this, jsong, jsongCache);
     var normPS = normalizePathSets(jsong['paths']);
 
-    var jsongEnv = await run(this._matcher, action, normPS, 'set', this, jsongCache);
+    var jsongEnv =
+        await run(this._matcher, action, normPS, 'set', this, jsongCache);
 
     return materializeMissing(this, jsong['paths'], jsongEnv);
   }

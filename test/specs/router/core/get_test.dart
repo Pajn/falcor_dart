@@ -1,6 +1,6 @@
 import 'package:guinness2/guinness2.dart';
 
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
 
 import '../../../data/routes.dart';
@@ -20,17 +20,15 @@ main() {
 
     it('should not return empty atoms for a null value in jsonGraph', () async {
       var router = new Router([
-        route(
-            'videos.falsey',
+        route('videos.falsey',
             get: (_) => {
-              'jsonGraph': {
-                'videos': {'falsey': null}
-              },
-              'paths': [
-                ['videos', 'falsey']
-              ]
-            }
-        ),
+                  'jsonGraph': {
+                    'videos': {'falsey': null}
+                  },
+                  'paths': [
+                    ['videos', 'falsey']
+                  ]
+                }),
       ]);
 
       var value = await router.get([
@@ -47,17 +45,15 @@ main() {
     it('should not return empty atoms for a null value atom in jsonGraph',
         () async {
       var router = new Router([
-        route(
-            'videos.falsey',
+        route('videos.falsey',
             get: (_) => {
-              'jsonGraph': {
-                'videos': {'falsey': $atom(null)}
-              },
-              'paths': [
-                ['videos', 'falsey']
-              ]
-            }
-        ),
+                  'jsonGraph': {
+                    'videos': {'falsey': $atom(null)}
+                  },
+                  'paths': [
+                    ['videos', 'falsey']
+                  ]
+                }),
       ]);
 
       var value = await router.get([
@@ -72,17 +68,15 @@ main() {
 
     it('should not return empty atoms for a zero value in jsonGraph', () async {
       var router = new Router([
-        route(
-            'videos.falsey',
+        route('videos.falsey',
             get: (_) => {
-              'jsonGraph': {
-                'videos': {'falsey': 0}
-              },
-              'paths': [
-                ['videos', 'falsey']
-              ]
-            }
-        ),
+                  'jsonGraph': {
+                    'videos': {'falsey': 0}
+                  },
+                  'paths': [
+                    ['videos', 'falsey']
+                  ]
+                }),
       ]);
 
       var value = await router.get([
@@ -99,17 +93,15 @@ main() {
     it('should not return empty atoms for a zero value atom in jsonGraph',
         () async {
       var router = new Router([
-        route(
-            'videos.falsey',
+        route('videos.falsey',
             get: (_) => {
-              'jsonGraph': {
-                'videos': {'falsey': $atom(0)}
-              },
-              'paths': [
-                ['videos', 'falsey']
-              ]
-            }
-        ),
+                  'jsonGraph': {
+                    'videos': {'falsey': $atom(0)}
+                  },
+                  'paths': [
+                    ['videos', 'falsey']
+                  ]
+                }),
       ]);
 
       var value = await router.get([
@@ -124,13 +116,11 @@ main() {
 
     it('should not return empty atoms for a zero path value', () async {
       var router = new Router([
-        route(
-            'videos.falsey',
+        route('videos.falsey',
             get: (_) => {
-              'value': 0,
-              'path': ['videos', 'falsey']
-            }
-        ),
+                  'value': 0,
+                  'path': ['videos', 'falsey']
+                }),
       ]);
 
       var value = await router.get([
@@ -145,13 +135,11 @@ main() {
 
     it('should not return empty atoms for a null path value', () async {
       var router = new Router([
-        route(
-            'videos.falsey',
+        route('videos.falsey',
             get: (_) => {
-              'value': null,
-              'path': ['videos', 'falsey']
-            }
-        ),
+                  'value': null,
+                  'path': ['videos', 'falsey']
+                }),
       ]);
 
       var value = await router.get([
@@ -166,13 +154,11 @@ main() {
 
     it('should not return empty atoms for a false path value', () async {
       var router = new Router([
-        route(
-            'videos.falsey',
+        route('videos.falsey',
             get: (_) => {
-              'value': false,
-              'path': ['videos', 'falsey']
-            }
-        ),
+                  'value': false,
+                  'path': ['videos', 'falsey']
+                }),
       ]);
 
       var value = await router.get([
@@ -188,13 +174,11 @@ main() {
 
     it('should not return empty atoms for a empty string path value', () async {
       var router = new Router([
-        route(
-            'videos.falsey',
+        route('videos.falsey',
             get: (_) => {
-              'value': '',
-              'path': ['videos', 'falsey']
-            }
-        ),
+                  'value': '',
+                  'path': ['videos', 'falsey']
+                }),
       ]);
 
       var value = await router.get([
@@ -212,31 +196,27 @@ main() {
         () async {
       var serviceCalls = 0;
       var routes = [
-        route(
-            'lists[{keys:ids}]',
+        route('lists[{keys:ids}]',
             get: (pathSet) => pathSet['ids'].map((id) {
-              if (id == 0) {
-                return {
-                  'path': ['lists', id],
-                  'value': $ref('two.be[956]')
-                };
-              }
-              return {
-                'path': ['lists', id],
-                'value': $ref('lists[0]')
-              };
-            })
-        ),
-        route(
-            'two.be[{integers:ids}].summary',
+                  if (id == 0) {
+                    return {
+                      'path': ['lists', id],
+                      'value': $ref('two.be[956]')
+                    };
+                  }
+                  return {
+                    'path': ['lists', id],
+                    'value': $ref('lists[0]')
+                  };
+                })),
+        route('two.be[{integers:ids}].summary',
             get: (pathSet) => pathSet['ids'].map((id) {
-              serviceCalls++;
-              return {
-                'path': ['two', 'be', id, 'summary'],
-                'value': 'hello world'
-              };
-            })
-        ),
+                  serviceCalls++;
+                  return {
+                    'path': ['two', 'be', id, 'summary'],
+                    'value': 'hello world'
+                  };
+                })),
       ];
       var router = new Router(routes);
       var value = await router.get([
@@ -331,25 +311,18 @@ main() {
           'ProffersById': {
             1: {
               'ProductsList': {
-                0: $ref(
-                  ['ProductsById', 'CSC1471105X']
-                , size: 52),
-                1: $ref(['ProductsById', 'HON4033T']
-                , size: 52)
+                0: $ref(['ProductsById', 'CSC1471105X'], size: 52),
+                1: $ref(['ProductsById', 'HON4033T'], size: 52)
               }
             }
           }
         }
       };
       var router = new Router([
-        route(
-            'ProductsById[{keys}][{keys}]',
-            get: (_) => throw new Exception('reference was followed in error')
-        ),
-        route(
-            'ProffersById[{integers}].ProductsList[{ranges}]',
-            get: (_) => routeResponse
-        ),
+        route('ProductsById[{keys}][{keys}]',
+            get: (_) => throw new Exception('reference was followed in error')),
+        route('ProffersById[{integers}].ProductsList[{ranges}]',
+            get: (_) => routeResponse),
       ]);
       var obs = await router.get([
         [
@@ -363,21 +336,15 @@ main() {
     });
 
     it('should tolerate routes which return an empty observable', () async {
-      var router = new Router([
-        route(
-            'videos[{integers:ids}].title',
-            get: (_) => []
-        ),
-      ]);
+      var router =
+          new Router([route('videos[{integers:ids}].title', get: (_) => []),]);
       var obs = await router.get([
         ['videos', 1, 'title']
       ]);
       expect(obs).toEqual({
         'jsonGraph': {
           'videos': {
-            1: {
-              'title': $atom(null)
-            }
+            1: {'title': $atom(null)}
           }
         }
       });
@@ -387,48 +354,40 @@ main() {
 
 getPrecedenceRouter({onTitle(PathSet pathSet), onRating(PathSet pathSet)}) {
   return new Router([
-    route(
-        'videos[{integers:ids}].title',
-        get: (pathSet) {
-          var ids = pathSet['ids'];
-          if (onTitle != null) {
-            onTitle(pathSet);
-          }
-          return ids.map((id) {
-            return {
-              'path': ['videos', id, 'title'],
-              'value': 'title $id',
-            };
-          });
-        }
-    ),
-    route(
-        'videos[{integers:ids}].rating',
-        get: (pathSet) {
-          var ids = pathSet['ids'];
-          if (onRating != null) {
-            onRating(pathSet);
-          }
-          return ids.map((id) {
-            return {
-              'path': ['videos', id, 'rating'],
-              'value': 'rating $id',
-            };
-          });
-        }
-    ),
-    route(
-        'lists[{keys:ids}][{integers:indices}]',
+    route('videos[{integers:ids}].title', get: (pathSet) {
+      var ids = pathSet['ids'];
+      if (onTitle != null) {
+        onTitle(pathSet);
+      }
+      return ids.map((id) {
+        return {
+          'path': ['videos', id, 'title'],
+          'value': 'title $id',
+        };
+      });
+    }),
+    route('videos[{integers:ids}].rating', get: (pathSet) {
+      var ids = pathSet['ids'];
+      if (onRating != null) {
+        onRating(pathSet);
+      }
+      return ids.map((id) {
+        return {
+          'path': ['videos', id, 'rating'],
+          'value': 'rating $id',
+        };
+      });
+    }),
+    route('lists[{keys:ids}][{integers:indices}]',
         get: (pathSet) => pathSet['ids'].expand((id) {
-          return pathSet['indices'].map((idx) {
-            return {'id': id, 'idx': idx};
-          });
-        }).map((data) {
-          return {
-            'path': ['lists', data['id'], data['idx']],
-            'value': $ref(['videos', data['idx']])
-          };
-        })
-    ),
+              return pathSet['indices'].map((idx) {
+                return {'id': id, 'idx': idx};
+              });
+            }).map((data) {
+              return {
+                'path': ['lists', data['id'], data['idx']],
+                'value': $ref(['videos', data['idx']])
+              };
+            })),
   ]);
 }

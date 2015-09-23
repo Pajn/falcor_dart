@@ -1,5 +1,5 @@
 import 'package:guinness2/guinness2.dart';
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'dart:async';
 
 main() {
@@ -110,7 +110,6 @@ getRouter(fn) {
 
 run(ids, dataFn) async {
   var router = getRouter(dataFn);
-
 
   var value = await router.get([
     ['videos', ids, 'title']

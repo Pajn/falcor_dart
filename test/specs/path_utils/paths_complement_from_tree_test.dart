@@ -31,16 +31,8 @@ main() {
 
     it('should strip out one of the two paths, has complex paths.', () {
       var paths = [
-        [
-          'one',
-          new Range(0, 1),
-          'two'
-        ],
-        [
-          'one',
-          new Range(0, 2),
-          'two'
-        ]
+        ['one', new Range(0, 1), 'two'],
+        ['one', new Range(0, 2), 'two']
       ];
       var tree = {
         'one': {
@@ -50,11 +42,7 @@ main() {
       };
       var out = pathsComplementFromTree(paths, tree);
       expect(out).toEqual([
-        [
-          'one',
-          new Range(0, 2),
-          'two'
-        ]
+        ['one', new Range(0, 2), 'two']
       ]);
     });
 
@@ -89,16 +77,8 @@ main() {
     it('should strip out one of the two paths, has complex paths from length tree.',
         () {
       var paths = [
-        [
-          'one',
-          new Range(0, 1),
-          'two'
-        ],
-        [
-          'one',
-          new Range(0, 2),
-          'two'
-        ]
+        ['one', new Range(0, 1), 'two'],
+        ['one', new Range(0, 2), 'two']
       ];
       var tree = {
         3: {
@@ -110,11 +90,7 @@ main() {
       };
       var out = pathsComplementFromLengthTree(paths, tree);
       expect(out).toEqual([
-        [
-          'one',
-          new Range(0, 2),
-          'two'
-        ]
+        ['one', new Range(0, 2), 'two']
       ]);
     });
   });

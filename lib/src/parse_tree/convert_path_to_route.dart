@@ -13,7 +13,6 @@ convertPathToRoute(path, route) {
   // Always use virtual path since path can be longer since
   // it contains suffixes.
   for (var i = 0, len = route.length; i < len; ++i) {
-
     if (route[i] is Map && route[i]['type'] is Keys) {
       var virt = route[i];
       switch (virt['type']) {
@@ -42,9 +41,7 @@ convertPathToRoute(path, route) {
     else {
       if (route[i] is List && path[i] is! List) {
         matched.add([path[i]]);
-      }
-
-      else {
+      } else {
         matched.add(path[i]);
       }
     }

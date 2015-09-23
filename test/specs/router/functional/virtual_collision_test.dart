@@ -1,5 +1,5 @@
 import 'package:guinness2/guinness2.dart';
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 
 main() {
   describe('Virtual Collisions', () {
@@ -11,8 +11,8 @@ main() {
         ]);
       } catch (e) {
         var str = ['videos', 'integers', 'summary'].join(',');
-        expect(e.message)
-            .toEqual('Two routes cannot have the same precedence or path. $str');
+        expect(e.message).toEqual(
+            'Two routes cannot have the same precedence or path. $str');
       }
     });
     it('should not collide when two paths have the exact same virtual path but different ops.',
@@ -55,8 +55,8 @@ main() {
         ]);
       } catch (e) {
         var str = 'videos,ranges,summary';
-        expect(e.message)
-            .toEqual('Two routes cannot have the same precedence or path. $str');
+        expect(e.message).toEqual(
+            'Two routes cannot have the same precedence or path. $str');
       }
     });
   });

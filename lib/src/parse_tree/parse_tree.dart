@@ -37,7 +37,6 @@ Map<Keys, Map> parseTree(List<Map> routes) {
 }
 
 void buildParseTree(Map<Keys, Map> node, Map routeObject, [int depth = 0]) {
-
   var route = routeObject['route'];
   var get = routeObject['get'];
   var set = routeObject['set'];
@@ -74,8 +73,7 @@ void buildParseTree(Map<Keys, Map> node, Map routeObject, [int depth = 0]) {
       // when needed.
       if (next != null) {
         route[depth] = {'type': value, 'named': false};
-      }
-      else {
+      } else {
         node.putIfAbsent(value, () => {});
         next = node[value];
       }
@@ -83,7 +81,6 @@ void buildParseTree(Map<Keys, Map> node, Map routeObject, [int depth = 0]) {
 
     // Continue to recurse or put get/set.
     if (depth + 1 == route.length) {
-
       // Insert match into routeSyntaxTree
       var matchObject = next[Keys.match];
       if (matchObject == null) {
@@ -108,7 +105,6 @@ void buildParseTree(Map<Keys, Map> node, Map routeObject, [int depth = 0]) {
     } else {
       buildParseTree(next, routeObject, depth + 1);
     }
-
   } while (isArray && ++i < el.length);
 }
 
@@ -124,7 +120,8 @@ setHashOrThrowError(Map parseMap, Map routeObject) {
     if (get != null && parseMap[hash + 'get'] != null ||
         set != null && parseMap[hash + 'set'] != null ||
         call != null && parseMap[hash + 'call'] != null) {
-      throw new Exception('Two routes cannot have the same precedence or path. ${prettifyRoute(route)}');
+      throw new Exception(
+          'Two routes cannot have the same precedence or path. ${prettifyRoute(route)}');
     }
     if (get != null) {
       parseMap[hash + 'get'] = true;
@@ -141,7 +138,8 @@ setHashOrThrowError(Map parseMap, Map routeObject) {
 /// decends the rst and fills in any naming information at the node.
 /// if what is passed in is not a routed token identifier, then the return
 /// value will be null
-Map<Keys, Map> decendTreeByRoutedToken(Map<Keys, Map> node, value, [routeToken]) {
+Map<Keys, Map> decendTreeByRoutedToken(Map<Keys, Map> node, value,
+    [routeToken]) {
   var next = null;
   if (value is Keys) {
     switch (value) {
@@ -168,7 +166,8 @@ Map<Keys, Map> decendTreeByRoutedToken(Map<Keys, Map> node, value, [routeToken])
 
 /// creates a hash of the virtual path where integers and ranges
 /// will collide but everything else is unique.
-List<List<Map<int, String>>> getHashesFromRoute(route, [int depth = 0, List hashes, List hash]) {
+List<List<Map<int, String>>> getHashesFromRoute(route,
+    [int depth = 0, List hashes, List hash]) {
   route = route.toList();
   hashes = hashes ?? [];
   hash = hash ?? [];
@@ -180,9 +179,7 @@ List<List<Map<int, String>>> getHashesFromRoute(route, [int depth = 0, List hash
 
   if (routeValue is Map) {
     value = routeValue['type'];
-  }
-
-  else if (!isArray) {
+  } else if (!isArray) {
     value = routeValue;
   }
 
@@ -197,17 +194,13 @@ List<List<Map<int, String>>> getHashesFromRoute(route, [int depth = 0, List hash
       } else {
         hash[depth] = '__I__';
       }
-    }
-
-    else if (value == Keys.keys) {
+    } else if (value == Keys.keys) {
       if (hash.length <= depth) {
         hash.add('__K__');
       } else {
-        hash[depth] ='__K__';
+        hash[depth] = '__K__';
       }
-    }
-
-    else {
+    } else {
       if (hash.length <= depth) {
         hash.add(value);
       } else {

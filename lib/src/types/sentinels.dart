@@ -44,8 +44,7 @@ class Sentinel {
   String toString() => 'Sentinel({type: $type, value: $value})';
 
   operator ==(other) {
-    return other is Sentinel &&
-           toString() == other.toString();
+    return other is Sentinel && toString() == other.toString();
   }
 }
 

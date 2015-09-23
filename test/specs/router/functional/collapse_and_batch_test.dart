@@ -1,6 +1,6 @@
 import 'package:guinness2/guinness2.dart';
 
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
 import '../../../data/routes.dart';
 import 'dart:async';
@@ -69,7 +69,8 @@ main() {
         expect(calls.length).toEqual(2);
         calls.length = 0;
         testedTwo = true;
-      };
+      }
+      ;
 
       var routes = [
         {
@@ -94,8 +95,7 @@ main() {
           'get': (aliasMap) async {
             called(1);
             await new Future.delayed(new Duration(milliseconds: 500));
-            return aliasMap['ids']
-                .map((id) {
+            return aliasMap['ids'].map((id) {
               return {
                 'path': ['two', 'be', id, 'summary'],
                 'value': 'hello world'
@@ -105,12 +105,11 @@ main() {
         },
         {
           'route': 'three.four[{integers:ids}].summary',
-          'get': (aliasMap) async{
+          'get': (aliasMap) async {
             // Not sure about this so just commented out for now...
             called(2);
             await new Future.delayed(new Duration(milliseconds: 500));
-            return aliasMap['ids']
-                .map((id) {
+            return aliasMap['ids'].map((id) {
               return {
                 'path': ['three', 'four', id, 'summary'],
                 'value': 'hello saturn'

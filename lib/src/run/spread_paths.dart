@@ -18,7 +18,6 @@ List<PathSet> spreadPaths(paths) {
 }
 
 void _spread(PathSet pathSet, depth, List<PathSet> out, [PathSet currentPath]) {
-
   currentPath ??= new PathSet();
 
   if (depth == pathSet.length) {

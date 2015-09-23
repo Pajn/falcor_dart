@@ -7,14 +7,21 @@ main() {
   describe('toTree', () {
     it('should explode a simplePath.', () {
       var input = ['one', 'two'];
-      var out = {'one': {'two': null}};
+      var out = {
+        'one': {'two': null}
+      };
 
       expect(toTree([input])).toEqual(out);
     });
 
     it('should explode a complex.', () {
-      var input = ['one', ['two', 'three']];
-      var out = {'one': {'three': null, 'two': null}};
+      var input = [
+        'one',
+        ['two', 'three']
+      ];
+      var out = {
+        'one': {'three': null, 'two': null}
+      };
 
       expect(toTree([input])).toEqual(out);
     });
@@ -25,11 +32,7 @@ main() {
           'one',
           ['two', 'three']
         ],
-        [
-          'one',
-          new Range(0, 3),
-          'summary'
-        ]
+        ['one', new Range(0, 3), 'summary']
       ];
       var out = {
         'one': {
@@ -51,11 +54,7 @@ main() {
           'one',
           ['two', 'three']
         ],
-        [
-          'one',
-          new Range(0, 3),
-          'summary'
-        ]
+        ['one', new Range(0, 3), 'summary']
       ];
       var treeMap = {
         2: toTree([input[0]]),

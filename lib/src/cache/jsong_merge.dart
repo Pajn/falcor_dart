@@ -14,23 +14,19 @@ Map jsongMerge(Map cache, jsongEnv) {
   var references = [];
   var values = [];
 
-
   paths.forEach((p) {
     merge({
-    'cacheRoot': cache,
-    'messageRoot': j,
-    'references': references,
-    'values': values,
-    'requestedPath': [],
-    'requestIdx': -1,
-    'ignoreCount': 0
+      'cacheRoot': cache,
+      'messageRoot': j,
+      'references': references,
+      'values': values,
+      'requestedPath': [],
+      'requestIdx': -1,
+      'ignoreCount': 0
     }, cache, j, 0, p);
   });
 
-  return {
-    'references': references,
-    'values': values
-  };
+  return {'references': references, 'values': values};
 }
 
 merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
@@ -54,10 +50,8 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
     // the unfulfilledRefernces.
     if (message is Sentinel && message.isRef) {
       var references = config['references'];
-      references.add({
-        'path': new List.from(requestedPath),
-        'value': message.value
-      });
+      references
+          .add({'path': new List.from(requestedPath), 'value': message.value});
     }
 
     // We are dealing with a value.  We need this for call
@@ -67,7 +61,9 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
       var values = config['values'];
       values.add({
         'path': new List.from(requestedPath),
-        'value': (message is Sentinel && message.type != null) ? message.value : message
+        'value': (message is Sentinel && message.type != null)
+            ? message.value
+            : message
       });
     }
 
@@ -82,7 +78,6 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
   // We always attempt this as a loop.  If the memo exists then
   // we assume that the permutation is needed.
   do {
-
     // If the cache exists and we are not at our height, then
     // just follow cache, else attempt to follow message.
     var cacheRes = cache[key];
@@ -119,7 +114,10 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
 
       // There is only a need to consider message references since the
       // merge is only for the path that is provided.
-      if (messageRes != null && messageRes is Sentinel && messageRes.isRef && depth < path.length - 1) {
+      if (messageRes != null &&
+          messageRes is Sentinel &&
+          messageRes.isRef &&
+          depth < path.length - 1) {
         nextDepth = 0;
         nextPath = catAndSlice(messageRes.value, path, depth + 1);
         cache[key] = messageRes;
@@ -132,15 +130,13 @@ merge(Map config, cache, message, depth, path, [fromParent, fromKey]) {
 
       // move forward down the path progression.
       config['ignoreCount'] = nextIgnoreCount;
-      merge(config, cacheRes, messageRes,
-          nextDepth, nextPath, cache, key);
+      merge(config, cacheRes, messageRes, nextDepth, nextPath, cache, key);
       config['ignoreCount'] = ignoreCount;
     }
 
     // The second the incoming jsong must be fully qualified,
     // anything that is not will be materialized into the provided cache
     else {
-
       // do not materialize, continue down the cache.
       if (depth < path.length - 1) {
         merge(config, cacheRes, {}, nextDepth, nextPath, cache, key);

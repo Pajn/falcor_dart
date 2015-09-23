@@ -24,9 +24,7 @@ List parsePathsOrPathValues(List paths, [ext]) {
 
     // is the path a path value with a string value.
     else if (path is Map && path['path'] is String) {
-      out.add({
-        'path': parse(path['path'], ext), 'value': path['value']
-      });
+      out.add({'path': parse(path['path'], ext), 'value': path['value']});
     }
 
     // just copy it over.

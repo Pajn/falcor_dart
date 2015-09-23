@@ -2,7 +2,6 @@ library falcor_dart.iterate_key_set;
 
 import 'package:falcor_dart/src/types/range.dart';
 
-
 /**
  * Takes in a keySet and a note attempts to iterate over it.
  * If the value is a primitive, the key will be returned and the note will
@@ -69,7 +68,6 @@ iterateKeySet(keySet, Map note) {
 
   // Range iteration
   else if (note['isRange']) {
-
     if (note['loaded'] == null || !note['loaded']) {
       initializeRange(keySet, note);
     }
@@ -91,8 +89,8 @@ iterateKeySet(keySet, Map note) {
 
 initializeRange(Range key, Map memo) {
   var from = memo['from'] = key.from ?? 0;
-  var to = memo['to'] = key.to ??
-                     ((key.length != null) ? memo['from'] + key.length - 1 : 0);
+  var to = memo['to'] =
+      key.to ?? ((key.length != null) ? memo['from'] + key.length - 1 : 0);
   memo['rangeOffset'] = memo['from'];
   memo['loaded'] = true;
   if (from > to) {

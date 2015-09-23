@@ -15,10 +15,8 @@ List head(Tokenizer tokenizer) {
   var out = [];
 
   while (token['done'] != true) {
-
     switch (token['type']) {
       case TokenTypes.token:
-
         if (isNumeric(token['token'][0])) {
           throw 'Invalid Identifier. -- ${tokenizer.parseString}';
         }
@@ -37,7 +35,6 @@ List head(Tokenizer tokenizer) {
         // NOTE: Spaces at the top level are allowed.
         // titlesById  .summary is a valid path.
         break;
-
 
       // Its time to decend the parse tree.
       case TokenTypes.openingBracket:

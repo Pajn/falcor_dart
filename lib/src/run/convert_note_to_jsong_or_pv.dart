@@ -1,4 +1,5 @@
 library falcor_dart.run.convert_note_to_jsong_or_pv;
+
 import 'package:falcor_dart/src/types/sentinels.dart';
 import 'package:falcor_dart/src/exceptions.dart';
 import 'package:falcor_dart/src/utils.dart';
@@ -21,9 +22,7 @@ convertNoteToJsongOrPV(matchAndPath, note, {bool error: false}) {
     // If it is a special JSONGraph error then pull all the data
     if (exception is Exception) {
       typeValue.value['message'] = exception.message;
-    }
-
-    else {
+    } else {
       typeValue.value['message'] = exception.toString();
     }
 
@@ -31,9 +30,7 @@ convertNoteToJsongOrPV(matchAndPath, note, {bool error: false}) {
       'path': matchAndPath['path'],
       'value': typeValue
     };
-  }
-
-  else {
+  } else {
     incomingJSONGOrPathValues = note;
   }
 
@@ -41,7 +38,6 @@ convertNoteToJsongOrPV(matchAndPath, note, {bool error: false}) {
   // paths if the paths do not exist
   if (isJSONG(incomingJSONGOrPathValues) &&
       incomingJSONGOrPathValues['paths'] == null) {
-
     incomingJSONGOrPathValues = {
       'jsonGraph': incomingJSONGOrPathValues['jsonGraph'],
       'paths': [matchAndPath['path']]

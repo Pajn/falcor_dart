@@ -27,10 +27,7 @@ List getExecutableMatches(List matches, List pathSet) {
       List path = availablePaths[j];
       if (hasIntersection(path.asMap(), match['virtual'])) {
         var stripResults = stripPath(path, match['virtual']);
-        matchAndPaths.add({
-          'path': stripResults[0],
-          'match': match
-        });
+        matchAndPaths.add({'path': stripResults[0], 'match': match});
         remainingPaths.addAll(stripResults[1]);
       }
     }

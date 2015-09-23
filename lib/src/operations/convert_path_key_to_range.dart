@@ -20,13 +20,9 @@ Range keyReduce(List out, key, [Range range]) {
   if (range != null) {
     if (key - 1 == range.to) {
       range.to = key;
-    }
-
-    else if (key + 1 == range.from) {
+    } else if (key + 1 == range.from) {
       range.from = key;
-    }
-
-    else {
+    } else {
       range = null;
     }
   }

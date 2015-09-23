@@ -10,7 +10,8 @@ class CallJsonGraphWithoutPaths extends FalcorError {
 }
 
 class CircularReferenceError extends FalcorError {
-  String toString() => 'There appears to be a circular reference, maximum reference following exceeded.';
+  String toString() =>
+      'There appears to be a circular reference, maximum reference following exceeded.';
 }
 
 class InnerReferenceError extends FalcorError {

@@ -10,7 +10,6 @@ Map toTree(List paths) {
 }
 
 innerToTree(seed, List path, int depth) {
-
   var keySet = path[depth];
   var iteratorNote = {};
   var key;
@@ -19,7 +18,6 @@ innerToTree(seed, List path, int depth) {
   key = iterateKeySet(keySet, iteratorNote);
 
   do {
-
     var next = seed[key];
     if (next == null) {
       if (nextDepth == path.length) {

@@ -19,24 +19,46 @@ main() {
     });
     it('should parse a string with a range', () {
       var out = parse('one[0..5].oneMore');
-      expect(out).toEqual(['one', {'from': 0, 'to': 5}, 'oneMore']);
+      expect(out).toEqual([
+        'one',
+        {'from': 0, 'to': 5},
+        'oneMore'
+      ]);
     });
     it('should parse a string with a set of tokens', () {
       var out = parse('one["test", \'test2\'].oneMore');
-      expect(out).toEqual(['one', ['test', 'test2'], 'oneMore']);
+      expect(out).toEqual([
+        'one',
+        ['test', 'test2'],
+        'oneMore'
+      ]);
     });
     it('should treat 07 as 7', () {
       var out = parse('one[07, 0001].oneMore');
-      expect(out).toEqual(['one', [7, 1], 'oneMore']);
+      expect(out).toEqual([
+        'one',
+        [7, 1],
+        'oneMore'
+      ]);
     });
     it('should parse out a range.', () {
       var out = parse('one[0..1].oneMore');
-      expect(out).toEqual(['one', {'from': 0, 'to': 1}, 'oneMore']);
+      expect(out).toEqual([
+        'one',
+        {'from': 0, 'to': 1},
+        'oneMore'
+      ]);
     });
     it('should parse out multiple ranges.', () {
       var out = parse('one[0..1,3..4].oneMore');
-      expect(out).toEqual(
-          ['one', [{'from': 0, 'to': 1}, {'from': 3, 'to': 4}], 'oneMore']);
+      expect(out).toEqual([
+        'one',
+        [
+          {'from': 0, 'to': 1},
+          {'from': 3, 'to': 4}
+        ],
+        'oneMore'
+      ]);
     });
 
     describe('#fromPath', () {
@@ -62,7 +84,9 @@ main() {
     describe('#fromPathsOrPathValues', () {
       it('should convert a string to path.', () {
         var input = ['videos[1234].summary'];
-        var output = [['videos', 1234, 'summary']];
+        var output = [
+          ['videos', 1234, 'summary']
+        ];
         expect(parsePathsOrPathValues(input)).toEqual(output);
       });
 
@@ -73,8 +97,12 @@ main() {
       });
 
       it('should return a provided array.', () {
-        var input = [['videos', 1234, 'summary']];
-        var output = [['videos', 1234, 'summary']];
+        var input = [
+          ['videos', 1234, 'summary']
+        ];
+        var output = [
+          ['videos', 1234, 'summary']
+        ];
         expect(parsePathsOrPathValues(input)).toEqual(output);
       });
 
@@ -87,7 +115,10 @@ main() {
         var output = [
           ['videos', 1234, 'summary'],
           ['videos', 555, 'summary'],
-          {'path': ['videos', 444, 'summary'], 'value': 5}
+          {
+            'path': ['videos', 444, 'summary'],
+            'value': 5
+          }
         ];
         expect(parsePathsOrPathValues(input)).toEqual(output);
       });
@@ -96,8 +127,11 @@ main() {
     describe('#routed', () {
       it('should create a routed token for the path.', () {
         var out = parse('one[{ranges}].oneMore', true);
-        expect(out).toEqual(
-            ['one', {'type': 'ranges', 'named': false, 'name': ''}, 'oneMore']);
+        expect(out).toEqual([
+          'one',
+          {'type': 'ranges', 'named': false, 'name': ''},
+          'oneMore'
+        ]);
       });
       it('should create a named routed token for the path.', () {
         var out = parse('one[{ranges:foo}].oneMore', true);

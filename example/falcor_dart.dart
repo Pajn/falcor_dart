@@ -3,7 +3,7 @@ library falcor_dart.example;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 import 'package:falcor_dart/shelf.dart';
 
 /// Example using shelf binding

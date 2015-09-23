@@ -1,6 +1,6 @@
 import 'package:guinness2/guinness2.dart';
 import 'package:falcor_dart/src/operations/strip/strip_path.dart';
-import 'package:falcor_dart/falcor_dart.dart';
+import 'package:falcor_dart/router.dart';
 
 main() {
   describe('Strip Path', () {

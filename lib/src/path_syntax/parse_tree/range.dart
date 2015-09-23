@@ -26,10 +26,9 @@ void range(Tokenizer tokenizer, openingToken, Map state) {
   // Why is number checking so difficult in javascript.
 
   while (!done && !token['done']) {
-
     switch (token['type']) {
 
-    // dotSeparators at the top level have no meaning
+      // dotSeparators at the top level have no meaning
       case TokenTypes.dotSeparator:
         if (dotCount == 3) {
           throw 'Unexpected token. -- ${tokenizer.parseString}';
@@ -42,7 +41,7 @@ void range(Tokenizer tokenizer, openingToken, Map state) {
         break;
 
       case TokenTypes.token:
-      // move the tokenizer forward and save to.
+        // move the tokenizer forward and save to.
         to = parseNum(tokenizer.next()['token']);
 
         // throw potential error.

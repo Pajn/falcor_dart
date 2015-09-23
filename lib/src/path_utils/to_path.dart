@@ -28,7 +28,6 @@ isObject(value) {
 }
 
 Map collapsePathMap(Map pathmap, int depth, int length) {
-
   var key;
   var code = getHashCode(depth);
   var subs = {};
@@ -40,30 +39,31 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
   var pathsets = [];
   var pathsetCount = 0;
 
-  var subPath, subCode,
-  subKeys, subKeysIndex, subKeysCount,
-  subSets, pathsetIndex,
-  firstSubKey, pathsetClone;
+  var subPath,
+      subCode,
+      subKeys,
+      subKeysIndex,
+      subKeysCount,
+      subSets,
+      pathsetIndex,
+      firstSubKey,
+      pathsetClone;
 
   subKeysIndex = -1;
 
   if (depth < length - 1) {
-
     subKeys = getSortedKeys(pathmap);
 
     while (++subKeysIndex < subKeys.length) {
       key = subKeys[subKeysIndex];
       subPath = collapsePathMap(pathmap[key], depth + 1, length);
       subCode = subPath['code'];
-      if(subs[subCode] != null) {
+      if (subs[subCode] != null) {
         subPath = subs[subCode];
       } else {
         codesCount++;
         codes.add(subCode);
-        subPath = subs[subCode] = {
-          'keys': [],
-          'sets': subPath['sets']
-        };
+        subPath = subs[subCode] = {'keys': [], 'sets': subPath['sets']};
       }
       code = getHashCode(code + key.toString() + subCode);
 
@@ -74,15 +74,13 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
       }
     }
 
-    while(++codesIndex < codesCount) {
-
+    while (++codesIndex < codesCount) {
       key = codes[codesIndex];
       subPath = subs[key];
       subKeys = subPath['keys'];
       subKeysCount = subKeys.length;
 
       if (subKeysCount > 0) {
-
         subSets = subPath['sets'];
         firstSubKey = subKeys.first;
 
@@ -114,10 +112,7 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
     }
   }
 
-  return {
-    'code': code,
-    'sets': pathsets
-  };
+  return {'code': code, 'sets': pathsets};
 }
 
 List collapsePathSetIndexes(List pathset) {
@@ -139,7 +134,6 @@ List collapsePathSetIndexes(List pathset) {
  * @private
  */
 collapseIndex(List keyset) {
-
   // Do we need to dedupe an indexer keyset if they're duplicate consecutive integers?
   // var hash = {};
   var keyIndex = -1;
@@ -147,10 +141,9 @@ collapseIndex(List keyset) {
   var isSparseRange = keyCount > 0;
 
   while (++keyIndex <= keyCount) {
-
     var key = keyset[keyIndex];
 
-    if (!isNumber(key) /* || hash[key] === true*/ ) {
+    if (!isNumber(key) /* || hash[key] === true*/) {
       isSparseRange = false;
       break;
     }
@@ -160,7 +153,6 @@ collapseIndex(List keyset) {
   }
 
   if (isSparseRange) {
-
     keyset.sort(sortListAscending);
 
     var from = keyset[0];

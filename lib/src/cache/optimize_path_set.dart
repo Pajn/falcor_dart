@@ -25,8 +25,8 @@ List optimizePathSets(Map cache, List<PathSet> paths, int maxRefFollow) {
 
 /// optimizes one pathSet at a time.
 void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
-    List optimizedPath, int maxRefFollow, [bool containsKey = true]) {
-
+    List optimizedPath, int maxRefFollow,
+    [bool containsKey = true]) {
   // at missing, report optimized path.
   if (!containsKey) {
     out.add(catAndSlice(optimizedPath, pathSet, depth));
@@ -35,7 +35,8 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
 
   // If the reference is the last item in the path then do not
   // continue to search it.
-  if (cache == null || (cache is Sentinel && cache.isRef && depth == pathSet.length)) {
+  if (cache == null ||
+      (cache is Sentinel && cache.isRef && depth == pathSet.length)) {
     return;
   }
 
@@ -61,9 +62,7 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
       optimizedPath.add(key);
     }
 
-    if (next is Sentinel &&
-        next.isRef &&
-        nextDepth < pathSet.length) {
+    if (next is Sentinel && next.isRef && nextDepth < pathSet.length) {
       var refResults = followReference(cacheRoot, next.value, maxRefFollow);
       next = refResults[0];
       if (next == null) {
@@ -76,8 +75,8 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
       nextOptimized = optimizedPath;
     }
 
-    optimizePathSet(
-        next, cacheRoot, pathSet, nextDepth, out, nextOptimized, maxRefFollow, isDefined);
+    optimizePathSet(next, cacheRoot, pathSet, nextDepth, out, nextOptimized,
+        maxRefFollow, isDefined);
     optimizedPath.length = optimizedPathLength;
 
     if (!iteratorNote['done']) {

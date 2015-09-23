@@ -18,7 +18,6 @@ void quote(Tokenizer tokenizer, openingToken, Map state) {
   var done = false;
 
   while (!token['done']) {
-
     switch (token['type']) {
       case TokenTypes.token:
       case TokenTypes.space:
@@ -37,9 +36,8 @@ void quote(Tokenizer tokenizer, openingToken, Map state) {
         innerToken += token['token'];
         break;
 
-
       case TokenTypes.quote:
-      // the simple case.  We are escaping
+        // the simple case.  We are escaping
         if (escaping) {
           innerToken += token['token'];
           escaping = false;

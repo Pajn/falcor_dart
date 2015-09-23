@@ -21,7 +21,6 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
   state['indexer'] = [];
 
   while (!token['done']) {
-
     switch (token['type']) {
       case TokenTypes.token:
       case TokenTypes.quote:
@@ -39,7 +38,6 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
         routedIndexer = true;
         routed(tokenizer, token, state);
         break;
-
 
       case TokenTypes.token:
         var t = parseNum(token['token']);
@@ -65,12 +63,10 @@ void indexer(Tokenizer tokenizer, openingToken, Map state, out) {
         done = true;
         break;
 
-
       // The quotes require their own tree due to what can be in it.
       case TokenTypes.quote:
         quote(tokenizer, token, state);
         break;
-
 
       // Its time to decend the parse tree.
       case TokenTypes.openingBracket:

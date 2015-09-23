@@ -7,17 +7,13 @@ import 'package:falcor_dart/src/path_utils/collapse.dart';
 import 'package:falcor_dart/src/operations/matcher/specific_matcher.dart';
 import 'package:falcor_dart/src/operations/matcher/pluck_integers.dart';
 
-var intTypes = [{
-  'type': Keys.ranges,
-  'precedence': Precedence.ranges
-}, {
-  'type': Keys.integers,
-  'precedence': Precedence.integers
-}];
-var keyTypes = [{
-  'type': Keys.keys,
-  'precedence': Precedence.keys
-}];
+var intTypes = [
+  {'type': Keys.ranges, 'precedence': Precedence.ranges},
+  {'type': Keys.integers, 'precedence': Precedence.integers}
+];
+var keyTypes = [
+  {'type': Keys.keys, 'precedence': Precedence.keys}
+];
 var allTypes = new List.from(intTypes)..addAll(keyTypes);
 
 /// @return {matched: Array.<Match>, missingPaths: Array.<Array>}
@@ -32,7 +28,6 @@ typedef PathMatch Matcher(String method, List paths);
 /// [rst] The routed syntax tree
 /// String [method] the method to call at the end of the path.
 Matcher matcher(Map<Keys, Map> rst) {
-
   /// This is where the matching is done.  Will recursively
   /// match the paths until it has found all the matchable
   /// functions.
@@ -50,7 +45,8 @@ Matcher matcher(Map<Keys, Map> rst) {
       throw err;
     }
 
-    Map reducedMatched = matched.fold({}, (Map<int, List> acc, Map matchedRoute) {
+    Map reducedMatched = matched.fold({},
+        (Map<int, List> acc, Map matchedRoute) {
       if (!acc.containsKey(matchedRoute['id'])) {
         acc[matchedRoute['id']] = [];
       }
@@ -62,7 +58,6 @@ Matcher matcher(Map<Keys, Map> rst) {
     var collapsedMatched = [];
 
     reducedMatched.values.forEach((reducedMatch) {
-
       // This one has no issues with collapsing, its ok to
       // merge it back into the collapsedMatched array
       if (reducedMatch.length == 1) {
@@ -71,14 +66,14 @@ Matcher matcher(Map<Keys, Map> rst) {
 
       // Since there are more than 1 routes, we need to see if
       // they can collapse and alter the amount of arrays.
-      var collapsedResults = collapse(reducedMatch.map((x) => x['requested']).toList());
+      var collapsedResults =
+          collapse(reducedMatch.map((x) => x['requested']).toList());
 
       var i = 0;
       var index = 0;
       collapsedResults.forEach((path) {
         var reducedVirtualPath = reducedMatch[i]['virtual'];
         path.forEach((atom) {
-
           // If its not a routed atom then wholesale replace
           if (!isRoutedToken(reducedVirtualPath[index])) {
             reducedVirtualPath[index] = atom;
@@ -92,13 +87,14 @@ Matcher matcher(Map<Keys, Map> rst) {
     });
 
     return new PathMatch()
-        ..matched = collapsedMatched
-        ..missingPaths = missing;
+      ..matched = collapsedMatched
+      ..missingPaths = missing;
   };
 }
 
-void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions, List<List> missingPaths,
-  [int depth = 0, List requested, List virtual, List precedence]) {
+void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
+    List<List> missingPaths,
+    [int depth = 0, List requested, List virtual, List precedence]) {
   if (curr == null) return;
 
   matchedFunctions ??= [];
@@ -137,7 +133,6 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
   // Check to see if we have
   if (currentMatch != null && currentMatch[methodToUse] != null) {
     matchedFunctions.add({
-
       // Used for collapsing paths that use routes with multiple
       // string indexers.
       'id': currentMatch[methodToUse + 'Id'],
@@ -167,11 +162,8 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
     precedence.add(Precedence.specific);
 
     // Its time to recurse
-    match(
-        curr[specificKeys[i]],
-        path, method, matchedFunctions,
-        missingPaths, depth + 1,
-        requested, virtual, precedence);
+    match(curr[specificKeys[i]], path, method, matchedFunctions, missingPaths,
+        depth + 1, requested, virtual, precedence);
 
     // Removes the virtual, requested, and precedence info
     virtual.length = depth;
@@ -185,46 +177,41 @@ void match(Map<Keys, Map> curr, List path, String method, List matchedFunctions,
   // -------------------------------------------
   // ints, ranges, and keys matcher.
   // -------------------------------------------
-  allTypes
-    .where((typeAndPrecedence) {
-      var type = typeAndPrecedence['type'];
-      // one extra move required for int types
-      if (type == Keys.integers || type == Keys.ranges) {
-        return curr[type] != null && ints.isNotEmpty;
-      }
-      return curr[type] != null;
-    })
-    .forEach((typeAndPrecedence) {
-      var type = typeAndPrecedence['type'];
-      var prec = typeAndPrecedence['precedence'];
-      next = curr[type];
+  allTypes.where((typeAndPrecedence) {
+    var type = typeAndPrecedence['type'];
+    // one extra move required for int types
+    if (type == Keys.integers || type == Keys.ranges) {
+      return curr[type] != null && ints.isNotEmpty;
+    }
+    return curr[type] != null;
+  }).forEach((typeAndPrecedence) {
+    var type = typeAndPrecedence['type'];
+    var prec = typeAndPrecedence['precedence'];
+    next = curr[type];
 
-      virtual.add({
-        'type': type,
-        'named': next[Keys.named] ?? false,
-        'name': next[Keys.name]
-      });
+    virtual.add({
+      'type': type,
+      'named': next[Keys.named] ?? false,
+      'name': next[Keys.name]
+    });
 
-      // The requested set of info needs to be set either
-      // as ints, if int matchers or keys
-      if (type == Keys.integers || type == Keys.ranges) {
-        requested.add(ints);
-      } else {
-        requested.add(keys);
-      }
+    // The requested set of info needs to be set either
+    // as ints, if int matchers or keys
+    if (type == Keys.integers || type == Keys.ranges) {
+      requested.add(ints);
+    } else {
+      requested.add(keys);
+    }
 
-      precedence.add(prec);
+    precedence.add(prec);
 
-      // Continue the matching algo.
-      match(
-        next,
-        path, method, matchedFunctions,
-        missingPaths, depth + 1,
+    // Continue the matching algo.
+    match(next, path, method, matchedFunctions, missingPaths, depth + 1,
         requested, virtual, precedence);
 
-      // removes the added keys
-      virtual.length = depth;
-      requested.length = depth;
-      precedence.length = depth;
-    });
+    // removes the added keys
+    virtual.length = depth;
+    requested.length = depth;
+    precedence.length = depth;
+  });
 }

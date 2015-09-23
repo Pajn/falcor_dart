@@ -22,7 +22,8 @@ class Route {
 //Route route(String route, {Handler get, Handler set, Handler call}) =>
 //  new Route(route, get: get, set: set, call: call);
 
-Map route(/*String|List*/ route, {GetHandler get, SetHandler set, CallHandler call}) {
+Map route(/*String|List*/ route,
+    {GetHandler get, SetHandler set, CallHandler call}) {
   var routeDefinition = {'route': route};
 
   if (get != null) {

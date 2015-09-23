@@ -9,9 +9,11 @@ class PathSet extends Object with ListMixin implements List {
   int get length => pathParts.length;
   set length(int length) => pathParts.length = length;
 
-  PathSet() : pathParts = [], namedPathParts = {};
-  PathSet.from(PathSet pathSet) :
-        pathParts = pathSet.pathParts,
+  PathSet()
+      : pathParts = [],
+        namedPathParts = {};
+  PathSet.from(PathSet pathSet)
+      : pathParts = pathSet.pathParts,
         namedPathParts = pathSet.namedPathParts;
 
   void add(element) => pathParts.add(element);
@@ -21,7 +23,8 @@ class PathSet extends Object with ListMixin implements List {
     if (key is int) return pathParts[key];
     else if (key is String) return namedPathParts[key];
     else {
-      throw new UnsupportedError('Unsupported type "${key.runtimeType}" as PathSet key');
+      throw new UnsupportedError(
+          'Unsupported type "${key.runtimeType}" as PathSet key');
     }
   }
 
@@ -34,10 +37,10 @@ class PathSet extends Object with ListMixin implements List {
       } else {
         throw new StateError('Cant set index after end');
       }
-    }
-    else if (key is String) return namedPathParts[key] = value;
+    } else if (key is String) return namedPathParts[key] = value;
     else {
-      throw new UnsupportedError('Unsupported type "${key.runtimeType}" as PathSet key');
+      throw new UnsupportedError(
+          'Unsupported type "${key.runtimeType}" as PathSet key');
     }
   }
 }
