@@ -58,9 +58,6 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
       if(subs[subCode] != null) {
         subPath = subs[subCode];
       } else {
-        if (codesCount++ < codes.length) {
-          print('DANGER3!!!!!!!!!!!!!!!');
-        }
         codes.add(subCode);
         subPath = subs[subCode] = {
           'keys': [],
@@ -100,9 +97,6 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
             pathsetClone[pathsetIndex + 1] = pathset[pathsetIndex];
           }
 
-          if (pathsetCount++ < pathsets.length) {
-            print('DANGER4!!!!!!!!!!!!!!!');
-          }
           pathsets.add(pathsetClone);
         }
       }
@@ -110,14 +104,8 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
   } else {
     subKeys = getSortedKeys(pathmap);
     if (subKeys.length > 1) {
-      if (pathsetCount++ < pathsets.length) {
-        print('DANGER!!!!!!!!!!!!!!!');
-      }
       pathsets.add([subKeys]);
     } else {
-      if (pathsetCount++ < pathsets.length) {
-        print('DANGER2!!!!!!!!!!!!!!!');
-      }
       pathsets.add(subKeys);
     }
     while (++subKeysIndex < subKeys.length) {

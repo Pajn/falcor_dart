@@ -149,10 +149,6 @@ Future innerRunCallAction(
 
     // When call has an error it needs to be propagated to the next
     // level instead of onCompleted'ing
-//        do(null, (e) {
-//      e.throwToNext = true;
-//      throw e;
-//    });
   } else {
     try {
       var matchAction = await match['action'](matchAndPath['path']);

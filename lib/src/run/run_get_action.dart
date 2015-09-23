@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:falcor_dart/src/types/sentinels.dart';
 import 'package:falcor_dart/src/router.dart';
 import 'package:falcor_dart/src/utils.dart';
+import 'package:falcor_dart/src/exceptions.dart';
 
 typedef Stream ActionRunner(Map matchAndPath);
 
@@ -24,6 +25,7 @@ Future<List> getAction(Router routerInstance, Map matchAndPath, Map jsongCache) 
     return [matchAction]
         .map(noteToJsongOrPV(matchAndPath));
   } catch(error) {
+    rethrow;
     return [convertNoteToJsongOrPV(matchAndPath, error, error: true)];
   }
 }
@@ -39,9 +41,9 @@ convertNoteToJsongOrPV(matchAndPath, note, {bool error: false}) {
     var typeValue = $error({});
     var exception = note;
 
-//    if (exception['throwToNext'] == true) {
-//      throw exception;
-//    }
+    if (exception is FalcorError && exception.throwToNext) {
+      throw exception;
+    }
 
     // If it is a special JSONGraph error then pull all the data
     if (exception is JSONGraphError) {
@@ -50,6 +52,10 @@ convertNoteToJsongOrPV(matchAndPath, note, {bool error: false}) {
 
     else if (exception is Exception) {
       typeValue.value['message'] = exception.message;
+    }
+
+    else {
+      typeValue.value['message'] = exception.toString();
     }
 
     incomingJSONGOrPathValues = {

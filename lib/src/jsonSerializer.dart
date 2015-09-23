@@ -12,7 +12,7 @@ serializeToJson(object) {
       map[key.toString()] = serializeToJson(value);
     });
     return map;
-  } else if (object is List) {
+  } else if (object is Iterable) {
     return object.map(serializeToJson).toList();
   } else if (object is Range) {
     return object.toJson();

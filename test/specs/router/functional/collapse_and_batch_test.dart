@@ -215,7 +215,6 @@ main() {
         {
           'route': 'two.be[{integers:ids}].summary',
           'get': (aliasMap) {
-            print(aliasMap);
             return aliasMap['ids'].map((id) {
               serviceCalls++;
               return {
