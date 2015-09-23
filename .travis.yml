@@ -5,6 +5,3 @@ dart:
   - stable
 
 script: ./tool/travis.sh
-
-notifications:
-  email: false
