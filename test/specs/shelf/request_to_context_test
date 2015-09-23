@@ -1,0 +1,60 @@
+import 'dart:convert';
+
+import 'package:guinness2/guinness2.dart';
+import 'package:shelf/shelf.dart';
+
+import 'package:falcor_dart/shelf.dart';
+
+main() {
+  describe('requestToContext', () {
+    describe('Converts the request to the correct context', () {
+      it('For get requests', () async {
+        var result = await requestToContext(new Request(
+            'GET',
+            Uri.parse(Uri.encodeFull(
+                'http://localhost:9090/?paths=[["genrelist",{"from":0,"to":5},"titles",{"from":0,"to":5},"name"]]&method=get'))));
+
+        expect(result).toEqual({
+          'paths': [
+            [
+              'genrelist',
+              {'from': 0, 'to': 5},
+              'titles',
+              {'from': 0, 'to': 5},
+              'name'
+            ]
+          ],
+          'method': 'get'
+        });
+      });
+
+      it('For post requests', () async {
+        var result = await requestToContext(new Request(
+            'POST', Uri.parse(Uri.encodeFull('http://localhost:9090/')),
+            body: JSON.encode({
+              'jsonGraph':
+                  '{"jsonGraph":{"genrelist":{"0":{"titles":{"0":{"name":"jon"}}}},"paths":[["genrelist",0,"titles",0,"name"]]}}',
+              'method': 'set'
+            })));
+
+        expect(result).toEqual({
+          'jsonGraph': {
+            'jsonGraph': {
+              "genrelist": {
+                "0": {
+                  "titles": {
+                    "0": {"name": "jon"}
+                  }
+                }
+              },
+              "paths": [
+                ["genrelist", 0, "titles", 0, "name"]
+              ]
+            }
+          },
+          'method': 'set'
+        });
+      });
+    });
+  });
+}

@@ -79,7 +79,7 @@ iterateKeySet(keySet, Map note) {
       return null;
     }
 
-    return note['rangeOffset']++;
+    return (note['rangeOffset']++).toString();
   }
 
   // Primitive value

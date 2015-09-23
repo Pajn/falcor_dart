@@ -2,6 +2,7 @@ library falcor_dart.path_value_merge;
 
 import 'package:falcor_dart/src/path_utils/iterate_key_set.dart';
 import 'package:falcor_dart/src/types/sentinels.dart';
+import 'package:falcor_dart/src/types/range.dart';
 
 
 /**
@@ -55,7 +56,7 @@ innerPathValueMerge(Map cache, pathValue) {
     outerKey = path[i];
 
     // Setup the memo and the key.
-    if (outerKey is Map || outerKey is List) {
+    if (outerKey is Map || outerKey is List || outerKey is Range) {
       iteratorNote = {};
       key = iterateKeySet(outerKey, iteratorNote);
     } else {

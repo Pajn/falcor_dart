@@ -32,7 +32,7 @@ class Sentinel {
   }
 
   Map toJson() {
-    var json = {r'type': type, value: value,};
+    var json = {r'$type': type, 'value': value};
 
     if (expires != null) json[r'$expires'] = expires;
     if (timestamp != null) json[r'$timestamp'] = timestamp;

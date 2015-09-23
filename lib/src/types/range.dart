@@ -13,6 +13,11 @@ class Range {
 
   List toList() => new List.generate(length+1, (index) => index + from);
 
+  Map toJson() => {
+    'from': from,
+    'to': to,
+  };
+
   String toString() => 'Range{from: $from, to: $to}';
 
   operator ==(other) {
