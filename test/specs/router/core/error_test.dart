@@ -18,7 +18,7 @@ main() {
       ]);
       expect(value).toEqual({
         'jsonGraph': {
-          'videos': {1: $error({})}
+          'videos': {1: $error({'message': 'hello world'})}
         }
       });
     });
@@ -62,8 +62,8 @@ main() {
       expect(value).toEqual({
         'jsonGraph': {
           'videos': {
-            1234: {'rating': $error({})},
-            333: {'rating': $error({})}
+            1234: {'rating': $error({'message': {'message': 'not authorized', 'unauthorized': true}})},
+            333: {'rating': $error({'message': {'message': 'not authorized', 'unauthorized': true}})}
           }
         }
       });
@@ -99,8 +99,8 @@ main() {
       expect(routerSetValue).toEqual({
         'jsonGraph': {
           'videos': {
-            1234: {'rating': $error({})},
-            333: {'rating': $error({})}
+            1234: {'rating': $error({'message': {'message': 'user not authorized', 'unauthorized': true}})},
+            333: {'rating': $error({'message': {'message': 'user not authorized', 'unauthorized': true}})}
           }
         }
       });
@@ -134,8 +134,8 @@ main() {
       expect(routerSetValue).toEqual({
         'jsonGraph': {
           'videos': {
-            1234: {'rating': $error({})},
-            333: {'rating': $error({})}
+            1234: {'rating': $error({'message': {'message': 'user not authorized', 'unauthorized': true}})},
+            333: {'rating': $error({'message': {'message': 'user not authorized', 'unauthorized': true}})}
           }
         }
       });

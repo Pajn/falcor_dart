@@ -56,11 +56,7 @@ class Router {
     var reportedPaths = jsongResult['reportedPaths'];
     var jsongEnv = materializeMissing(this, reportedPaths, jsongResult);
 
-    if (reportedPaths.isNotEmpty) {
-      jsongEnv['paths'] = reportedPaths;
-    } else {
-      jsongEnv['paths'] = [];
-    }
+    jsongEnv['paths'] = reportedPaths;
 
     var invalidated = jsongResult['invalidated'];
     if (invalidated != null && invalidated.isNotEmpty) {

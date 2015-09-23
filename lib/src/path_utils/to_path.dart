@@ -58,6 +58,7 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
       if(subs[subCode] != null) {
         subPath = subs[subCode];
       } else {
+        codesCount++;
         codes.add(subCode);
         subPath = subs[subCode] = {
           'keys': [],
@@ -66,8 +67,6 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
       }
       code = getHashCode(code + key.toString() + subCode);
 
-//      isNumber(key) &&
-//      subPath['keys'].add(int.parse(key)) ||
       if (isNumeric(key)) {
         subPath['keys'].add(parseNum(key));
       } else {
@@ -97,12 +96,14 @@ Map collapsePathMap(Map pathmap, int depth, int length) {
             pathsetClone[pathsetIndex + 1] = pathset[pathsetIndex];
           }
 
+          pathsetCount++;
           pathsets.add(pathsetClone);
         }
       }
     }
   } else {
     subKeys = getSortedKeys(pathmap);
+    pathsetCount++;
     if (subKeys.length > 1) {
       pathsets.add([subKeys]);
     } else {
