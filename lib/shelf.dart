@@ -24,19 +24,23 @@ FalcorHandler createFalcorHandler(getDataSource) {
     Map context = await requestToContext(request);
     Router router = getDataSource(request);
 
+    if (context.keys.contains('error')) {
+      return new shelf.Response(400, body: JSON.encode(context));
+    }
+
     if (context.keys.isEmpty) {
       return new shelf.Response.internalServerError(
-          body: 'Request not supported');
+          body: JSON.encode({'error': 'Request not supported'}));
     }
     if (context['method'] == null || context['method'].isEmpty) {
       return new shelf.Response.internalServerError(
-          body: 'No query method provided');
+          body: JSON.encode({'error': 'No query method provided'}));
     }
     if (context['method'] != 'set' &&
         (context['paths'] is! List ||
             context['paths'].any((path) => path is! List))) {
       return new shelf.Response.internalServerError(
-          body: 'Paths must be a set of paths');
+          body: JSON.encode({'error': 'Paths must be a set of paths'}));
     }
 
     try {
@@ -49,11 +53,11 @@ FalcorHandler createFalcorHandler(getDataSource) {
             context['arguments'], context['pathSuffixes'], context['paths']);
       } else {
         return new shelf.Response.internalServerError(
-            body: 'Data source does not implement the requested method');
+            body: JSON.encode({'error': 'Data source does not implement the requested method'}));
       }
     } catch (e) {
       rethrow;
-      return new shelf.Response.internalServerError(body: e.toString());
+      return new shelf.Response.internalServerError(body: JSON.encode({'error': e.toString()}));
     }
 
     return new shelf.Response.ok(
@@ -61,7 +65,7 @@ FalcorHandler createFalcorHandler(getDataSource) {
   };
 }
 
-requestToContext(shelf.Request request) async {
+Future<Map> requestToContext(shelf.Request request) async {
   var queryMap = request.method == 'POST'
       ? JSON.decode(await request.readAsString())
       : Uri.parse(request.requestedUri.toString()).queryParameters;
@@ -72,7 +76,11 @@ requestToContext(shelf.Request request) async {
       var arg = queryMap[key];
 
       if (parseArgs[key] != null && arg != null) {
-        context[key] = JSON.decode(arg);
+        try {
+          context[key] = JSON.decode(arg);
+        } catch (e) {
+          context['error'] = 'Paths parameter is invalid JSON';
+        }
       } else {
         context[key] = arg;
       }
