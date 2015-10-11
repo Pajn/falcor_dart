@@ -54,9 +54,24 @@ void optimizePathSet(cache, Map cacheRoot, pathSet, depth, List out,
   key = iterateKeySet(keySet, iteratorNote);
 
   do {
-    next = cache[key];
     var isDefined = cache.containsKey(key);
     var optimizedPathLength = optimizedPath.length;
+
+    if (!isDefined) {
+      var convertedKey;
+      if (key is String && isNumeric(key)) {
+        convertedKey = parseNum(key);
+      } else if (key is num) {
+        convertedKey = key.toString();
+      }
+
+      isDefined = cache.containsKey(convertedKey);
+      if (isDefined) {
+        key = convertedKey;
+      }
+    }
+
+    next = cache[key];
 
     if (key != null) {
       optimizedPath.add(key);
