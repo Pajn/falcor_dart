@@ -183,11 +183,13 @@ List getSortedKeys(Map map, [sort(a, b)]) {
 
 String getHashCode(Object key) {
   var keyAsString = key.toString();
-  var code = 5381;
+  // Netflix relies on the fact that JS can't handle big numbers, using double
+  // here to get the same number handling as JS
+  var code = 5381.0;
   var index = -1;
   var count = keyAsString.length;
   while (++index < count) {
-    code = (code << 5) + code + keyAsString.codeUnitAt(index);
+    code = (code.floor() << 5) + code + keyAsString.codeUnitAt(index);
   }
   return code.toString();
 }
