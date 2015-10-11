@@ -361,6 +361,20 @@ main() {
       throw 'Should have thrown a NullReturnedError';
     } on NullReturnedError catch (_) {}
   });
+
+  it('should not differ between numbers and strings', () async {
+    var router = getPrecedenceRouter();
+    var obs = await router.get([
+      ['videos', '1', 'title']
+    ]);
+    expect(obs).toEqual({
+      'jsonGraph': {
+        'videos': {
+          1: {'title': 'title 1'}
+        }
+      }
+    });
+  });
 }
 
 getPrecedenceRouter({onTitle(PathSet pathSet), onRating(PathSet pathSet)}) {
