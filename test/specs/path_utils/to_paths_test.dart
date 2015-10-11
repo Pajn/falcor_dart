@@ -140,5 +140,18 @@ main() {
 
       expect(toTree(toPaths(treeMap))).toEqual(expectedTree);
     });
+
+    it('should not take too much time with many references', () {
+      var input = {};
+      for (int i = 0; i < 20; i++) {
+        input[i] = {'two': null};
+      }
+
+      var startTime = new DateTime.now();
+      toPaths({3: {'one': input}});
+      var endTime = new DateTime.now();
+
+      expect(endTime.difference(startTime).inMilliseconds).toBeLessThan(100);
+    });
   });
 }
