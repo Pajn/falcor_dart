@@ -8,6 +8,7 @@ import 'package:falcor_dart/src/run/precedence/run_by_precedence.dart';
 import 'package:falcor_dart/src/path_utils/collapse.dart';
 import 'package:falcor_dart/src/path_set.dart';
 import 'package:falcor_dart/src/run/merge_cache_and_gather_refs_and_invalidations.dart';
+import 'package:falcor_dart/src/exceptions.dart';
 
 /**
  * The recurse and match function will async recurse as long as
@@ -50,6 +51,10 @@ Future _recurseMatchAndExecute(Matcher match, actionRunner, List<PathSet> paths,
     results.forEach((results) {
       var value = results['value'];
       var suffix = results['match']['suffix'];
+
+      if (value == null) {
+        throw new NullReturnedError();
+      }
 
       if (value is! List) {
         value = [value];
