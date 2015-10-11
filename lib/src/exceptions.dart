@@ -18,3 +18,8 @@ class InnerReferenceError extends FalcorError {
   final throwToNext = true;
   String toString() => 'References with inner references are not allowed.';
 }
+
+class NullReturnedError extends FalcorError {
+  final throwToNext = true;
+  String toString() => 'Returning null from an handler is not allowed.';
+}

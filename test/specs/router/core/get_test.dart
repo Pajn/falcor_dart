@@ -350,6 +350,17 @@ main() {
       });
     });
   });
+
+  it('should throw helpful error if null is returned.', () async {
+    var router = new Router([route('null', get: (_) => null)]);
+
+    try {
+      await router.get([
+        ['null']
+      ]);
+      throw 'Should have thrown a NullReturnedError';
+    } on NullReturnedError catch (_) {}
+  });
 }
 
 getPrecedenceRouter({onTitle(PathSet pathSet), onRating(PathSet pathSet)}) {
